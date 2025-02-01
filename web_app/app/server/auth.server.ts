@@ -1,7 +1,7 @@
 import { PrismaClient, type User } from "@prisma/client";
 import { registerSchema } from "../lib/auth/schemas.server";
-import { data as dataFn, redirect } from "react-router";
-import { commitSession, getSession } from "~/server/session.server";
+import { data as dataFn, redirect, type Session } from "react-router";
+import { commitSession, destroySession, getSession } from "~/server/session.server";
 import { hashPassword, validatePassword } from "~/lib/auth/encrypt.server";
 
 const routes = {
@@ -119,4 +119,13 @@ async function login(request: Request) {
     })
 }
 
-export { register, login }
+async function logout(session: Session) {
+
+    throw redirect(routes.login, {
+        headers: {
+            "Set-Cookie": await destroySession(session)
+        }
+    })
+}
+
+export { register, login, logout }

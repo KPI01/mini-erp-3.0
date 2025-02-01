@@ -27,7 +27,7 @@ export async function action({ request }: Route.ActionArgs) {
   return register(request);
 }
 
-export default function RegisterForm() {
+export default function Register() {
   console.log("RegisterForm");
   const { data, Form } = useFetcher();
   if (data?.errors) console.error("errors:", data.errors);

@@ -17,7 +17,6 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
-  console.info("session:", session);
 
   if (session.has("user")) throw redirect("/app");
 }
@@ -26,7 +25,7 @@ export async function action({ request }: Route.ActionArgs) {
   await login(request);
 }
 
-export default function LoginForm() {
+export default function Login() {
   console.log("LoginForm");
   const [ showPassword, setShowPassword ] = useState(false);
 
