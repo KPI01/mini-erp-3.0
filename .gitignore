@@ -2,18 +2,21 @@
 /.DS_Store
 
 # Node.js
-/*/node_modules/
-/*-lock.*
+/**/node_modules/
+/**/*-lock.*
 
 # React Router
-/.react-router/
-/build/
+/**/.react-router/
+/**/build/
+
+# Vite
+/**/.vite
 
 # Environment
-/.env
-/.env.*
+/**/.env
+/**/.env.*
 
 # Prisma
-/*/*.db
-/*/*.db-*
-/*/migrations/
+/**/*.db
+/**/*.db-*
+/**/migrations/

@@ -1,34 +1,34 @@
 import {
   Form,
+  Link,
   redirect,
-  type ActionFunctionArgs,
   type MetaFunction,
 } from "react-router";
 import { useEffect, useState } from "react";
-import { login } from "~/server/auth/login";
-import { sessionExists } from "~/server/auth/session";
 import type { Route } from "./+types/login";
 import Input from "~/components/forms/Input";
 import { HideIcon, SendIcon, ShowIcon } from "~/components/icons";
+import { getSession } from "~/server/session.server";
+import { login } from "~/server/auth.server";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Login", description: "Iniciar sesión en la plataforma" }];
+  return [ { title: "Login", description: "Iniciar sesión en la plataforma" } ];
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await sessionExists(request);
+  const session = await getSession(request.headers.get("Cookie"));
   console.info("session:", session);
 
-  if (session) throw redirect("/app");
+  if (session.has("user")) throw redirect("/app");
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
   await login(request);
 }
 
 export default function LoginForm() {
   console.log("LoginForm");
-  const [showPassword, setShowPassword] = useState(false);
+  const [ showPassword, setShowPassword ] = useState(false);
 
   const handlePasswordVisibility = () => {
     if (showPassword) {
@@ -40,7 +40,7 @@ export default function LoginForm() {
 
   useEffect(() => {
     handlePasswordVisibility();
-  }, [showPassword]);
+  }, [ showPassword ]);
 
   return (
     <div className="card max-w-md">
@@ -77,13 +77,19 @@ export default function LoginForm() {
           }}
           icon={showPassword ? <ShowIcon /> : <HideIcon />}
         />
-        <button
-          type="submit"
-          className="btn btn-darkBlue hover:bg-(--mediumBlue) text-white ms-auto mt-4 gap-3 text-lg font-bold"
-        >
-          Ingresar
-          <SendIcon />
-        </button>
+        <div className="w-full flex justify-between items-center">
+          <div className="flex flex-col text-sm">
+            <span>¿No tienes cuenta?</span>
+            <Link to="/guest/register" className="link">Crea una aquí</Link>
+          </div>
+          <button
+            type="submit"
+            className="btn btn-darkBlue hover:bg-(--mediumBlue) text-white gap-3 text-lg font-bold"
+          >
+            Ingresar
+            <SendIcon />
+          </button>
+        </div>
       </Form>
     </div>
   );

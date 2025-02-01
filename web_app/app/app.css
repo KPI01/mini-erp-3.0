@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
 
 @theme {
   --darkBlue: hsl(210 55 23);
@@ -23,6 +24,9 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+  * {
+    @apply transition
+  }
 
   html,
   body {
@@ -55,11 +59,14 @@
     @apply text-sm font-semibold;
   }
 
+  form {
+    @apply mb-3
+  }
+
   input[type="text"],
   input[type="email"],
   input[type="password"] {
-    @apply px-2 py-1 border border-(--lightBlue) rounded-md shadow-xs h-[5ch];
-    max-height: 5ch
+    @apply px-2 py-1 border border-(--lightBlue) rounded-md shadow-xs;
   }
 }
 
@@ -77,15 +84,11 @@
     @apply grid mb-4;
   }
 
-  .form-control>* {
-    @apply max-h-fit
-  }
-
   .card {
-    @apply bg-white shadow-md rounded-lg overflow-hidden px-6 py-8 max-w-2xl;
+    @apply bg-white shadow-md rounded-lg overflow-hidden px-6 py-8 max-w-md xl:max-w-xl;
     display: flex;
     flex-direction: column;
-    max-height: 50vh;
+    max-height: max-content;
     width: 45vw;
   }
 
@@ -97,6 +100,15 @@
     .card {
       max-height: fit-content;
     }
+  }
+
+  .link {
+    @apply font-semibold underline underline-offset-4 prose
+  }
+
+  .link:hover {
+    @apply underline underline-offset-[5px];
+    transform: scale(0.98);
   }
 }
 

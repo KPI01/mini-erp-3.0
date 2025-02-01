@@ -1,14 +1,5 @@
-import type React from "react";
 import { classMixer } from "~/helpers/utils";
 
-interface InputProps {
-  label?: string;
-  input: React.InputHTMLAttributes<HTMLInputElement>;
-  btn?: React.ButtonHTMLAttributes<HTMLButtonElement>;
-  icon?: React.ReactNode;
-  containerClass?: string;
-  errors?: string[];
-}
 
 export default function Input({
   label,

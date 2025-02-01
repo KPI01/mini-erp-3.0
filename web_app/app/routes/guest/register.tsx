@@ -1,12 +1,12 @@
 import { Eye, EyeOff, SendIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { redirect, useFetcher, type MetaFunction } from "react-router";
+import { Link, redirect, useFetcher, type MetaFunction } from "react-router";
 import Input from "~/components/forms/Input";
 import type { Route } from "./+types/register";
-import { sessionExists } from "~/server/auth/session";
 import { HideIcon, ShowIcon } from "~/components/icons";
-import { register } from "~/server/auth/register";
 import { cleanErrors } from "~/helpers/utils";
+import { register } from "~/server/auth.server";
+import { getSession } from "~/server/session.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,9 +18,9 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await sessionExists(request);
+  const session = await getSession(request.headers.get("Cookie"));
 
-  if (session) throw redirect("/app");
+  if (session.has("user")) throw redirect("/app");
 }
 
 export async function action({ request }: Route.ActionArgs) {
@@ -32,7 +32,7 @@ export default function RegisterForm() {
   const { data, Form } = useFetcher();
   if (data?.errors) console.error("errors:", data.errors);
 
-  const [visibility, setVisibility] = useState<{
+  const [ visibility, setVisibility ] = useState<{
     password: boolean;
     confirmation: boolean;
   }>({
@@ -51,7 +51,7 @@ export default function RegisterForm() {
         2500
       );
     }
-  }, [setVisibility]);
+  }, [ setVisibility ]);
 
   return (
     <div className="card">
@@ -60,7 +60,7 @@ export default function RegisterForm() {
         Formulario para agregar un usuario a la aplicación.
       </p>
       <Form
-        className="mt-4 grid grid-cols-2 gap-4"
+        className="mt-4 grid cl:grid-cols-2 gap-4"
         method="post"
         action="/guest/register"
       >
@@ -126,7 +126,10 @@ export default function RegisterForm() {
           icon={visibility.confirmation ? <ShowIcon /> : <HideIcon />}
           errors={cleanErrors("confirmation", data?.errors)}
         />
-        <div className="col-span-full flex justify-between mt-4">
+        <div className="col-span-full flex justify-between items-center mt-4">
+          <div className="flex text-sm">
+            <Link to="/guest/login" className="link">Volver a inicio de sesión</Link>
+          </div>
           <button
             type="submit"
             className="btn btn-darkBlue text-white hover:bg-(--mediumBlue) font-semibold ms-auto"
