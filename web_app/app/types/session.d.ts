@@ -1,3 +1,5 @@
+import type { ZodFormattedError } from "zod";
+
 interface SessionData {
     user: {
         id: number;
@@ -9,5 +11,5 @@ interface SessionData {
 
 interface SessionFlashData {
     error: string;
-    errors: Record<string, string | string[]>
+    zodErrors: ZodFormattedError
 }

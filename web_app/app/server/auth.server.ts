@@ -1,5 +1,5 @@
 import { PrismaClient, type User } from "@prisma/client";
-import { registerSchema } from "../lib/auth/schemas.server";
+import { loginSchema, registerSchema } from "../lib/auth/schemas.server";
 import { data as dataFn, redirect, type Session } from "react-router";
 import { commitSession, destroySession, getSession } from "~/server/session.server";
 import { hashPassword, validatePassword } from "~/lib/auth/encrypt.server";
@@ -25,10 +25,19 @@ async function register(request: Request) {
         confirmation: form.get("confirmation")?.toString()
     }
 
-    const { data, error } = await registerSchema.safeParseAsync(formData)
+    const { data, error, success } = await registerSchema.safeParseAsync(formData)
 
-    if (error) return dataFn({ errors: error.format() }, { status: 400 })
+    if (!success) {
+        console.error("se han encontrado errores en el formulario`")
+        session.flash("zodErrors", error.format())
+        throw redirect(routes.register, {
+            headers: {
+                "Set-Cookie": await commitSession(session)
+            }
+        })
+    }
 
+    console.debug("creando usuario...")
     let user = await prisma.user.create({
         data: {
             name: data.name,
@@ -38,84 +47,86 @@ async function register(request: Request) {
         }
     })
 
+    console.debug("guardando usuario en sesión....")
     session.set("user", {
         id: user.id,
         name: user.name,
         email: user.email,
         username: user.username
     })
-    const headers = new Headers({
-        "Set-Cookie": await commitSession(session)
-    })
 
-    throw redirect(routes.app, { headers })
+    throw redirect(routes.app, {
+        headers: {
+            "Set-Cookie": await commitSession(session)
+        }
+    })
 }
 
 async function login(request: Request) {
-    console.debug("Iniciando sesión...")
+    console.debug("Creando sesión...")
     const session = await getSession(request.headers.get("Cookie"))
+
     const form = await request.formData();
-    const username = form.get('username');
-    const password = form.get('password');
+    const formData: Pick<Partial<User>, "username" | "password"> = {
+        username: form.get("username")?.toString(),
+        password: form.get("password")?.toString()
+    }
 
-    if (!username || !password) {
-        console.log('Alguno de los datos esta vacío')
+    console.debug("validando con zod...")
+    const { data, error, success } = await loginSchema.safeParseAsync(formData)
+
+    if (!success) {
+        console.error("se han encontrado errores en el formulario")
+        session.flash("zodErrors", error.format())
         throw redirect(routes.login, {
-            status: 400,
-            statusText: 'Mala petición'
+            headers: { "Set-Cookie": await commitSession(session) }
         })
     }
 
-    if (typeof username === 'string' && typeof password === 'string') {
-        let user = await prisma.user.findFirst({
-            where: { username }
-        }).then(async (user) => {
-            if (!user) {
-                console.log('Usuario no encontrado')
-                prisma.$disconnect();
-                throw redirect(routes.login, {
-                    status: 401,
-                    statusText: 'Usuario no encontrado'
-                })
-            }
-
-            console.debug('Usuario encontrado:', user)
+    console.debug("buscando en la base de datos...")
+    let user = await prisma.user.findFirst({
+        where: { username: data.username }
+    }).then(async (user) => {
+        if (!user) {
+            console.error('usuario no encontrado')
             prisma.$disconnect();
+            throw redirect(routes.login, {
+                status: 401,
+                statusText: 'Usuario no encontrado'
+            })
+        }
 
-            const validPassword = await validatePassword(password, user.password)
-            if (!validPassword) {
-                throw redirect(routes.login, {
-                    status: 400,
-                    statusText: "Combinación usuario/clave incorrecta"
-                })
-            }
+        console.debug('Usuario encontrado:', user)
+        prisma.$disconnect();
+
+        const validPassword = await validatePassword(data.password, user.password)
+        if (!validPassword) {
+            session.flash("error", {
+                password: "Clave incorrecta"
+            })
+            throw redirect(routes.login, {
+                headers: {
+                    "Set-Cookie": await commitSession(session)
+                }
+            })
+        }
 
 
-            return user;
+        return user;
 
-        })
-        console.debug('usuario:', user)
+    })
+    console.debug("guardando usuario en sesión...")
+    session.set("user", {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        username: user.username
+    })
 
-        session.set("user", {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            username: user.username
-        })
-
-        const headers = new Headers({
-            "Set-Cookie": await commitSession(session)
-        })
-
-        throw redirect(routes.app, { headers })
-    }
-
-    throw redirect(routes.login, {
-        status: 400,
+    throw redirect(routes.app, {
         headers: {
-            'Content-Type': 'application/json',
-        },
-        statusText: 'Mala petición'
+            "Set-Cookie": await commitSession(session)
+        }
     })
 }
 

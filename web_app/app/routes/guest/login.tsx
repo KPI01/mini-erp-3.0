@@ -1,4 +1,5 @@
 import {
+  data,
   Form,
   Link,
   redirect,
@@ -8,8 +9,9 @@ import { useEffect, useState } from "react";
 import type { Route } from "./+types/login";
 import Input from "~/components/forms/Input";
 import { HideIcon, SendIcon, ShowIcon } from "~/components/icons";
-import { getSession } from "~/server/session.server";
+import { commitSession, getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
+import { cleanErrors } from "~/helpers/utils";
 
 export const meta: MetaFunction = () => {
   return [ { title: "Login", description: "Iniciar sesión en la plataforma" } ];
@@ -18,15 +20,30 @@ export const meta: MetaFunction = () => {
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
 
-  if (session.has("user")) throw redirect("/app");
+  if (session.has("user")) throw redirect("/app", { status: 300 })
+
+  if (session.has("zodErrors")) {
+    console.debug("se han encontrado errores")
+    return data(
+      { "zodErrors": session.get("zodErrors") },
+      {
+        headers: {
+          "Set-Cookie": await commitSession(session)
+        }
+      }
+    )
+  }
 }
 
 export async function action({ request }: Route.ActionArgs) {
-  await login(request);
+  return await login(request);
 }
 
-export default function Login() {
+export default function Login({ loaderData }: Route.ComponentProps) {
   console.log("LoginForm");
+  const errors = loaderData?.zodErrors
+  console.debug("errors:", errors)
+
   const [ showPassword, setShowPassword ] = useState(false);
 
   const handlePasswordVisibility = () => {
@@ -60,6 +77,7 @@ export default function Login() {
             id: "username",
             name: "username",
           }}
+          errors={cleanErrors("username", errors)}
         />
         <Input
           label="Contraseña"
@@ -75,6 +93,7 @@ export default function Login() {
             onClick: () => setShowPassword(!showPassword),
           }}
           icon={showPassword ? <ShowIcon /> : <HideIcon />}
+          errors={cleanErrors("password", errors)}
         />
         <div className="w-full flex justify-between items-center">
           <div className="flex flex-col text-sm">
