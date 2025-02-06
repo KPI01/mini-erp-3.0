@@ -16,7 +16,7 @@ export default function Layout() {
         <Meta />
         <Links />
       </head>
-      <body className="grid h-screen place-content-center font-sans text-(--darkBlue) bg-radial from-(--darkBlue)/15 from-5% to-white">
+      <body className="h-screen  font-sans text-(--darkBlue) bg-radial from-(--darkBlue)/15 from-5% to-white">
         <Outlet />
         <Scripts />
         <ScrollRestoration />
