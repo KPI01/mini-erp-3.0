@@ -1,6 +1,6 @@
 import { PrismaClient, type User } from "@prisma/client";
 import { loginSchema, registerSchema } from "../lib/auth/schemas.server";
-import { data as dataFn, redirect, type Session } from "react-router";
+import { data , redirect,  } from "react-router";
 import { commitSession, destroySession, getSession } from "~/server/session.server";
 import { hashPassword, validatePassword } from "~/lib/auth/encrypt.server";
 

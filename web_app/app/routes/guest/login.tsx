@@ -1,20 +1,22 @@
 import {
   data,
   Form,
-  Link,
+  Link as LinkRR,
   redirect,
   type MetaFunction,
 } from "react-router";
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/login";
 import Input from "~/components/forms/Input";
-import { HideIcon, SendIcon, ShowIcon } from "~/components/icons";
 import { commitSession, getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { cleanErrors } from "~/helpers/utils";
+import { Box, Button, Em, Flex, Grid, Heading, Link, Text } from "@radix-ui/themes";
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+import { CardDescription, Header } from "./components";
 
 export const meta: MetaFunction = () => {
-  return [ { title: "Login", description: "Iniciar sesión en la plataforma" } ];
+  return [{ title: "Login", description: "Iniciar sesión en la plataforma" }];
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -44,7 +46,7 @@ export default function Login({ loaderData }: Route.ComponentProps) {
   const errors = loaderData?.zodErrors
   console.debug("errors:", errors)
 
-  const [ showPassword, setShowPassword ] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handlePasswordVisibility = () => {
     if (showPassword) {
@@ -56,59 +58,54 @@ export default function Login({ loaderData }: Route.ComponentProps) {
 
   useEffect(() => {
     handlePasswordVisibility();
-  }, [ showPassword ]);
+  }, [showPassword]);
 
   return (
-    <div className="card max-w-md">
-      <h1>Tu Sistema ERP</h1>
-      <p className="card-description">
-        Bienvenido al sistema de tu empresa, por favor ingresa tus credenciales
-        para acceder al sistema.
-      </p>
-      <Form
-        className="mt-4 grid grid-rows-2"
-        method="post"
-        action="/guest/login"
-      >
-        <Input
-          label="Usuario"
-          input={{
-            type: "text",
-            id: "username",
-            name: "username",
-          }}
-          errors={cleanErrors("username", errors)}
-        />
-        <Input
-          label="Contraseña"
-          input={{
-            type: showPassword ? "text" : "password",
-            id: "password",
-            name: "password",
-            className: "basis-full",
-          }}
-          btn={{
-            type: "button",
-            className: "btn btn-outline-lightBlue",
-            onClick: () => setShowPassword(!showPassword),
-          }}
-          icon={showPassword ? <ShowIcon /> : <HideIcon />}
-          errors={cleanErrors("password", errors)}
-        />
-        <div className="w-full flex justify-between items-center">
-          <div className="flex flex-col text-sm">
-            <span>¿No tienes cuenta?</span>
-            <Link to="/guest/register" className="link">Crea una aquí</Link>
-          </div>
-          <button
-            type="submit"
-            className="btn btn-darkBlue hover:bg-(--mediumBlue) text-white gap-3 text-lg font-bold"
-          >
-            Ingresar
-            <SendIcon />
-          </button>
-        </div>
-      </Form>
-    </div>
+    <Box>
+      <Header>Tu Sistema ERP</Header>
+      <CardDescription>
+        Bienvenido al sistema de tu empresa, por favor <Em>ingresa tus credenciales</Em> para acceder al sistema.
+      </CardDescription>
+      <Box className="my-4" asChild>
+        <Form
+          method="post"
+          action="/guest/login"
+        >
+          <Grid className="px-3" align="center" justify="center" columns="1" gapY="4">
+            <Input
+              label="Usuario"
+              input={{
+                type: "text",
+                name: "username"
+              }}
+              errors={cleanErrors("username", errors)}
+            />
+            <Input
+              label="Contraseña"
+              input={{
+                type: showPassword ? "text" : "password",
+                id: "password",
+                name: "password",
+              }}
+              btn={{
+                icon: (showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />),
+                type: "button",
+                onClick: () => setShowPassword(!showPassword),
+              }}
+              errors={cleanErrors("password", errors)}
+            />
+          </Grid>
+          <Flex align="center" justify="between" className="mt-8">
+            <Flex direction="column" className="text-sm">
+              <Text as="span">¿No tienes cuenta?</Text>
+              <Link asChild>
+                <LinkRR to="/guest/register">Crea una aquí</LinkRR>
+              </Link>
+            </Flex>
+            <Button type="submit">Ingresar</Button>
+          </Flex>
+        </Form>
+      </Box>
+    </Box >
   );
 }
