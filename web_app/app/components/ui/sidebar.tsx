@@ -8,7 +8,8 @@ const links: SideBarLink[] = [
         label: "Inventario",
         nested: [
             {
-                label: "Consulta de articulo"
+                label: "Consulta de articulo",
+                action: "items"
             },
             {
                 label: "Rotación de material"
