@@ -9,8 +9,7 @@ import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { Box, Button, Em, Flex, Grid, Heading, Link, Text } from "@radix-ui/themes";
 import { CardDescription, Header } from "./components";
 
-export const meta: MetaFunction = () => {
-  return [
+export const meta: MetaFunction = () => {return [
     {
       title: "Registro de usuario",
       description: "Registrar un usuario para la plataforma.",
