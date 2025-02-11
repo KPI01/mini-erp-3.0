@@ -1,7 +1,17 @@
 import { Eye, EyeOff, SendIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { Link, redirect, useFetcher, type MetaFunction } from "react-router";
 import Input from "~/components/forms/Input";
+=======
+import { Link as LinkRR, redirect, useFetcher, type MetaFunction } from "react-router";
+import Input from "~/components/forms/input";
+>>>>>>> Stashed changes
+=======
+import { Link as LinkRR, redirect, useFetcher, type MetaFunction } from "react-router";
+import Input from "~/components/forms/input";
+>>>>>>> Stashed changes
 import type { Route } from "./+types/register";
 import { HideIcon, ShowIcon } from "~/components/icons";
 import { cleanErrors } from "~/helpers/utils";

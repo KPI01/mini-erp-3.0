@@ -64,9 +64,19 @@
   }
 
   input[type="text"],
+<<<<<<< Updated upstream
   input[type="email"],
   input[type="password"] {
     @apply px-2 py-1 border border-(--lightBlue) rounded-md shadow-xs;
+=======
+  input[type="number"],
+  input[type="password"],
+  input[type="email"] {
+    @apply border border-(--gray-7) rounded py-1 px-2
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   }
 }
 

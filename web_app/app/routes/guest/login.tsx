@@ -7,8 +7,16 @@ import {
 } from "react-router";
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/login";
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import Input from "~/components/forms/Input";
 import { HideIcon, SendIcon, ShowIcon } from "~/components/icons";
+=======
+import Input from "~/components/forms/input";
+>>>>>>> Stashed changes
+=======
+import Input from "~/components/forms/input";
+>>>>>>> Stashed changes
 import { commitSession, getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { cleanErrors } from "~/helpers/utils";

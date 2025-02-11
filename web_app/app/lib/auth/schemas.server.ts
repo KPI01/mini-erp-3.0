@@ -50,18 +50,42 @@ export const registerSchema = z.object({
 })
     .refine((value) => value.password === value.confirmation, {
         message: "Las claves no son iguales.",
-        path: [ "confirmation" ]
+        path: ["confirmation"]
     })
 
 export const loginSchema = z.object({
     username: USERNAME_FIELD,
     password: PASSWORD_FIELD,
-}).refine(async (value) => {
-    const savedPassword = await prisma.user.findFirst({ where: { username: value.username } }).then((data) => { if (data) return data.password })
-    if (!savedPassword) return false
-
-    return await validatePassword(value.password, savedPassword)
-}, {
-    message: "La clave es incorrecta.",
-    path: [ "password" ]
 })
+    .refine(async (value) => {
+        const savedUserName = await prisma.user.findFirst({
+            where: {
+                username: value.username
+            }
+        }).then((data) => {
+            if (data) return data.username
+        })
+
+        if (!savedUserName) return false
+        return true
+    }, {
+        message: "El usuario no existe",
+        path: ["username"]
+    })
+    .refine(async (value) => {
+        const savedPassword = await prisma.user.findFirst({
+            where: {
+                username: value.username
+            }
+        })
+            .then((data) => {
+                if (data) return data.password
+            })
+
+        if (!savedPassword) return false
+
+        return await validatePassword(value.password, savedPassword)
+    }, {
+        message: "La clave es incorrecta.",
+        path: ["password"]
+    })
