@@ -7,22 +7,14 @@ import {
 } from "react-router";
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/login";
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import Input from "~/components/forms/Input";
+import Input from "~/components/forms/input";
 import { HideIcon, SendIcon, ShowIcon } from "~/components/icons";
-=======
-import Input from "~/components/forms/input";
->>>>>>> Stashed changes
-=======
-import Input from "~/components/forms/input";
->>>>>>> Stashed changes
 import { commitSession, getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { cleanErrors } from "~/helpers/utils";
 
 export const meta: MetaFunction = () => {
-  return [ { title: "Login", description: "Iniciar sesión en la plataforma" } ];
+  return [{ title: "Login", description: "Iniciar sesión en la plataforma" }];
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -52,7 +44,7 @@ export default function Login({ loaderData }: Route.ComponentProps) {
   const errors = loaderData?.zodErrors
   console.debug("errors:", errors)
 
-  const [ showPassword, setShowPassword ] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handlePasswordVisibility = () => {
     if (showPassword) {
@@ -64,7 +56,7 @@ export default function Login({ loaderData }: Route.ComponentProps) {
 
   useEffect(() => {
     handlePasswordVisibility();
-  }, [ showPassword ]);
+  }, [showPassword]);
 
   return (
     <div className="card max-w-md">

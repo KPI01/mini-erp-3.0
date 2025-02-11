@@ -22,7 +22,7 @@ export default function Input({
         ? <input className={classMixer("light radix-light", input.className ?? "")} {...input} />
         : <Flex gapX="3" justify="center">
           <input className={classMixer("light radix-light basis-full", input.className ?? "")} {...input} />
-          {(btn !== undefined) && (
+          {(btn && btn !== undefined) && (
             (btn.label && !btn.icon)
               ? (
                 <Button type={btn.type} onClick={btn.onClick} className={btn.className}>{btn.label}</Button>
