@@ -2,6 +2,7 @@ import { Outlet } from "react-router";
 import Sidebar from "~/components/ui/sidebar";
 import type { Route } from "./+types";
 import { getSession } from "~/server/session.server";
+import { Container } from "@radix-ui/themes";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"))
@@ -19,7 +20,9 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
     <div className="flex h-full w-full">
       <Sidebar user={loaderData} />
       <main className="basis-full grid">
-        <Outlet />
+        <Container>
+          <Outlet />
+        </Container>
       </main>
     </div>
   );

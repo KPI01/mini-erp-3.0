@@ -5,6 +5,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator custom_generator {
+  provider = "prisma-generator-fake-data"
+  output   = "./fake-data.ts"
+}
+
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
@@ -22,7 +27,7 @@ model Item {
   id          Int      @id @default(autoincrement())
   descripcion String
   activo      Boolean  @default(true)
-  seccionId   Int
+  seccionId   Int?     @default(0)
   seccion     Seccion? @relation(fields: [seccionId], references: [id])
   stock       Stock[]
 }
@@ -31,7 +36,7 @@ model Seccion {
   id     Int    @id @default(autoincrement())
   nombre String
   corto  String
-  Item   Item[]
+  item   Item[]
 }
 
 model Stock {

@@ -1,6 +1,7 @@
 import type { User } from "@prisma/client";
 import type { EyeClosedIcon } from "@radix-ui/react-icons";
 import type { Button, IconButton } from "@radix-ui/themes";
+import type { ColumnDef } from "@tanstack/react-table";
 
 type SideBarLink = {
     label: string;
@@ -27,3 +28,8 @@ interface InputProps {
 }
 
 interface IconProps extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> { }
+
+interface DataTableProps<TData, TValue> {
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[]
+}
