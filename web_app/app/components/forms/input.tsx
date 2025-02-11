@@ -21,9 +21,9 @@ export default function Input({
 }: InputProps) {
   return (
     <Grid columns="1" gap="1" align="center" className={classMixer(containerClass)}>
-      {(typeof label === "string")
+      {(label && typeof label === "string")
         ? <Label htmlFor={input.name}>{label}</Label>
-        : (typeof label !== undefined)
+        : (label && typeof label !== "string")
           ? <Label htmlFor={input.name} {...label}>{label.content}</Label>
           : null
       }
