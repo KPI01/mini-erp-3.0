@@ -11,7 +11,7 @@ import Input from "~/components/forms/Input";
 import { commitSession, getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { cleanErrors } from "~/helpers/utils";
-import { Box, Button, Em, Flex, Grid, Heading, Link, Text } from "@radix-ui/themes";
+import { Box, Button, Em, Flex, Grid, Link, Text } from "@radix-ui/themes";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { CardDescription, Header } from "./components";
 

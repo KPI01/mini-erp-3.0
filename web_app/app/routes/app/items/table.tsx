@@ -2,10 +2,15 @@ import type { Route } from "../+types";
 import DataTable from "~/components/table/datatable";
 import { itemColumn, type Item } from "./definitions";
 import { PrismaClient } from "@prisma/client";
+import type { MetaFunction } from "react-router";
+import { Header } from "../components";
 
-const prisma = new PrismaClient()
+export const meta: MetaFunction = () => {
+    return [{ title: "Items", description: "Visualización de los items registrados." }];
+};
 
 export async function loader({ }: Route.LoaderArgs) {
+    const prisma = new PrismaClient()
     const data = await prisma.item.findMany()
 
     return { data }
@@ -15,5 +20,10 @@ export default function Table({ loaderData }: Route.ComponentProps) {
     const { data } = loaderData as unknown as { data: Item[] }
     console.debug(data)
 
-    return <DataTable data={data} columns={itemColumn} />
+    return (
+        <>
+            <Header>Items de la Empresa</Header>
+            <DataTable data={data} columns={itemColumn} />
+        </>
+    )
 }
