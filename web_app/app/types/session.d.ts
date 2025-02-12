@@ -13,3 +13,7 @@ interface SessionFlashData {
     error: string | Record<string, string>;
     zodErrors: ZodFormattedError
 }
+
+interface RequireAuthCookieProps {
+    request: Request,
+}

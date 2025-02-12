@@ -90,10 +90,7 @@ async function login(request: Request) {
         if (!user) {
             console.error('usuario no encontrado')
             prisma.$disconnect();
-            throw redirect(routes.login, {
-                status: 401,
-                statusText: 'Usuario no encontrado'
-            })
+            throw redirect(routes.login)
         }
 
         console.debug('Usuario encontrado:', user)

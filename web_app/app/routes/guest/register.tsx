@@ -4,7 +4,7 @@ import Input from "~/components/forms/input";
 import type { Route } from "./+types/register";
 import { cleanErrors } from "~/helpers/utils";
 import { register } from "~/server/auth.server";
-import { getSession } from "~/server/session.server";
+import { getSession, validateAuthSession } from "~/server/session.server";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { Box, Button, Em, Flex, Grid, Link } from "@radix-ui/themes";
 import { CardDescription, Header } from "./components";
@@ -19,9 +19,7 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
-
-  if (session.has("user")) throw redirect("/app");
+  const session = await validateAuthSession({ request })
 }
 
 export async function action({ request }: Route.ActionArgs) {

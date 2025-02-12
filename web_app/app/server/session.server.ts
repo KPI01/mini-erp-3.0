@@ -1,7 +1,7 @@
-import { createCookieSessionStorage } from "react-router";
+import { createCookieSessionStorage, redirect } from "react-router";
 import { config } from "dotenv"
 import { createSecret } from "../lib/auth/secrets.server";
-import type { SessionData, SessionFlashData } from "~/types/session";
+import type { RequireAuthCookieProps, SessionData, SessionFlashData } from "~/types/session";
 
 config()
 
@@ -23,4 +23,18 @@ const { getSession, commitSession, destroySession } =
         }
     })
 
-export { getSession, commitSession, destroySession }
+async function validateAuthSession({ request }: RequireAuthCookieProps) {
+    const session = await getSession(request.headers.get("Cookie"))
+    const user = session.get("user")
+
+    if (user) {
+        console.debug("La sesión de usuario existe")
+        throw redirect("/app")
+    }
+
+    console.debug("La sesión de usuario no existe")
+    return session
+
+}
+
+export { getSession, commitSession, destroySession, validateAuthSession }

@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/login";
 import Input from "~/components/forms/input";
-import { commitSession, getSession } from "~/server/session.server";
+import { commitSession, validateAuthSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { cleanErrors } from "~/helpers/utils";
 import { Box, Button, Em, Flex, Grid, Link, Text } from "@radix-ui/themes";
@@ -20,9 +20,7 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
-
-  if (session.has("user")) throw redirect("/app", { status: 300 })
+  const session = await validateAuthSession({ request })
 
   if (session.has("zodErrors")) {
     console.debug("se han encontrado errores")
