@@ -6,10 +6,6 @@
     ".react-router/types/**/*",
     "./prisma/**/*"
   ],
-  "exclude": [
-    "./app/lib/**/*",
-    "./app/server/**/*"
-  ],
   "compilerOptions": {
     "lib": [
       "DOM",

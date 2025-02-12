@@ -7,7 +7,7 @@ import {
 } from "react-router";
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/login";
-import Input from "~/components/forms/Input";
+import Input from "~/components/forms/input";
 import { commitSession, getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { cleanErrors } from "~/helpers/utils";

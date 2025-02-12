@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link as LinkRR, redirect, useFetcher, type MetaFunction } from "react-router";
-import Input from "~/components/forms/Input";
+import Input from "~/components/forms/input";
 import type { Route } from "./+types/register";
 import { cleanErrors } from "~/helpers/utils";
 import { register } from "~/server/auth.server";
@@ -9,7 +9,8 @@ import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { Box, Button, Em, Flex, Grid, Heading, Link, Text } from "@radix-ui/themes";
 import { CardDescription, Header } from "./components";
 
-export const meta: MetaFunction = () => {return [
+export const meta: MetaFunction = () => {
+  return [
     {
       title: "Registro de usuario",
       description: "Registrar un usuario para la plataforma.",

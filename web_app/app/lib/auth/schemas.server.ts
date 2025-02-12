@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
-import { MIN_LENGTH_MSG, STRING_FIELD } from "~/helpers/forms";
 import { validatePassword } from "./encrypt.server";
+import { MIN_LENGTH_MSG, STRING_FIELD } from "~/helpers/forms";
+import { PrismaClient } from "@prisma/client";
 
 let prisma = new PrismaClient()
 
@@ -50,7 +50,7 @@ export const registerSchema = z.object({
 })
     .refine((value) => value.password === value.confirmation, {
         message: "Las claves no son iguales.",
-        path: [ "confirmation" ]
+        path: ["confirmation"]
     })
 
 export const loginSchema = z.object({
@@ -63,5 +63,5 @@ export const loginSchema = z.object({
     return await validatePassword(value.password, savedPassword)
 }, {
     message: "La clave es incorrecta.",
-    path: [ "password" ]
+    path: ["password"]
 })
