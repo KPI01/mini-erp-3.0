@@ -19,10 +19,13 @@
 @layer base {
 
   input[type="text"],
+  input[type="number"],
   input[type="email"],
   input[type="password"] {
-    @apply px-2 py-1 border border-(--lightBlue) rounded-md shadow-xs;
+    @apply px-2 py-1 border rounded-md;
   }
+
+
 }
 
 @layer components {
@@ -38,6 +41,12 @@
     width: "100%";
     height: "100%";
     background-color: #e5e5f7;
+  }
+
+  input[type='number'].no-spinner::-webkit-inner-spin-button,
+  input[type='number'].no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 }
 

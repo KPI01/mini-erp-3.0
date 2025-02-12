@@ -308,7 +308,3 @@
 :is(.dark, .dark-theme) :where(.radix-themes:not(.light, .light-theme)) {
     --color-background: #01080e;
 }
-
-.radix-themes {
-    --cursor-button: pointer
-}

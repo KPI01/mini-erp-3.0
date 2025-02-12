@@ -79,8 +79,9 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
                         <Input
                             input={{
                                 type: "number",
-                                className: "w-[7.5ch]",
-                                disabled: true
+                                className: "w-[6ch] border-(--gray-8) no-spinner text-center",
+                                disabled: true,
+                                value: 1
                             }}
                         />
                         <IconButton color="gray" variant="outline">
