@@ -66,7 +66,6 @@ export const loginSchema = z.object({
             if (data) return data.username
         })
 
-<<<<<<< HEAD
         if (!savedUserName) return false
         return true
     }, {
@@ -90,10 +89,3 @@ export const loginSchema = z.object({
         message: "La clave es incorrecta.",
         path: ["password"]
     })
-=======
-    return await validatePassword(value.password, savedPassword)
-}, {
-    message: "La clave es incorrecta.",
-    path: ["password"]
-})
->>>>>>> ui/components

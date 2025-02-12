@@ -1,27 +1,12 @@
 import { useEffect, useState } from "react";
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import { Link, redirect, useFetcher, type MetaFunction } from "react-router";
-import Input from "~/components/forms/Input";
-=======
 import { Link as LinkRR, redirect, useFetcher, type MetaFunction } from "react-router";
 import Input from "~/components/forms/input";
->>>>>>> Stashed changes
-=======
-import { Link as LinkRR, redirect, useFetcher, type MetaFunction } from "react-router";
-import Input from "~/components/forms/input";
->>>>>>> Stashed changes
-=======
-import { Link as LinkRR, redirect, useFetcher, type MetaFunction } from "react-router";
-import Input from "~/components/forms/input";
->>>>>>> ui/components
 import type { Route } from "./+types/register";
 import { cleanErrors } from "~/helpers/utils";
 import { register } from "~/server/auth.server";
 import { getSession } from "~/server/session.server";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
-import { Box, Button, Em, Flex, Grid, Heading, Link, Text } from "@radix-ui/themes";
+import { Box, Button, Em, Flex, Grid, Link } from "@radix-ui/themes";
 import { CardDescription, Header } from "./components";
 
 export const meta: MetaFunction = () => {

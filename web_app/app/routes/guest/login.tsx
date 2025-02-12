@@ -8,10 +8,6 @@ import {
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/login";
 import Input from "~/components/forms/input";
-<<<<<<< HEAD
-import { HideIcon, SendIcon, ShowIcon } from "~/components/icons";
-=======
->>>>>>> ui/components
 import { commitSession, getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { cleanErrors } from "~/helpers/utils";

@@ -1,12 +1,13 @@
 import { createCookieSessionStorage } from "react-router";
 import { config } from "dotenv"
 import { createSecret } from "../lib/auth/secrets.server";
+import type { SessionData, SessionFlashData } from "~/types/session";
 
 config()
 
 const COOKIE_NAME = process.env.SESSION_NAME || "__session"
 const SECRET = process.env.SESSION_SECRET
-    ? [ process.env.SESSION_SECRET ]
+    ? [process.env.SESSION_SECRET]
     : createSecret()
 
 const { getSession, commitSession, destroySession } =

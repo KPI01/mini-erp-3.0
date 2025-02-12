@@ -10,6 +10,6 @@ interface SessionData {
 }
 
 interface SessionFlashData {
-    error: string;
+    error: string | Record<string, string>;
     zodErrors: ZodFormattedError
 }
