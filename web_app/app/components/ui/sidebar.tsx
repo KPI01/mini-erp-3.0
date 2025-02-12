@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { ExitIcon } from "@radix-ui/react-icons";
 import { Button, Em, Flex, Grid, Heading, Separator, Text } from "@radix-ui/themes";
+=======
+import { Flex, Grid, Heading, Separator, Text } from "@radix-ui/themes";
+>>>>>>> ui/components
 import { Menubar } from "radix-ui";
 import { Link } from "react-router";
 import type { SideBarLink, SidebarProps } from "~/types/components";
@@ -99,6 +103,7 @@ export default function Sidebar({ user, className }: SidebarProps) {
                         </Menubar.Menu>)
                 })}
             </Flex>
+<<<<<<< HEAD
             <Button variant="ghost">
                 <Text weight="medium">Cerrar sesión</Text>
                 <Text weight="light">
@@ -106,6 +111,8 @@ export default function Sidebar({ user, className }: SidebarProps) {
                 </Text>
                 <ExitIcon />
             </Button>
+=======
+>>>>>>> ui/components
         </Menubar.Root>
     );
 };

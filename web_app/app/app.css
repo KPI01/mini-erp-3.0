@@ -1,135 +1,44 @@
 @import "tailwindcss";
 
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
+:root {
+  --lightBlue: 210 50 79;
+  --mediumBlue: 210 45 54;
+  --darkBlue: 210 55 23;
+  --goldenYellow: 45 80 60;
+  --alertRed: 0 72 58;
+  --successGreen: 120 61 50;
 
-@theme {
-  --darkBlue: hsl(210 55 23);
-  --mediumBlue: hsl(210 45 54);
-  --lightBlue: hsl(210 50 79);
-  --goldenYellow: hsl(45 80 60);
-  --alertRed: hsl(0 72 58);
-  --successGreen: hsl(120 61 50);
-
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --color-lightBlue: hsl(var(--lightBlue));
+  --color-mediumBlue: hsl(var(--mediumBlue));
+  --color-darkBlue: hsl(var(--darkBlue));
+  --color-goldenYellow: hsl(var(--goldenYellow));
+  --color-alertRed: hsl(var(--alertRed));
+  --color-successGreen: hsl(var(--successGreen));
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
-  * {
-    @apply transition
-  }
-
-  html,
-  body {
-    @apply bg-white dark:bg-(--darkBlue) text-(--darkBlue) dark:text-(--lightBlue);
-
-    @media (prefers-color-scheme: dark) {
-      color-scheme: dark;
-    }
-  }
-
-  h1,
-  h2,
-  h3 {
-    @apply font-bold;
-  }
-
-  h1 {
-    @apply text-4xl;
-  }
-
-  h2 {
-    @apply text-3xl;
-  }
-
-  h3 {
-    @apply text-2xl;
-  }
-
-  label {
-    @apply text-sm font-semibold;
-  }
-
-  form {
-    @apply mb-3
-  }
 
   input[type="text"],
-<<<<<<< Updated upstream
   input[type="email"],
   input[type="password"] {
     @apply px-2 py-1 border border-(--lightBlue) rounded-md shadow-xs;
-=======
-  input[type="number"],
-  input[type="password"],
-  input[type="email"] {
-    @apply border border-(--gray-7) rounded py-1 px-2
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   }
 }
 
 @layer components {
-  .btn {
-    @apply transition px-4 py-2 rounded-md flex gap-2 w-fit items-center;
-    @apply justify-center shadow-xs cursor-pointer bg-transparent;
-
-    @variant hover {
-      @apply bg-(--lightBlue)/25
-    }
+  .bg-pattern {
+    background-color: #e5e5f7;
+    background-image: radial-gradient(circle at center center, var(--color-darkBlue), #e5e5f7), repeating-radial-gradient(circle at center center, var(--color-darkBlue), var(--color-darkBlue), 10px, transparent 20px, transparent 10px);
+    background-blend-mode: multiply;
   }
 
-  .form-control {
-    @apply grid mb-4;
-  }
-
-  .card {
-    @apply bg-white shadow-md rounded-lg overflow-hidden px-6 py-8 max-w-md xl:max-w-xl;
-    display: flex;
-    flex-direction: column;
-    max-height: max-content;
-    width: 45vw;
-  }
-
-  .card-description {
-    @apply italic text-sm font-light text-(--darkBlue)/35;
-  }
-
-  @media (width >=80rem) {
-    .card {
-      max-height: fit-content;
-    }
-  }
-
-  .link {
-    @apply font-semibold underline underline-offset-4 prose cursor-pointer
-  }
-
-  .link:hover {
-    @apply underline underline-offset-[5px];
-    transform: scale(0.98);
-  }
-
-  .link:active {
-    transform: scale(0.96);
+  .bg-pattern::after,
+  .bg-pattern::before {
+    content: '';
+    width: "100%";
+    height: "100%";
+    background-color: #e5e5f7;
   }
 }
 
-@utility btn-* {
-  background-color: --value(--*);
-}
-
-@utility btn-outline-* {
-  border: 1px solid --value(--*)
-}
+@import "./styles/radix-theme.css"

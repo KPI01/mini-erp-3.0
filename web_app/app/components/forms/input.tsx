@@ -1,7 +1,20 @@
 import { classMixer } from "~/helpers/utils";
 import type { InputProps } from "~/types/components";
 import { Label } from "@radix-ui/react-label";
+<<<<<<< HEAD
 import { Button, Em, Flex, Grid, IconButton, Text } from "@radix-ui/themes";
+=======
+import { Button, Flex, Grid, IconButton } from "@radix-ui/themes";
+
+function displayErrors(errors: InputProps["errors"]) {
+  if (errors && errors.length > 0)
+    return <ul className="ps-4 list-disc text-xs mt-2 font-semibold text-(--color-alertRed)">
+      {errors.map((e, i) => (
+        <li key={i}>{e}</li>
+      ))}
+    </ul>
+}
+>>>>>>> ui/components
 
 export default function Input({
   label,
@@ -11,7 +24,11 @@ export default function Input({
   errors,
 }: InputProps) {
   return (
+<<<<<<< HEAD
     <Grid columns="1" gap="1" align="center" className={containerClass}>
+=======
+    <Grid columns="1" gap="1" align="center" className={classMixer(containerClass)}>
+>>>>>>> ui/components
       {(label && typeof label === "string")
         ? <Label htmlFor={input.name}>{label}</Label>
         : (label && typeof label !== "string")
@@ -22,7 +39,11 @@ export default function Input({
         ? <input className={classMixer("light radix-light", input.className ?? "")} {...input} />
         : <Flex gapX="3" justify="center">
           <input className={classMixer("light radix-light basis-full", input.className ?? "")} {...input} />
+<<<<<<< HEAD
           {(btn && btn !== undefined) && (
+=======
+          {(btn !== undefined) && (
+>>>>>>> ui/components
             (btn.label && !btn.icon)
               ? (
                 <Button type={btn.type} onClick={btn.onClick} className={btn.className}>{btn.label}</Button>
@@ -45,6 +66,7 @@ export default function Input({
     </Grid>
   );
 }
+<<<<<<< HEAD
 
 function displayErrors(errors: InputProps["errors"]) {
   if (errors && errors.length > 0)
@@ -52,3 +74,5 @@ function displayErrors(errors: InputProps["errors"]) {
       <Em>{errors[0]}</Em >
     </Text>
 }
+=======
+>>>>>>> ui/components

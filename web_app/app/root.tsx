@@ -1,11 +1,7 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import { Theme } from "@radix-ui/themes"
 
-import type { Route } from "./+types/root";
-import stylesheet from "./app.css?url";
-
-export const links: Route.LinksFunction = () => [
-  { rel: "stylesheet", href: stylesheet },
-];
+import "./app.css";
 
 export default function Layout() {
   return (
@@ -16,10 +12,20 @@ export default function Layout() {
         <Meta />
         <Links />
       </head>
-      <body className="grid h-screen place-content-center font-sans text-(--darkBlue) bg-radial from-(--darkBlue)/15 from-5% to-white">
-        <Outlet />
-        <Scripts />
-        <ScrollRestoration />
+      <body
+        className="font-sans"
+      >
+        <Theme
+          accentColor="blue"
+          panelBackground="translucent"
+          scaling="100%"
+          radius="large"
+          className="h-screen"
+        >
+          <Outlet />
+          <Scripts />
+          <ScrollRestoration />
+        </Theme>
       </body>
     </html>
   );

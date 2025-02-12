@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Heading } from "@radix-ui/themes";
+=======
+import { Heading, Separator } from "@radix-ui/themes";
+>>>>>>> ui/components
 
 interface HeaderProps extends React.PropsWithChildren {
     props?: React.ComponentProps<typeof Heading>

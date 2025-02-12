@@ -5,23 +5,45 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator custom_generator {
+  provider = "prisma-generator-fake-data"
+  output   = "./fake-data.ts"
+}
+
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  username String     @unique
+  id       Int    @id @default(autoincrement())
+  username String @unique
   name     String
-  email    String     @unique
+  email    String @unique
   password String
-  Sessions Sessions[]
 }
 
-model Sessions {
+model Item {
+  id          Int      @id @default(autoincrement())
+  descripcion String
+  activo      Boolean  @default(true)
+  seccionId   Int?     @default(0)
+  seccion     Seccion? @relation(fields: [seccionId], references: [id])
+  stock       Stock[]
+}
+
+model Seccion {
   id     Int    @id @default(autoincrement())
-  token  String
-  user   User   @relation(fields: [userId], references: [id])
-  userId Int
+  nombre String
+  corto  String
+  item   Item[]
+}
+
+model Stock {
+  id          Int      @id @default(autoincrement())
+  fecha       DateTime @default(now())
+  descripcion String
+  cant        Int
+  itemId      Int
+  Item        Item     @relation(fields: [itemId], references: [id])
 }

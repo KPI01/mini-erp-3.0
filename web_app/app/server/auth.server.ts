@@ -1,6 +1,6 @@
 import { PrismaClient, type User } from "@prisma/client";
 import { loginSchema, registerSchema } from "../lib/auth/schemas.server";
-import { data as dataFn, redirect, type Session } from "react-router";
+import { redirect, } from "react-router";
 import { commitSession, destroySession, getSession } from "~/server/session.server";
 import { hashPassword, validatePassword } from "~/lib/auth/encrypt.server";
 
@@ -130,13 +130,24 @@ async function login(request: Request) {
     })
 }
 
-async function logout(session: Session) {
+async function logout(request: Request) {
+    const { headers, method, url } = request
+    const session = await getSession(headers.get("Cookie"))
 
-    throw redirect(routes.login, {
-        headers: {
-            "Set-Cookie": await destroySession(session)
-        }
-    })
+    if (method.toLowerCase() !== "post") {
+        console.debug("Solo se admiten peticiones POST")
+        throw redirect(url)
+    }
+    console.debug("La petición es POST")
+
+    if (session.has("user")) {
+        console.debug("Cerrando sesión...")
+        throw redirect(routes.login, {
+            headers: {
+                "Set-Cookie": await destroySession(session)
+            }
+        })
+    }
 }
 
 export { register, login, logout }
