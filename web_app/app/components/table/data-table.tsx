@@ -55,7 +55,7 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
                         <Table.Row key={r.id}>
                             {
                                 r.getVisibleCells().map((c) => (
-                                    <Table.Cell key={c.id}>
+                                    <Table.Cell key={c.id} justify={c.column.columnDef.id === 'actions' ? "end" : "start"}>
                                         {flexRender(c.column.columnDef.cell, c.getContext())}
                                     </Table.Cell>
                                 ))

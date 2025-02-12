@@ -11,7 +11,7 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ }: Route.LoaderArgs) {
     const prisma = new PrismaClient()
-    const data = await prisma.item.findMany()
+    const data = await prisma.item.findMany({ include: { seccion: true } })
 
     return { data }
 }
