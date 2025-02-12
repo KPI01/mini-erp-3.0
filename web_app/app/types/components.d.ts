@@ -38,3 +38,11 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[]
 }
+
+interface DialogFormProps {
+    trigger: string | { label: string, icon: React.ReactNode }
+    title?: string
+    description?: string
+    actions?: { cancel: string, confirm: string }
+    form: React.ReactNode
+}

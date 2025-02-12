@@ -7,6 +7,7 @@ import {
 import { Button, Flex, IconButton, Table } from "@radix-ui/themes";
 import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@radix-ui/react-icons";
 import Input from "../forms/input";
+import DialogForm from "./alert-dialog";
 // import { Alert } from "./dialog-form";
 
 export default function DataTable<TData, TValue>({ data, columns }: DataTableProps<TData, TValue>) {
@@ -18,14 +19,14 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
 
     return <>
         <Flex className="!w-full p-2" justify="end">
-            {/* <Alert
+            <DialogForm
                 trigger={{
                     label: "Agregar",
                     icon: <PlusIcon />
                 }}
                 title="Agregar un elemento"
                 description="Formulario para agregar un elemento."
-            /> */}
+            />
         </Flex>
         <Table.Root variant="surface">
             <Table.Header>
