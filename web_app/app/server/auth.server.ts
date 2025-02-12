@@ -25,15 +25,14 @@ async function register(request: Request) {
         confirmation: form.get("confirmation")?.toString()
     }
 
+    console.debug("validando con zod...")
     const { data, error, success } = await registerSchema.safeParseAsync(formData)
 
     if (!success) {
-        console.error("se han encontrado errores en el formulario`")
+        console.error("se han encontrado errores en el formulario")
         session.flash("zodErrors", error.format())
         throw redirect(routes.register, {
-            headers: {
-                "Set-Cookie": await commitSession(session)
-            }
+            headers: { "Set-Cookie": await commitSession(session) }
         })
     }
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { validatePassword } from "./encrypt.server";
-import { MIN_LENGTH_MSG, STRING_FIELD } from "~/helpers/forms";
+import { INVALID_MSG, MIN_LENGTH_MSG, STRING_FIELD } from "~/helpers/forms";
 import { PrismaClient } from "@prisma/client";
 
 let prisma = new PrismaClient()
@@ -9,6 +9,23 @@ const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[,.<>?';":`~!@#$%
 
 const USERNAME_FIELD = STRING_FIELD
     .min(3, MIN_LENGTH_MSG(3))
+const EMAIL_FIELD = STRING_FIELD
+    .endsWith("@gmail.com", INVALID_MSG)
+    .or(
+        STRING_FIELD
+            .endsWith("@outlook.com", INVALID_MSG)
+            .or(
+                STRING_FIELD
+                    .endsWith("@hotmail.com", INVALID_MSG)
+                    .or(
+                        STRING_FIELD
+                            .endsWith("@yahoo.com", INVALID_MSG)
+
+                    )
+
+            )
+
+    )
 
 const PASSWORD_FIELD = STRING_FIELD.min(8, MIN_LENGTH_MSG(8))
 
@@ -29,7 +46,7 @@ export const registerSchema = z.object({
             console.info("el usuario?:", !exists)
             return exists
         }, "El usuario ya existe."),
-    email: STRING_FIELD.email().refine(async (val) => {
+    email: EMAIL_FIELD.refine(async (val) => {
         let exists = await prisma.user.findUnique({
             where: {
                 email: val

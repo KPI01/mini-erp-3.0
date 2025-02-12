@@ -6,6 +6,7 @@ import { Button, Em, Flex, Grid, IconButton, Text } from "@radix-ui/themes";
 export default function Input({
   label,
   input,
+  description,
   btn,
   containerClass = "",
   errors,
@@ -41,14 +42,18 @@ export default function Input({
           )}
         </Flex>
       }
+      {description && (<Text wrap="pretty" color="gray" size="1" trim="end">{description}</Text>)}
       {displayErrors(errors)}
     </Grid>
   );
 }
 
 function displayErrors(errors: InputProps["errors"]) {
-  if (errors && errors.length > 0)
-    return <Text color="red" weight="medium" size="1">
-      <Em>{errors[0]}</Em >
+  //@ts-ignore
+  if (errors && errors?.length > 0)
+    return <Text color="red" weight="light" size="1" trim="both" className="m-0">
+      {//@ts-ignore
+        errors[0]
+      }
     </Text>
 }

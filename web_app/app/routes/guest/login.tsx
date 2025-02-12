@@ -2,18 +2,18 @@ import {
   data,
   Form,
   Link as LinkRR,
-  redirect,
   type MetaFunction,
 } from "react-router";
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/login";
 import Input from "~/components/forms/input";
-import { commitSession, validateAuthSession } from "~/server/session.server";
+import { validateAuthSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { cleanErrors } from "~/helpers/utils";
 import { Box, Button, Em, Flex, Grid, Link, Text } from "@radix-ui/themes";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { CardDescription, Header } from "./components";
+import { validateSessionErrors } from "~/server/form-validation.server";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Login", description: "Iniciar sesión en la plataforma" }];
@@ -22,17 +22,8 @@ export const meta: MetaFunction = () => {
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await validateAuthSession({ request })
 
-  if (session.has("zodErrors")) {
-    console.debug("se han encontrado errores")
-    return data(
-      { "zodErrors": session.get("zodErrors") },
-      {
-        headers: {
-          "Set-Cookie": await commitSession(session)
-        }
-      }
-    )
-  }
+  const errors = await validateSessionErrors({ session, key: "zodErrors" })
+  if (errors !== undefined) return data(...errors)
 }
 
 export async function action({ request }: Route.ActionArgs) {

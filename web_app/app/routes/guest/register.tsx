@@ -1,35 +1,34 @@
 import { useEffect, useState } from "react";
-import { Link as LinkRR, redirect, useFetcher, type MetaFunction } from "react-router";
+import { data, Form, Link as LinkRR, type MetaFunction } from "react-router";
 import Input from "~/components/forms/input";
 import type { Route } from "./+types/register";
 import { cleanErrors } from "~/helpers/utils";
 import { register } from "~/server/auth.server";
-import { getSession, validateAuthSession } from "~/server/session.server";
+import { validateAuthSession } from "~/server/session.server";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { Box, Button, Em, Flex, Grid, Link } from "@radix-ui/themes";
 import { CardDescription, Header } from "./components";
+import { validateSessionErrors } from "~/server/form-validation.server";
 
 export const meta: MetaFunction = () => {
-  return [
-    {
-      title: "Registro de usuario",
-      description: "Registrar un usuario para la plataforma.",
-    },
-  ];
+  return [{ title: "Registro de usuario", description: "Registrar un usuario para la plataforma.", }];
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await validateAuthSession({ request })
+
+  const errors = await validateSessionErrors({ session, key: "zodErrors" })
+  if (errors !== undefined) return data(...errors)
 }
 
 export async function action({ request }: Route.ActionArgs) {
   return register(request);
 }
 
-export default function Register() {
+export default function Register({ loaderData }: Route.ComponentProps) {
   console.log("RegisterForm");
-  const { data, Form } = useFetcher();
-  if (data?.errors) console.error("errors:", data.errors);
+  const errors = loaderData?.zodErrors
+  console.debug("errors:", errors)
 
   const [visibility, setVisibility] = useState<{
     password: boolean;
@@ -75,15 +74,15 @@ export default function Register() {
                 type: "text",
                 name: "name",
               }}
-              errors={cleanErrors("name", data?.errors)}
+              errors={cleanErrors("name", errors)}
             />
             <Input
               label="Usuario"
               input={{
                 type: "text",
-                name: "username",
+                name: "username"
               }}
-              errors={cleanErrors("username", data?.errors)}
+              errors={cleanErrors("username", errors)}
             />
             <Input
               label="Correo"
@@ -91,7 +90,8 @@ export default function Register() {
                 type: "email",
                 name: "email",
               }}
-              errors={cleanErrors("email", data?.errors)}
+              errors={cleanErrors("email", errors)}
+              description="Los dominios permitidos son: 'gmail.com', 'outlook.com', 'hotmail.com' y 'yahoo.com'"
             />
             <Input
               label="Contraseña"
@@ -106,7 +106,9 @@ export default function Register() {
                   setVisibility({ ...visibility, password: !visibility.password }),
               }}
               icon={visibility.password ? <EyeOpenIcon /> : <EyeClosedIcon />}
-              errors={cleanErrors("password", data?.errors)}
+              errors={cleanErrors("password", errors)}
+              description="La clave debe tener al menos: 1 minúscula, 1 mayúscula, 1 símbolo y 8 caracteres"
+
             />
             <Input
               label="Confirmación de contraseña"
@@ -125,7 +127,7 @@ export default function Register() {
                     confirmation: !visibility.confirmation,
                   }),
               }}
-              errors={cleanErrors("confirmation", data?.errors)}
+              errors={cleanErrors("confirmation", errors)}
             />
           </Grid>
           <Flex className="mt-10" align="center" justify="between">

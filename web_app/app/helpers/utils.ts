@@ -2,7 +2,7 @@ export function classMixer(...classes: string[]) {
     return classes.join(" ")
 }
 
-export function cleanErrors(name: string, bag?: Record<string, unknown & { _errors: string[] }>) {
+export function cleanErrors(name: string, bag?: unknown) {
     let errors: string[] = []
 
     if (!bag) return undefined
@@ -10,7 +10,8 @@ export function cleanErrors(name: string, bag?: Record<string, unknown & { _erro
     const keys = Object.keys(bag)
 
     keys.map((k) => {
-        if (k === name) errors = bag[ k ]._errors
+        //@ts-ignore
+        if (k === name) errors = bag[k]._errors
         return
     })
 

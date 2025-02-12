@@ -19,6 +19,7 @@ interface SidebarProps {
 interface InputProps {
     label?: string | React.HTMLAttributes<HTMLLabelElement>[""];
     input: React.InputHTMLAttributes<HTMLInputElement>;
+    description?: string;
     btn?: Partial<{
         icon?: React.JSX.Element,
         label?: string,
@@ -28,7 +29,7 @@ interface InputProps {
     }>;
     icon?: React.ReactNode;
     containerClass?: string;
-    errors?: string[];
+    errors?: unknown;
 }
 
 interface IconProps extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> { }
