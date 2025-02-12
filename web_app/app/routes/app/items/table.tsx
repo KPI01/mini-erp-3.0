@@ -11,7 +11,7 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ }: Route.LoaderArgs) {
     const prisma = new PrismaClient()
-    const data = await prisma.item.findMany({ include: { seccion: true } })
+    const data = await prisma.item.findMany({ include: { seccion: true, stock: true } })
 
     return { data }
 }
@@ -22,7 +22,7 @@ export default function Table({ loaderData }: Route.ComponentProps) {
 
     return (
         <>
-            <Header>Items de la Empresa</Header>
+            <Header>Consulta de Artículo</Header>
             <DataTable data={data} columns={itemColumn} />
         </>
     )

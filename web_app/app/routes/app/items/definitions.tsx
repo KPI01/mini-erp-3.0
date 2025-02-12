@@ -1,4 +1,4 @@
-import type { Seccion } from "@prisma/client";
+import type { Seccion, Stock } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
 import { RowActions } from "~/components/table/actions";
 import { ColumnHeader } from "~/components/table/table-header";
@@ -8,6 +8,7 @@ export type Item = {
     descripcion: string;
     activo: boolean;
     seccion: Seccion
+    stock: Stock[]
 }
 const itemColumnHelper = createColumnHelper<Item>()
 const itemColumn = [
@@ -20,6 +21,11 @@ const itemColumn = [
     }),
     itemColumnHelper.accessor(row => row.seccion.nombre, {
         header: "Sección"
+    }),
+    itemColumnHelper.display({
+        id: "stock",
+        header: "Stock",
+        cell: ({ cell }) => (cell.row.original.stock.reduce((s, i) => s + i.cant, 0)) + " und."
     }),
     itemColumnHelper.display({
         id: "actions",
