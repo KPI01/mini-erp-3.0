@@ -1,6 +1,7 @@
 import type { Seccion } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
-import { DeleteActionDT } from "~/components/table/actions";
+import { RowActions } from "~/components/table/actions";
+import { ColumnHeader } from "~/components/table/table-header";
 
 export type Item = {
     id: string | number;
@@ -14,14 +15,15 @@ const itemColumn = [
         header: "ID"
     }),
     itemColumnHelper.accessor("descripcion", {
-        header: "Descripción"
+        header: ({ column }) => (<ColumnHeader column={column} title="Descripción" />),
+        enableSorting: true,
     }),
     itemColumnHelper.accessor(row => row.seccion.nombre, {
         header: "Sección"
     }),
     itemColumnHelper.display({
         id: "actions",
-        cell: () => (<DeleteActionDT />)
+        cell: () => (<RowActions />)
     })
 ]
 

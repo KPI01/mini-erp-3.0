@@ -8,9 +8,11 @@ import { Button, Flex, IconButton, Table } from "@radix-ui/themes";
 import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@radix-ui/react-icons";
 import Input from "../forms/input";
 import DialogForm from "./alert-dialog";
+import { useState } from "react";
 // import { Alert } from "./dialog-form";
 
 export default function DataTable<TData, TValue>({ data, columns }: DataTableProps<TData, TValue>) {
+    let [currPage, editCurrPage] = useState(1)
     const table = useReactTable({
         data,
         columns,
@@ -73,18 +75,19 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
             <tfoot>
                 <Table.Cell colSpan={columns.length} align="right">
                     <Flex gapX="3" className="w-full" justify="end">
-                        <IconButton color="gray" variant="outline">
+                        <IconButton color="gray" variant="outline" onClick={() => editCurrPage((currPage - 1) < 1 ? (currPage - 1) : 0)}>
                             <ChevronLeftIcon />
                         </IconButton>
                         <Input
                             input={{
+                                min: 1,
                                 type: "number",
                                 className: "w-[6ch] border-(--gray-8) no-spinner text-center",
                                 disabled: true,
-                                value: 1
+                                value: currPage
                             }}
                         />
-                        <IconButton color="gray" variant="outline">
+                        <IconButton color="gray" variant="outline" onClick={() => editCurrPage(currPage + 1)}>
                             <ChevronRightIcon />
                         </IconButton>
                     </Flex>
