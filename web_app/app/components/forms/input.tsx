@@ -49,6 +49,7 @@ export default function Input({
 }
 
 function displayErrors(errors: InputProps["errors"]) {
+  console.debug("bag:", errors)
   //@ts-ignore
   if (errors && errors?.length > 0)
     return <Text color="red" weight="light" size="1" trim="both" className="m-0">

@@ -21,6 +21,7 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await validateAuthSession({ request })
+  console.debug(session)
 
   const errors = await validateSessionErrors({ session, key: "zodErrors" })
   if (errors !== undefined) return data(...errors)

@@ -37,10 +37,17 @@ async function validateAuthSession({ request, data }: RequireAuthCookieProps) {
             })
         }
 
-        console.debug("La sesión de usuario no existe")
-        commitSession(session)
-        return session
+        throw redirect("/app", {
+            headers: {
+                "Set-Cookie": await commitSession(session)
+            }
+        })
     }
+
+    console.debug("La sesión de usuario no existe")
+    await commitSession(session)
+    return session
+
 
 }
 
