@@ -5,7 +5,7 @@ import type { SessionFlashData } from "./session";
 
 type SessionErrors = Partial<SessionFlashData>
 interface ValidateZodErrorsArgs {
-    session: Session,
+    session?: Session,
     key?: string,
     fn?: "loader"
 }

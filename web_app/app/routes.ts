@@ -11,7 +11,8 @@ export default [
     route("app", "routes/app/layout.tsx", [
         index("routes/app/index.tsx"),
         ...prefix("items", [
-            index("routes/app/items/table.tsx")
+            index("routes/app/items/index.tsx"),
+            route("stock", "routes/app/items/stock.tsx")
         ])
     ])
 ] satisfies RouteConfig;

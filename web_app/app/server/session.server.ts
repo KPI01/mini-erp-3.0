@@ -23,17 +23,24 @@ const { getSession, commitSession, destroySession } =
         }
     })
 
-async function validateAuthSession({ request }: RequireAuthCookieProps) {
-    const session = await getSession(request.headers.get("Cookie"))
+async function validateAuthSession({ request, data }: RequireAuthCookieProps) {
+    const session = await getSession(request?.headers.get("Cookie"))
     const user = session.get("user")
 
     if (user) {
         console.debug("La sesión de usuario existe")
-        throw redirect("/app")
-    }
+        if (data) {
+            const keys = Object.keys(data)
+            keys.map((k) => {
+                //@ts-ignore
+                session.set(k, data[k])
+            })
+        }
 
-    console.debug("La sesión de usuario no existe")
-    return session
+        console.debug("La sesión de usuario no existe")
+        commitSession(session)
+        return session
+    }
 
 }
 

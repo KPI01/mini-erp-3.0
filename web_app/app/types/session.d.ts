@@ -1,5 +1,10 @@
 import type { ZodFormattedError } from "zod";
 
+type Routes = "inventory" | "inventory.items" | "inventory.stock" | "inventory.reception"
+    | "purchases" | "purchases.suppliers" | "purchases.requests" | "purchases.analysis"
+    | "sells" | "sells.billing" | "sells.analysis"
+    | "finance" | "finance.transactions" | "finance.accounting" | "finances.taxes"
+
 interface SessionData {
     user: {
         id: number;
@@ -7,6 +12,7 @@ interface SessionData {
         email: string;
         username: string;
     };
+    route: Routes
 }
 
 interface SessionFlashData {
@@ -16,4 +22,5 @@ interface SessionFlashData {
 
 interface RequireAuthCookieProps {
     request: Request,
+    data?: Partial<Record<keyof SessionData, unknown>>
 }

@@ -2,12 +2,14 @@ import type { User } from "@prisma/client";
 import type { EyeClosedIcon, } from "@radix-ui/react-icons";
 import type { Button, IconButton } from "@radix-ui/themes";
 import type { Column, ColumnDef } from "@tanstack/react-table";
+import type { Routes } from "./session";
 
 type IconType = React.ComponentProps<typeof EyeClosedIcon>
 type BtnType = React.ComponentProps<typeof Button>
 
 type SideBarLink = {
     label: string;
+    route: Routes
     action?: string;
     nested?: Array<SideBarLink>
 }

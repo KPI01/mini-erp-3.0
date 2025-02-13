@@ -4,7 +4,7 @@ import {
     getCoreRowModel,
     useReactTable,
 } from '@tanstack/react-table'
-import { Button, Flex, IconButton, Table } from "@radix-ui/themes";
+import { Button, Flex, Grid, IconButton, Select, Table, Text } from "@radix-ui/themes";
 import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@radix-ui/react-icons";
 import Input from "../forms/input";
 import DialogForm from "./alert-dialog";
@@ -20,7 +20,7 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
     })
 
     return <>
-        <Flex className="!w-full p-2" justify="end">
+        <Flex className="!w-full p-2" align="end" justify="end" gapX="8">
             <DialogForm
                 trigger={{
                     label: "Agregar",
@@ -29,6 +29,18 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
                 title="Agregar un elemento"
                 description="Formulario para agregar un elemento."
             />
+            <Grid gapY="2">
+                <Text size="1" as="span">Registros a mostrar:</Text>
+                <Select.Root defaultValue="1">
+                    <Select.Trigger placeholder="Paginación" />
+                    <Select.Content align="end">
+                        <Select.Item value="1">5</Select.Item>
+                        <Select.Item value="2">10</Select.Item>
+                        <Select.Item value="3">15</Select.Item>
+                        <Select.Item value="4">20</Select.Item>
+                    </Select.Content>
+                </Select.Root >
+            </Grid>
         </Flex>
         <Table.Root variant="surface">
             <Table.Header>

@@ -7,55 +7,71 @@ import type { SideBarLink, SidebarProps } from "~/types/components";
 const links: SideBarLink[] = [
     {
         label: "Inventario",
+        route: "inventory",
         nested: [
             {
                 label: "Consulta de articulo",
+                route: "inventory.items",
                 action: "items"
             },
             {
-                label: "Rotación de material"
+                label: "Rotación de material",
+                route: "inventory.stock",
+                action: "items/stock"
             },
             {
-                label: "Recepción de material"
+                label: "Recepción de material",
+                route: "inventory.reception"
             }
         ]
     },
     {
         label: "Compras",
+        route: "purchases",
         nested: [
             {
-                label: "Ingreso de Proveedores"
+                label: "Ingreso de Proveedores",
+                route: "purchases.suppliers"
             },
             {
-                label: "Realizar Pedido"
+                label: "Realizar Pedido",
+                route: "purchases.requests"
             },
             {
-                label: "Historial de Costes"
+                label: "Historial de Costes",
+                route: "purchases.analysis"
             }
         ]
     },
     {
         label: "Ventas",
+        route: "sells",
         nested: [
             {
-                label: "Facturación"
+                label: "Facturación",
+                route: "sells.billing"
             },
             {
-                label: "Historial de Ventas"
+                label: "Historial de Ventas",
+                route: "sells.analysis"
             },
         ]
     },
     {
         label: "Finanzas",
+        route: "finance",
         nested: [
             {
-                label: "Ingresos / Egresos"
+                label: "Ingresos / Egresos",
+                route: "finance.transactions"
             },
             {
-                label: "Cuentas por cobrar / pagar"
+                label: "Cuentas por cobrar / pagar",
+                route: "finance.accounting"
             },
             {
-                label: "Pago de Impuestos"
+                label: "Pago de Impuestos",
+                route: "finances.taxes"
             },
         ]
     }

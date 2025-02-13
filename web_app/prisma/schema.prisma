@@ -36,7 +36,7 @@ model Seccion {
   id     Int    @id @default(autoincrement())
   nombre String
   corto  String
-  item   Item[]
+  items  Item[]
 }
 
 model Stock {
@@ -45,5 +45,5 @@ model Stock {
   descripcion String
   cant        Int
   itemId      Int
-  Item        Item     @relation(fields: [itemId], references: [id])
+  item        Item     @relation(fields: [itemId], references: [id])
 }
