@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/login";
 import Input from "~/components/forms/input";
-import { validateAuthSession } from "~/server/session.server";
+import { getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { cleanErrors } from "~/helpers/utils";
 import { Box, Button, Em, Flex, Grid, Link, Text } from "@radix-ui/themes";
@@ -20,8 +20,7 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await validateAuthSession({ request })
-  console.debug(session)
+  const session = await getSession(request.headers.get("Cookie"))
 
   const errors = await validateSessionErrors({ session, key: "zodErrors" })
   if (errors !== undefined) return data(...errors)

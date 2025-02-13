@@ -1,3 +1,4 @@
+import type { Session } from "react-router";
 import type { ZodFormattedError } from "zod";
 
 type Routes = "inventory" | "inventory.items" | "inventory.stock" | "inventory.reception"
@@ -21,6 +22,5 @@ interface SessionFlashData {
 }
 
 interface RequireAuthCookieProps {
-    request: Request,
-    data?: Partial<Record<keyof SessionData, unknown>>
+    request: Request
 }

@@ -23,32 +23,15 @@ const { getSession, commitSession, destroySession } =
         }
     })
 
-async function validateAuthSession({ request, data }: RequireAuthCookieProps) {
-    const session = await getSession(request?.headers.get("Cookie"))
-    const user = session.get("user")
+async function validateAuthSession({ request }: RequireAuthCookieProps) {
+    const session = await getSession(request.headers.get("Cookie"))
 
-    if (user) {
-        console.debug("La sesión de usuario existe")
-        if (data) {
-            const keys = Object.keys(data)
-            keys.map((k) => {
-                //@ts-ignore
-                session.set(k, data[k])
-            })
-        }
-
-        throw redirect("/app", {
-            headers: {
-                "Set-Cookie": await commitSession(session)
-            }
-        })
+    if (session.has("user") === false) {
+        console.debug("No existe sesion de usuario, redirigiendo")
+        throw redirect("/guest", { headers: { "Set-Cookie": await commitSession(session) } })
     }
 
-    console.debug("La sesión de usuario no existe")
-    await commitSession(session)
     return session
-
-
 }
 
 export { getSession, commitSession, destroySession, validateAuthSession }
