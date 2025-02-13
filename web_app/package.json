@@ -2,6 +2,9 @@
   "name": "dev",
   "private": true,
   "type": "module",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
@@ -31,6 +34,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
     "react-router": "^7.1.5",
+    "tsx": "^4.19.2",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -46,7 +50,6 @@
     "prisma": "^6.3.1",
     "prisma-generator-fake-data": "^0.14.3",
     "tailwindcss": "^4.0.6",
-    "ts-node": "^10.9.2",
     "tsc-node": "^0.0.3",
     "typescript": "^5.7.3",
     "vite": "^5.4.14",

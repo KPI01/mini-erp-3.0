@@ -1,14 +1,19 @@
 import { PrismaClient } from "@prisma/client";
-import { fakerES as faker } from '@faker-js/faker';
+import { hashSync } from "bcrypt";
 
 const prisma = new PrismaClient()
 
 async function main() {
-    const item = await prisma.item.create({
-        data: { descripcion: faker.commerce.product() }
+    await prisma.user.create({
+        data: {
+            name: "Jorge",
+            username: "jlrd",
+            email: "correo@gmail.com",
+            password: hashSync("39LCjK!&", 10)
+        }
     })
-    console.log("Item creado:", item)
 }
+
 
 main()
     .then(async () => {

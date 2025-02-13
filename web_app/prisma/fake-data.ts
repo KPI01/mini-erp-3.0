@@ -31,20 +31,25 @@ export function fakeItemComplete() {
     id: faker.number.int({ max: 2147483647 }),
     descripcion: faker.lorem.words(5),
     activo: true,
-    seccionId: 0,
+    stockMin: 0,
+    stockMax: 0,
+    precio: 1,
+    ubicacionId: undefined,
   };
 }
-export function fakeSeccion() {
+export function fakeUbicacion() {
   return {
-    nombre: faker.lorem.words(5),
+    descripcion: faker.lorem.words(5),
     corto: faker.lorem.words(5),
   };
 }
-export function fakeSeccionComplete() {
+export function fakeUbicacionComplete() {
   return {
     id: faker.number.int({ max: 2147483647 }),
-    nombre: faker.lorem.words(5),
+    descripcion: faker.lorem.words(5),
     corto: faker.lorem.words(5),
+    isAlmacen: false,
+    ubicacionId: undefined,
   };
 }
 export function fakeStock() {
