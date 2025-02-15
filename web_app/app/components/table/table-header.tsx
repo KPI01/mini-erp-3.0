@@ -1,6 +1,7 @@
-import { Button, DropdownMenu, Flex, Select, Separator, Strong } from "@radix-ui/themes";
+import { Button, DropdownMenu, Flex, Select, Separator, Strong, Text } from "@radix-ui/themes";
 import type { DTColHeaderDropDownProps, DTColumnHeaderProps, DTFilterArgs } from "~/types/components";
 import Input from "../forms/input";
+import { CaretSortIcon } from "@radix-ui/react-icons";
 
 function Filter({ defaultValue }: DTFilterArgs) {
     return (
@@ -36,9 +37,11 @@ function Dropdown({ trigger }: DTColHeaderDropDownProps) {
             </Button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content variant="soft" color="gray" className="!w-[150px]">
-            <DropdownMenu.Item>Orden asc.</DropdownMenu.Item>
-            <DropdownMenu.Item>Orden desc.</DropdownMenu.Item>
-            <Separator size="4" />
+            <DropdownMenu.Item>
+                <Text as="span">Ordenar</Text>
+                <CaretSortIcon />
+            </DropdownMenu.Item>
+            <Separator size="4" my="4" />
             <Filter defaultValue="0" />
         </DropdownMenu.Content>
     </DropdownMenu.Root>

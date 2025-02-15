@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,26 +12,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Sistema
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
+  id       Int     @id @default(autoincrement())
+  username String  @unique
   name     String
-  email    String @unique
+  email    String  @unique
   password String
+  activo   Boolean @default(true)
 }
 
-// Inventario
 model Item {
   id          Int        @id @default(autoincrement())
   descripcion String
   activo      Boolean    @default(true)
-  stockMin    Float      @default(0)
-  stockMax    Float      @default(0)
-  precio      Float      @default(1)
-  ubicacion   Ubicacion? @relation(fields: [ubicacionId], references: [id])
+  stockMin    Float?     @default(0)
+  stockMax    Float?     @default(0)
+  precio      Float?     @default(1)
   ubicacionId Int?
-  Stock       Stock[]
+  ubicacion   Ubicacion? @relation(fields: [ubicacionId], references: [id])
+  stock       Stock[]
 }
 
 model Ubicacion {
@@ -43,9 +39,9 @@ model Ubicacion {
   corto       String
   isAlmacen   Boolean     @default(false)
   ubicacionId Int?
+  item        Item[]
   seccion     Ubicacion?  @relation("locacion", fields: [ubicacionId], references: [id])
   almacen     Ubicacion[] @relation("locacion")
-  Item        Item[]
 }
 
 model Stock {

@@ -3,19 +3,21 @@ import type { EyeClosedIcon, } from "@radix-ui/react-icons";
 import type { Button, IconButton } from "@radix-ui/themes";
 import type { Column, ColumnDef } from "@tanstack/react-table";
 import type { Routes } from "./session";
+import { Form } from "radix-ui";
+import type { Dispatch } from "react";
 
 type IconType = React.ComponentProps<typeof EyeClosedIcon>
 type BtnType = React.ComponentProps<typeof Button>
 
 type SideBarLink = {
     label: string;
-    route: Routes
+    route: Routes;
     action?: string;
-    nested?: Array<SideBarLink>
+    nested?: Array<SideBarLink>;
 }
 interface SidebarProps {
-    user?: Omit<User, "password">,
-    className?: string
+    user?: Omit<User, "password">;
+    className?: string;
 }
 
 interface InputProps {
@@ -23,41 +25,77 @@ interface InputProps {
     input: React.InputHTMLAttributes<HTMLInputElement>;
     description?: string;
     btn?: Partial<{
-        icon?: React.JSX.Element,
-        label?: string,
-        type: React.ButtonHTMLAttributes<HTMLButtonElement>["type"],
-        onClick: React.ButtonHTMLAttributes<HTMLButtonElement>["onClick"]
-        className?: string
+        icon?: React.JSX.Element;
+        label?: string;
+        type: React.ButtonHTMLAttributes<HTMLButtonElement>["type"];
+        onClick: React.ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
+        className?: string;
     }>;
     icon?: React.ReactNode;
     containerClass?: string;
     errors?: unknown;
-}
+};
 
-interface IconProps extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> { }
+interface IconProps extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> { };
 
+type DTButtons = "add";
+type DTButtonType = { label?: string; icon?: React.ReactNode, enabled: boolean }
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
-    data: TData[]
+    data: TData[];
+    config?: {
+        dialog: Partial<{
+            title: string;
+            description: string;
+            form: React.ReactNode;
+            confirm: React.ReactNode;
+        }>
+        & {
+            state: {
+                open: boolean,
+                changer: Dispatch
+            }
+        }
+        ;
+        buttons?: Record<DTButtons, DTButtonType>;
+    }
 }
 
 interface DTColumnHeaderProps<TData, TValue>
     extends React.HTMLAttributes<HTMLDivElement> {
-    column: Column<TData, TValue>
-    title: string
+    column: Column<TData, TValue>;
+    title: string;
 }
 type DTColHeaderAction = { label: string, action?: () => void }
 interface DTFilterArgs {
-    defaultValue: string
+    defaultValue: string;
 }
 interface DTColHeaderDropDownProps {
-    trigger: string
+    trigger: string;
 }
 
 interface DialogFormProps {
-    trigger: string | { label: string, icon: React.ReactNode }
-    title?: string
-    description?: string
-    actions?: { cancel: string, confirm: string }
-    form: React.ReactNode
+    trigger: string | { label: string, icon: React.ReactNode };
+    title?: string;
+    description?: string;
+    form: PartialFormType;
+    state: {
+        open: boolean,
+        changer: Dispatch
+    }
+}
+
+type SelectInputOptionsType = { [x: string]: string }
+interface SelectInputProps {
+    name: string;
+    options: Array<SelectInputOptionsType>;
+    state: {
+        value: string,
+        changer: Dispatch
+    }
+    config?: Partial<{
+        label?: string;
+        current?: string;
+        containerClass: string
+    }>
 }

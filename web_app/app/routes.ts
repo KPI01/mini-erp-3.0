@@ -12,7 +12,8 @@ export default [
         index("routes/app/index.tsx"),
         ...prefix("items", [
             index("routes/app/items/index.tsx"),
-            route("stock", "routes/app/items/stock.tsx")
+            route("stock", "routes/app/items/stock.tsx"),
+            route("reception", "routes/app/items/reception.tsx")
         ])
     ])
 ] satisfies RouteConfig;

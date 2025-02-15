@@ -4,14 +4,18 @@ import {
     getCoreRowModel,
     useReactTable,
 } from '@tanstack/react-table'
-import { Button, Flex, Grid, IconButton, Select, Table, Text } from "@radix-ui/themes";
+import { Box, Flex, Grid, IconButton, Select, Table, Text } from "@radix-ui/themes";
 import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@radix-ui/react-icons";
-import Input from "../forms/input";
 import DialogForm from "./alert-dialog";
 import { useState } from "react";
-// import { Alert } from "./dialog-form";
 
-export default function DataTable<TData, TValue>({ data, columns }: DataTableProps<TData, TValue>) {
+export default function DataTable<TData, TValue>({
+    data,
+    columns,
+    config = {
+        buttons: { add: { enabled: true } }
+    }
+}: DataTableProps<TData, TValue>) {
     let [currPage, editCurrPage] = useState(1)
     const table = useReactTable({
         data,
@@ -19,16 +23,19 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
         getCoreRowModel: getCoreRowModel()
     })
 
-    return <>
+    return <Box>
         <Flex className="!w-full p-2" align="end" justify="end" gapX="8">
-            <DialogForm
-                trigger={{
-                    label: "Agregar",
-                    icon: <PlusIcon />
-                }}
-                title="Agregar un elemento"
-                description="Formulario para agregar un elemento."
-            />
+            {(config.buttons?.add.enabled || config.dialog) && (
+                <DialogForm
+                    trigger={{
+                        label: config?.buttons?.add?.label ?? "Agregar",
+                        icon: config?.buttons?.add?.icon ?? <PlusIcon />
+                    }}
+                    title={config?.dialog?.title ?? "Agregar un elemento"}
+                    description={config?.dialog?.description ?? "Formulario para agregar un elemento."}
+                    form={config?.dialog?.form}
+                    state={config?.dialog?.state}
+                />)}
             <Grid gapY="2">
                 <Text size="1" as="span">Registros a mostrar:</Text>
                 <Select.Root defaultValue="1">
@@ -49,7 +56,7 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
                         {
                             hGroup.headers.map((h) => {
                                 return (
-                                    <Table.ColumnHeaderCell key={h.id}>
+                                    <Table.ColumnHeaderCell key={h.id} align={h.id === "actions" ? "right" : "left"}>
                                         {h.isPlaceholder
                                             ? null
                                             : flexRender(
@@ -87,17 +94,15 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
             <tfoot>
                 <Table.Cell colSpan={columns.length} align="right">
                     <Flex gapX="3" className="w-full" justify="end">
-                        <IconButton color="gray" variant="outline" onClick={() => editCurrPage((currPage - 1) < 1 ? (currPage - 1) : 0)}>
+                        <IconButton color="gray" variant="outline" onClick={() => editCurrPage((currPage - 1) < 1 ? 0 : (currPage - 1))}>
                             <ChevronLeftIcon />
                         </IconButton>
-                        <Input
-                            input={{
-                                min: 1,
-                                type: "number",
-                                className: "w-[6ch] border-(--gray-8) no-spinner text-center",
-                                disabled: true,
-                                value: currPage
-                            }}
+                        <input
+                            min={0}
+                            type="number"
+                            className="w-[6ch] border-(--gray-8) no-spinner text-center"
+                            disabled
+                            value={currPage}
                         />
                         <IconButton color="gray" variant="outline" onClick={() => editCurrPage(currPage + 1)}>
                             <ChevronRightIcon />
@@ -106,5 +111,5 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
                 </Table.Cell>
             </tfoot>
         </Table.Root >
-    </>
+    </Box>
 }
