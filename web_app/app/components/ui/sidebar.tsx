@@ -21,7 +21,8 @@ const links: SideBarLink[] = [
             },
             {
                 label: "Recepción de material",
-                route: "inventory.reception"
+                route: "inventory.reception",
+                action: "items/reception"
             }
         ]
     },

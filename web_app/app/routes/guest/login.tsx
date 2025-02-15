@@ -11,6 +11,7 @@ import { getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { cleanErrors } from "~/helpers/utils";
 import { Box, Button, Em, Flex, Grid, Link, Text } from "@radix-ui/themes";
+import { Form as F } from "radix-ui"
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { CardDescription, Header } from "./components";
 import { validateSessionErrors } from "~/server/form-validation.server";
@@ -55,7 +56,7 @@ export default function Login({ loaderData }: Route.ComponentProps) {
       <CardDescription>
         Bienvenido al sistema de tu empresa, por favor <Em>ingresa tus credenciales</Em> para acceder al sistema.
       </CardDescription>
-      <Box className="my-4" asChild>
+      <F.Root className="my-4" asChild>
         <Form
           method="post"
           action="/guest/login"
@@ -94,7 +95,7 @@ export default function Login({ loaderData }: Route.ComponentProps) {
             <Button type="submit">Ingresar</Button>
           </Flex>
         </Form>
-      </Box>
+      </F.Root>
     </Box >
   );
 }

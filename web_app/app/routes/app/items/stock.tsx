@@ -5,7 +5,8 @@ import { PrismaClient } from "@prisma/client";
 import { Header } from "../components";
 import type { MetaFunction } from "react-router";
 import DataTable from "~/components/table/data-table";
-import { stockColumn, type Stock } from "./definitions";
+import { stockColumn, type Stock } from "./tables";
+import { Box } from "@radix-ui/themes";
 
 const route: Routes = "inventory.stock"
 
@@ -14,7 +15,7 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
-    const session = await validateAuthSession({ request, data: { route } })
+    const session = await validateAuthSession({ request })
 
     const prisma = new PrismaClient()
     const data = await prisma.stock.findMany({ include: { item: true } })
@@ -25,9 +26,13 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function Stock({ loaderData }: Route.ComponentProps) {
     const { data } = loaderData as unknown as { data: Stock[] }
     console.debug(data)
-    return <>
-        <Header>Ruta para mostrar stock</Header>
+    return <Box>
+        <Header>Rotación de Material</Header>
         {/* @ts-ignore */}
-        <DataTable data={data} columns={stockColumn} />
-    </>
+        <DataTable data={data} columns={stockColumn} config={{
+            buttons: { add: { enabled: false } },
+            dialog: { title: "Registrar movimiento", description: "Formulario para registrar un movimiento de material" }
+        }}
+        />
+    </Box>
 }

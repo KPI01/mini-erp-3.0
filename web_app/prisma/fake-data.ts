@@ -19,6 +19,7 @@ export function fakeUserComplete() {
     name: faker.person.fullName(),
     email: faker.internet.email(),
     password: faker.lorem.words(5),
+    activo: true,
   };
 }
 export function fakeItem() {

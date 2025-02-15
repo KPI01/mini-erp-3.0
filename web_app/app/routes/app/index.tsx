@@ -1,15 +1,13 @@
-import { getSession } from "~/server/session.server";
+import { validateAuthSession } from "~/server/session.server";
 import type { Route } from "./+types";
-import { redirect, type MetaFunction } from "react-router";
+import { type MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => {
-  return [ { title: "App", description: "Esta es la aplicación." } ];
+  return [{ title: "App", description: "Esta es la aplicación." }];
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
-
-  if (!session.has("user")) throw redirect("/guest/login");
+  const session = await validateAuthSession({ request })
 }
 
 export default function Index() {

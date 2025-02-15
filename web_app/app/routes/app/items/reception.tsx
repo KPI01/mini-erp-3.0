@@ -1,4 +1,10 @@
-import { Box, Card, Container, Grid, Heading, Separator, Text } from "@radix-ui/themes";
+import { Box, Grid, Heading, Separator } from "@radix-ui/themes";
+import type { Route } from "../+types";
+import { validateAuthSession } from "~/server/session.server";
+
+export async function loader({ request }: Route.LoaderArgs) {
+    const session = await validateAuthSession({ request })
+}
 
 export default function Reception() {
     return <Grid align="center" justify="center" className="!h-full" columns="1">

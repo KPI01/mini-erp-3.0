@@ -1,7 +1,8 @@
 import { classMixer } from "~/helpers/utils";
 import type { InputProps } from "~/types/components";
 import { Label } from "@radix-ui/react-label";
-import { Button, Em, Flex, Grid, IconButton, Text } from "@radix-ui/themes";
+import { Button, Flex, Grid, IconButton, Text } from "@radix-ui/themes";
+import { Form } from "radix-ui";
 
 export default function Input({
   label,
@@ -11,42 +12,55 @@ export default function Input({
   containerClass = "",
   errors,
 }: InputProps) {
+
+
   return (
-    <Grid columns="1" gap="1" align="center" className={containerClass}>
-      {(label && typeof label === "string")
-        ? <Label htmlFor={input.name}>{label}</Label>
-        : (label && typeof label !== "string")
-          ? <Label htmlFor={input.name} {...label}>{label.content}</Label>
-          : null
-      }
-      {btn === undefined
-        ? <input className={classMixer("light radix-light", input.className ?? "")} {...input} />
-        : <Flex gapX="3" justify="center">
-          <input className={classMixer("light radix-light basis-full", input.className ?? "")} {...input} />
-          {(btn && btn !== undefined) && (
-            (btn.label && !btn.icon)
-              ? (
-                <Button type={btn.type} onClick={btn.onClick} className={btn.className}>{btn.label}</Button>
-              )
-              : (btn.icon && !btn.label)
-                ? (<IconButton
-                  variant="solid"
-                  size="2"
-                  className="light radix-light"
-                  onClick={btn.onClick}
-                  type={btn.type}
-                >
-                  {btn.icon}
-                </IconButton>)
-                : null
+    <Form.Field name={input.name ?? ""}>
+      <Grid columns="1" gap="1" align="center" className={containerClass}>
+        {(label && typeof label === "string")
+          ? <Form.Label htmlFor={input.name}>{label}</Form.Label>
+          : (label && typeof label !== "string")
+            ? <Form.Label htmlFor={input.name} {...label}>{label.content}</Form.Label>
+            : null
+        }
+        {btn === undefined
+          ? <Form.Control asChild>
+            <input className={classMixer("light radix-light", input.className ?? "")} {...input} />
+          </Form.Control>
+          : <Flex gapX="3" justify="center">
+            <Form.Control asChild>
+              <input className={classMixer("light radix-light basis-full", input.className ?? "")} {...input} />
+            </Form.Control>
+            {(btn && btn !== undefined) && (
+              (btn.label && !btn.icon)
+                ? (
+                  <Button type={btn.type} onClick={btn.onClick} className={btn.className}>{btn.label}</Button>
+                )
+                : (btn.icon && !btn.label)
+                  ? (<IconButton
+                    variant="solid"
+                    size="2"
+                    className="light radix-light"
+                    onClick={btn.onClick}
+                    type={btn.type}
+                  >
+                    {btn.icon}
+                  </IconButton>)
+                  : null
+            )}
+          </Flex>
+        }
+        <Form.Message>
+          {description && (
+            <Text wrap="pretty" color="gray" size="1" trim="end">{description}</Text>
           )}
-        </Flex>
-      }
-      {description && (<Text wrap="pretty" color="gray" size="1" trim="end">{description}</Text>)}
-      {displayErrors(errors)}
-    </Grid>
+          {displayErrors(errors)}
+        </Form.Message>
+      </Grid>
+    </Form.Field>
   );
 }
+
 
 function displayErrors(errors: InputProps["errors"]) {
   console.debug("bag:", errors)

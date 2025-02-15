@@ -22,7 +22,7 @@
   input[type="number"],
   input[type="email"],
   input[type="password"] {
-    @apply px-2 py-1 border rounded-md;
+    @apply px-2 py-1 border border-(--gray-8) rounded-md;
   }
 
 
