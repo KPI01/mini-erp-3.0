@@ -1,21 +1,12 @@
 import { Button, DropdownMenu, Flex, Select, Separator, Strong, Text } from "@radix-ui/themes";
 import type { DTColHeaderDropDownProps, DTColumnHeaderProps, DTFilterArgs } from "~/types/components";
-import Input from "../forms/input";
 import { CaretSortIcon } from "@radix-ui/react-icons";
+import { InputField } from "../forms/input";
 
 function Filter({ defaultValue }: DTFilterArgs) {
     return (
         <Flex direction="column" gap="2" className="m-2">
-            <Select.Root defaultValue={defaultValue}>
-                <Select.Trigger placeholder="Tipo" />
-                <Select.Content align="end">
-                    <Select.Item value="1">Contiene</Select.Item>
-                    <Select.Item value="2">Exacto</Select.Item>
-                    <Select.Item value="3">Empieza con</Select.Item>
-                    <Select.Item value="4">Termina con</Select.Item>
-                </Select.Content>
-            </Select.Root >
-            <Input
+            <InputField
                 input={{
                     type: "text",
                     className: "border-(--gray-6)"

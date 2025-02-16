@@ -31,16 +31,18 @@ interface InputProps {
         onClick: React.ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
         className?: string;
     }>;
-    icon?: React.ReactNode;
+    icon?: Partial<{ handler: Dispatch, children }>;
     containerClass?: string;
     errors?: unknown;
 };
 
 type InputFieldType = Partial<React.InputHTMLAttributes<HTMLInputElement>> | Record<string, unknown>
 interface InputFieldProps {
-    label: string | { main: string, prefix?: string, suffix?: string };
+    label?: string | { main: string, prefix?: string, suffix?: string };
+    description?: string;
+    icon?: { stateHandler: () => void, children: React.ReactNode };
     input: InputFieldType;
-    errors: { field: string, bag: Record<string, unknown> }
+    errors?: { field: string, bag: Record<string, unknown> }
 
 }
 interface CheckboxFieldProps {

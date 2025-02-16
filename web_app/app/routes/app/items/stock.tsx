@@ -31,7 +31,6 @@ export default function Stock({ loaderData }: Route.ComponentProps) {
         {/* @ts-ignore */}
         <DataTable data={data} columns={stockColumn} config={{
             buttons: { add: { enabled: false } },
-            dialog: { title: "Registrar movimiento", description: "Formulario para registrar un movimiento de material" }
         }}
         />
     </Box>

@@ -39,10 +39,8 @@ async function addItem(request: Request) {
         data: {
             descripcion: data?.descripcion,
             activo: data?.activo,
-            precio: data?.precio,
-            stockMax: data?.stockMax,
-            stockMin: data?.stockMin,
-            ubicacionId: Number(data?.ubicacionId)
+            ubicacionId: Number(data?.ubicacionId),
+
         }
     }
     ).then(async (item) => {
