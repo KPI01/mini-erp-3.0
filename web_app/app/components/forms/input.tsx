@@ -1,8 +1,7 @@
-import { classMixer } from "~/helpers/utils";
-import type { InputProps } from "~/types/components";
-import { Label } from "@radix-ui/react-label";
-import { Button, Flex, Grid, IconButton, Text } from "@radix-ui/themes";
-import { Form } from "radix-ui";
+import { classMixer, cleanErrors } from "~/helpers/utils";
+import type { CheckboxFieldProps, InputFieldProps, InputProps } from "~/types/components";
+import { Button, Flex, Grid, IconButton, Text, TextField, Checkbox } from "@radix-ui/themes";
+import { Form, Label } from "radix-ui";
 
 export default function Input({
   label,
@@ -61,8 +60,77 @@ export default function Input({
   );
 }
 
+export function InputField({ label, input, errors }: InputFieldProps) {
+  const errorBag = cleanErrors(errors.field, errors.bag)
 
-function displayErrors(errors: InputProps["errors"]) {
+  if (input.type === "checkbox") {
+    console.debug(`InputField[${input.name}] es Checkbox`)
+    return <Grid gapY="1">
+      <CheckboxField
+        label={typeof label === "string" ? label : label.main}
+        input={{ ...input }}
+      />
+      {displayErrors(errorBag)}
+    </Grid>
+  }
+
+  if (typeof label === "string") {
+    console.debug(`InputField[${input.name}] no tiene prefijo y es ${input.type}`)
+    return (
+      <Grid gapY="1">
+        <Label.Root htmlFor={String(input.id)}>{label}</Label.Root>
+        {input.type === "text"
+          ? (
+            <TextField.Root {...input as TextField.RootProps} />
+          ) : (
+            <input {...input} />
+          )
+        }
+        {displayErrors(errorBag)}
+      </Grid>
+    )
+  }
+
+  console.debug(`InputField[${input.name}] es ${input.type}`)
+  return (
+    <Grid gapY="1">
+      <Label.Root htmlFor={String(input.id)}>{label.main}</Label.Root>
+      {input.type === "text"
+        ? (
+          <TextField.Root {...input as TextField.RootProps}>
+            <input {...input} />
+            <TextField.Slot>{label.prefix}</TextField.Slot>
+          </TextField.Root>
+        ) : (
+          <Flex align="center" gapX="4">
+            <input {...input} />
+            <Label.Root asChild>
+              <Text size="3" weight="medium">
+                {label.suffix}
+              </Text>
+            </Label.Root>
+          </Flex>
+        )
+      }
+      {displayErrors(errorBag)}
+    </Grid>
+  )
+}
+
+function CheckboxField({ label, input }: CheckboxFieldProps) {
+  return <Flex gapX="2" align="center">
+    <Checkbox
+      id={input.name}
+      name={input.name}
+      defaultChecked={input.defaultChecked}
+      value={String(input.value)}
+      onClick={input.onClick}
+    />
+    <Label.Root htmlFor={input.name}>{label}</Label.Root>
+  </Flex>
+}
+
+export function displayErrors(errors?: string[]) {
   console.debug("bag:", errors)
   //@ts-ignore
   if (errors && errors?.length > 0)

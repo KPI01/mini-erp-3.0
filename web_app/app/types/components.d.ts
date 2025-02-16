@@ -1,6 +1,6 @@
 import type { User } from "@prisma/client";
 import type { EyeClosedIcon, } from "@radix-ui/react-icons";
-import type { Button, IconButton } from "@radix-ui/themes";
+import type { Button, IconButton, Checkbox } from "@radix-ui/themes";
 import type { Column, ColumnDef } from "@tanstack/react-table";
 import type { Routes } from "./session";
 import { Form } from "radix-ui";
@@ -35,6 +35,18 @@ interface InputProps {
     containerClass?: string;
     errors?: unknown;
 };
+
+type InputFieldType = Partial<React.InputHTMLAttributes<HTMLInputElement>> | Record<string, unknown>
+interface InputFieldProps {
+    label: string | { main: string, prefix?: string, suffix?: string };
+    input: InputFieldType;
+    errors: { field: string, bag: Record<string, unknown> }
+
+}
+interface CheckboxFieldProps {
+    label: string,
+    input: Partial<React.ComponentProps<Checkbox>>
+}
 
 interface IconProps extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> { };
 

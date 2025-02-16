@@ -76,13 +76,14 @@ async function login(request: Request) {
 
     if (!success) {
         console.error("se han encontrado errores en el formulario")
+        console.error(error)
         session.flash("zodErrors", error.format())
         throw redirect(routes.login, {
             headers: { "Set-Cookie": await commitSession(session) }
         })
     }
 
-    console.debug("buscando en la base de datos...")
+    console.debug("buscando User...")
     let user = await prisma.user.findFirst({
         where: { username: data.username }
     }).then(async (user) => {

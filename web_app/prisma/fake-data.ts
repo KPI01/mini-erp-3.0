@@ -35,7 +35,7 @@ export function fakeItemComplete() {
     stockMin: 0,
     stockMax: 0,
     precio: 1,
-    ubicacionId: undefined,
+    ubicacionId: faker.number.int(),
   };
 }
 export function fakeUbicacion() {

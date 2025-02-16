@@ -3,7 +3,7 @@ import { z } from "zod";
 import { MIN_LENGTH_MSG, STRING_FIELD } from "~/helpers/forms";
 
 export const addItemSchema = z.object({
-    descripcion: STRING_FIELD.min(2, MIN_LENGTH_MSG(7)),
+    descripcion: STRING_FIELD.min(3, MIN_LENGTH_MSG(3)),
     activo: z.boolean().optional().default(true),
     stockMin: z.number().optional(),
     stockMax: z.number().optional(),
@@ -15,7 +15,6 @@ export const addItemOptions = formOptions({
     defaultValues: {
         descripcion: "",
         activo: true,
-        ubicacionId: "",
         precio: 0,
         stockMax: 0,
         stockMin: 0
