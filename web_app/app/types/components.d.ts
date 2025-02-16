@@ -52,7 +52,7 @@ interface IconProps extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>,
 
 interface DTRowAction {
     id: string;
-    route: string;
+    relativeRoute: string;
 }
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
