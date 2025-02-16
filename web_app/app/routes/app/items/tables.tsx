@@ -39,7 +39,7 @@ export const itemColumn = [
     itemColumnHelper.display({
         id: "actions",
         header: "Acciones",
-        cell: () => <RowActions />
+        cell: ({ row }) => (<RowActions id={String(row.original.id)} route="app/items" />)
     })
 ]
 

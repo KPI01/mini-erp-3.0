@@ -1,20 +1,30 @@
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { Flex, IconButton, Popover, Strong, Text } from "@radix-ui/themes";
+import { Button, Flex, IconButton, Popover, Strong, Text } from "@radix-ui/themes";
+import { useCallback } from "react";
+import { Form, useSubmit } from "react-router";
+import type { DTRowAction } from "~/types/components";
 
 const ICON_SIZE = 20
 const ICON_SIZE_PROPS = { height: ICON_SIZE, width: ICON_SIZE }
 
-function DeleteAction() {
+function DeleteAction({ id, route }: DTRowAction) {
     return <Popover.Root>
         <Popover.Trigger>
             <IconButton color="red" variant="ghost" size="3">
                 <TrashIcon {...ICON_SIZE_PROPS} />
             </IconButton >
         </Popover.Trigger>
-        <Popover.Content align="end" maxWidth="200px">
-            <Text size="1" wrap="pretty" style={{ lineHeight: "normal" }}>
-                Estas a punto de eliminar este registro, <Strong>¿estás seguro?</Strong>
+        <Popover.Content align="end" maxWidth="250px">
+            <Text as="p" size="1" wrap="pretty" style={{ lineHeight: "normal" }}>
+                Estas a punto de eliminar este registro, la acción es irreversible. <Strong>¿Estás seguro?</Strong>
             </Text>
+            <Popover.Close className="!my-2 !flex">
+                <Form action={`${id}`} method="delete">
+                    <Button color="red" size="1" className="!w-auto !ms-auto !p-2" type="submit">
+                        <TrashIcon /> Eliminar
+                    </Button>
+                </Form>
+            </Popover.Close>
         </Popover.Content>
     </Popover.Root>
 }
@@ -25,10 +35,10 @@ function EditAction() {
     </IconButton >
 }
 
-function RowActions() {
+function RowActions({ id, route }: DTRowAction) {
     return <Flex justify="end" gapX="6">
         <EditAction />
-        <DeleteAction />
+        <DeleteAction id={id} route={route} />
     </Flex>
 }
 

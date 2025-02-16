@@ -22,14 +22,14 @@ model User {
 }
 
 model Item {
-  id          Int       @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   descripcion String
-  activo      Boolean   @default(true)
-  stockMin    Float?    @default(0)
-  stockMax    Float?    @default(0)
-  precio      Float?    @default(1)
-  ubicacionId Int
-  ubicacion   Ubicacion @relation(fields: [ubicacionId], references: [id])
+  activo      Boolean    @default(true)
+  stockMin    Float?     @default(0)
+  stockMax    Float?     @default(0)
+  precio      Float?     @default(1)
+  ubicacionId Int?
+  ubicacion   Ubicacion? @relation(fields: [ubicacionId], references: [id])
   stock       Stock[]
 }
 

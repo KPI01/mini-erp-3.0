@@ -1,10 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { redirect, type Session } from "react-router";
+import { redirect } from "react-router";
 import { addItemSchema, type addItemSchemaType } from "~/routes/app/items/forms";
-import { commitSession, getSession, validateAuthSession } from "../session.server";
+import { commitSession, validateAuthSession } from "../session.server";
 
 const routes = {
-    base: "/app/items"
+    base: "/app/items",
+    query: "/app/items?id="
 }
 
 const prisma = new PrismaClient()
@@ -57,4 +58,25 @@ async function addItem(request: Request) {
     return item
 }
 
-export { addItem }
+async function deleteItem(request: Request, id: number) {
+    console.debug("validando sesión...")
+    const session = await validateAuthSession({ request })
+
+    if (id) {
+        console.debug("eliminando Item...")
+        const item = await prisma.item.delete({
+            where: { id },
+        })
+        session.flash("info", { description: "Item eliminado", payload: item })
+        throw redirect(routes.base, {
+            headers: { "Set-Cookie": await commitSession(session) }
+        })
+    }
+
+    session.flash("error", "No se ha enviado ningún {id} de Item")
+    throw redirect(routes.base, {
+        headers: { "Set-Cookie": await commitSession(session) }
+    })
+}
+
+export { addItem, deleteItem }

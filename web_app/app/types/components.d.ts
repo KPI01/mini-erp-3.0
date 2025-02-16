@@ -50,8 +50,10 @@ interface CheckboxFieldProps {
 
 interface IconProps extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> { };
 
-type DTButtons = "add";
-type DTButtonType = { label?: string; icon?: React.ReactNode, enabled: boolean }
+interface DTRowAction {
+    id: string;
+    route: string;
+}
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
@@ -85,7 +87,6 @@ interface DTFilterArgs {
 interface DTColHeaderDropDownProps {
     trigger: string;
 }
-
 interface DialogFormProps {
     trigger: string | { label: string, icon: React.ReactNode };
     title?: string;

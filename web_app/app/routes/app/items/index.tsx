@@ -1,25 +1,20 @@
 import type { Route } from "../+types";
 import DataTable from "~/components/table/data-table";
-import { itemColumn, type Item } from "./tables";
+import { itemColumn } from "./tables";
 import { PrismaClient } from "@prisma/client";
 import { type MetaFunction, data, Form } from "react-router";
 import { Header } from "../components";
-import type { Routes } from "~/types/session";
 import { validateAuthSession } from "~/server/session.server";
-import { Box, Button, Checkbox, Flex, Grid, Text } from "@radix-ui/themes";
+import { Box, Button, Flex, Grid } from "@radix-ui/themes";
 import type { SelectInputOptionsType } from "~/types/components";
 import SelectInput from "~/components/forms/select";
 import { useForm } from '@tanstack/react-form'
 import { addItemSchema, addItemOptions } from "./forms";
-import { Label } from "radix-ui";
-import { addItem } from "~/server/actions/items.server";
+import { addItem, deleteItem } from "~/server/actions/items.server";
 import { validateSessionErrors } from "~/server/form-validation.server";
 import { useState } from "react";
 import { displayErrors, InputField } from "~/components/forms/input";
 import { cleanErrors } from "~/helpers/utils";
-
-
-const route: Routes = "inventory.items"
 
 export const meta: MetaFunction = () => {
     return [{ title: "Items", description: "Visualización de los items registrados." }];
@@ -42,8 +37,14 @@ export async function loader({ request }: Route.LoaderArgs) {
     return data(aux)
 }
 
-export async function action({ request }: Route.ActionArgs) {
-    return await addItem(request)
+export async function action({ request, params }: Route.ActionArgs) {
+
+    if (request.method.toLocaleLowerCase() === "post") {
+        return await addItem(request)
+    }
+    if (request.method.toLocaleLowerCase() === "delete") {
+        return await deleteItem(request, Number(params.id))
+    }
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {

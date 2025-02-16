@@ -18,7 +18,8 @@ interface SessionData {
 
 interface SessionFlashData {
     error: string | Record<string, string>;
-    zodErrors: ZodFormattedError
+    zodErrors: ZodFormattedError,
+    info: { description: string, payload: unknown }
 }
 
 interface RequireAuthCookieProps {
