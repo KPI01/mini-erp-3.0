@@ -1,7 +1,8 @@
 import { z } from "zod";
-import { validatePassword } from "./encrypt.server";
+import { validatePassword } from "~/lib/auth/encrypt";
 import { INVALID_MSG, MIN_LENGTH_MSG, STRING_FIELD } from "~/helpers/forms";
 import { PrismaClient } from "@prisma/client";
+import { formOptions } from "@tanstack/react-form";
 
 let prisma = new PrismaClient()
 
@@ -106,3 +107,4 @@ export const loginSchema = z.object({
         message: "La clave es incorrecta.",
         path: ["password"]
     })
+export type loginSchemaType = z.infer<typeof loginSchema>

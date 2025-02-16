@@ -2,6 +2,13 @@ import { Outlet } from "react-router";
 import { Flex } from "@radix-ui/themes";
 import Sidebar from "~/components/ui/sidebar";
 import type { Route } from "./+types";
+import { validateAuthSession } from "~/server/session.server";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const session = await validateAuthSession({ request })
+
+  return { user: session.get("user") }
+}
 
 export default function Layout({ loaderData }: Route.ComponentProps) {
   console.debug(loaderData)

@@ -1,20 +1,19 @@
 import {
   data,
   Form,
-  Link as LinkRR,
   type MetaFunction,
+  Link as Anchor
 } from "react-router";
-import { useEffect, useState } from "react";
 import type { Route } from "./+types/login";
-import Input from "~/components/forms/input";
+import { InputField } from "~/components/forms/input";
 import { getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
-import { cleanErrors } from "~/helpers/utils";
-import { Box, Button, Em, Flex, Grid, Link, Text } from "@radix-ui/themes";
-import { Form as F } from "radix-ui"
+import { Box, Button, Em, Flex, Grid, IconButton, Link, Spinner } from "@radix-ui/themes";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { CardDescription, Header } from "./components";
 import { validateSessionErrors } from "~/server/form-validation.server";
+import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Login", description: "Iniciar sesión en la plataforma" }];
@@ -36,19 +35,16 @@ export default function Login({ loaderData }: Route.ComponentProps) {
   const errors = loaderData?.zodErrors
   console.debug("errors:", errors)
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [visible, setVisible] = useState(false)
+  const toggleVisible = (value: typeof visible) => setVisible(!value)
+  console.debug("visible:", visible)
 
-  const handlePasswordVisibility = () => {
-    if (showPassword) {
-      setTimeout(() => {
-        setShowPassword(false);
-      }, 2500);
+  const form = useForm({
+    defaultValues: {
+      username: "",
+      password: ""
     }
-  };
-
-  useEffect(() => {
-    handlePasswordVisibility();
-  }, [showPassword]);
+  })
 
   return (
     <Box>
@@ -56,46 +52,61 @@ export default function Login({ loaderData }: Route.ComponentProps) {
       <CardDescription>
         Bienvenido al sistema de tu empresa, por favor <Em>ingresa tus credenciales</Em> para acceder al sistema.
       </CardDescription>
-      <F.Root className="my-4" asChild>
-        <Form
-          method="post"
-          action="/guest/login"
-        >
-          <Grid className="px-3" align="center" justify="center" columns="1" gapY="4">
-            <Input
-              label="Usuario"
-              input={{
-                type: "text",
-                name: "username"
-              }}
-              errors={cleanErrors("username", errors)}
+      <Grid asChild gapY="5">
+        <Form method="post" action="/guest/login" className="mt-4" onSubmit={() => form.handleSubmit()}>
+          <form.Field
+            name="username"
+            children={({ name, state, handleBlur, handleChange }) => (
+              <InputField
+                label="Usuario"
+                input={{
+                  type: "text",
+                  id: name,
+                  name: name,
+                  value: state.value,
+                  onBlur: handleBlur,
+                  onChange: (e) => handleChange(e.target.value)
+                }}
+                errors={{ field: name, bag: errors }}
+              />
+            )}
+          />
+          <form.Field
+            name="password"
+            children={({ name, state, handleBlur, handleChange }) => (
+              <InputField
+                label="Contraseña"
+                icon={{
+                  children: visible ? <EyeOpenIcon /> : <EyeClosedIcon />,
+                  stateHandler: () => toggleVisible(visible)
+                }}
+                input={{
+                  type: visible ? "text" : "password",
+                  id: name,
+                  name: name,
+                  value: state.value,
+                  onBlur: handleBlur,
+                  onChange: (e) => handleChange(e.target.value)
+                }}
+                errors={{ field: name, bag: errors }}
+              />
+            )}
+          />
+          <Flex>
+            <Link asChild>
+              <Anchor to="/guest/register">Crear cuenta</Anchor>
+            </Link>
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+              children={([canSubmit, isSubmitting]) => (
+                <Button size="3" type="submit" className="!ms-auto" disabled={!canSubmit}>
+                  {isSubmitting ? <Spinner /> : "Enviar"}
+                </Button>
+              )}
             />
-            <Input
-              label="Contraseña"
-              input={{
-                type: showPassword ? "text" : "password",
-                id: "password",
-                name: "password",
-              }}
-              btn={{
-                icon: (showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />),
-                type: "button",
-                onClick: () => setShowPassword(!showPassword),
-              }}
-              errors={cleanErrors("password", errors)}
-            />
-          </Grid>
-          <Flex align="center" justify="between" className="mt-8">
-            <Flex direction="column" className="text-sm">
-              <Text as="span">¿No tienes cuenta?</Text>
-              <Link asChild>
-                <LinkRR to="/guest/register">Crea una aquí</LinkRR>
-              </Link>
-            </Flex>
-            <Button type="submit">Ingresar</Button>
           </Flex>
         </Form>
-      </F.Root>
+      </Grid>
     </Box >
   );
 }

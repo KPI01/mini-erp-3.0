@@ -2,10 +2,10 @@ export function classMixer(...classes: string[]) {
     return classes.join(" ")
 }
 
-export function cleanErrors(name: string, bag?: unknown) {
-    let errors: string[] = []
+export function cleanErrors(name?: string, bag?: unknown) {
+    if (!name || !bag) return undefined
 
-    if (!bag) return undefined
+    let errors: string[] = []
 
     const keys = Object.keys(bag)
 

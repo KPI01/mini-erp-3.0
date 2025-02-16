@@ -1,81 +1,49 @@
-import { classMixer, cleanErrors } from "~/helpers/utils";
-import type { CheckboxFieldProps, InputFieldProps, InputProps } from "~/types/components";
-import { Button, Flex, Grid, IconButton, Text, TextField, Checkbox } from "@radix-ui/themes";
-import { Form, Label } from "radix-ui";
+import { cleanErrors } from "~/helpers/utils";
+import type { CheckboxFieldProps, InputFieldProps } from "~/types/components";
+import { Flex, Grid, IconButton, Text, TextField, Checkbox } from "@radix-ui/themes";
+import { Label } from "radix-ui";
 
-export default function Input({
-  label,
-  input,
-  description,
-  btn,
-  containerClass = "",
-  errors,
-}: InputProps) {
+export function InputField({ label, input, errors, icon, description }: InputFieldProps) {
+  const errorBag = cleanErrors(errors?.field, errors?.bag)
+  const Description = <Text as="p" size="1" weight="light" trim="both"> {description}</Text >
 
 
-  return (
-    <Form.Field name={input.name ?? ""}>
-      <Grid columns="1" gap="1" align="center" className={containerClass}>
-        {(label && typeof label === "string")
-          ? <Form.Label htmlFor={input.name}>{label}</Form.Label>
-          : (label && typeof label !== "string")
-            ? <Form.Label htmlFor={input.name} {...label}>{label.content}</Form.Label>
-            : null
-        }
-        {btn === undefined
-          ? <Form.Control asChild>
-            <input className={classMixer("light radix-light", input.className ?? "")} {...input} />
-          </Form.Control>
-          : <Flex gapX="3" justify="center">
-            <Form.Control asChild>
-              <input className={classMixer("light radix-light basis-full", input.className ?? "")} {...input} />
-            </Form.Control>
-            {(btn && btn !== undefined) && (
-              (btn.label && !btn.icon)
-                ? (
-                  <Button type={btn.type} onClick={btn.onClick} className={btn.className}>{btn.label}</Button>
-                )
-                : (btn.icon && !btn.label)
-                  ? (<IconButton
-                    variant="solid"
-                    size="2"
-                    className="light radix-light"
-                    onClick={btn.onClick}
-                    type={btn.type}
-                  >
-                    {btn.icon}
-                  </IconButton>)
-                  : null
-            )}
-          </Flex>
-        }
-        <Form.Message>
-          {description && (
-            <Text wrap="pretty" color="gray" size="1" trim="end">{description}</Text>
-          )}
-          {displayErrors(errors)}
-        </Form.Message>
-      </Grid>
-    </Form.Field>
-  );
-}
-
-export function InputField({ label, input, errors }: InputFieldProps) {
-  const errorBag = cleanErrors(errors.field, errors.bag)
-
-  if (input.type === "checkbox") {
+  if (label && input.type === "checkbox") {
     console.debug(`InputField[${input.name}] es Checkbox`)
     return <Grid gapY="1">
       <CheckboxField
-        label={typeof label === "string" ? label : label.main}
+        label={typeof label === "string" ? label : label?.main}
         input={{ ...input }}
       />
-      {displayErrors(errorBag)}
+      {errors && displayErrors(errorBag)}
     </Grid>
   }
 
   if (typeof label === "string") {
     console.debug(`InputField[${input.name}] no tiene prefijo y es ${input.type}`)
+
+    if (icon) {
+      return (
+        <Grid gapY="1">
+          <Label.Root htmlFor={String(input.id)}>{label}</Label.Root>
+          <Flex gapX="4" justify="between">
+            {input.type === "text"
+              ? (
+                <TextField.Root {...input as TextField.RootProps} style={{ flexBasis: "100%" }} />
+              ) : (
+                <input {...input} style={{ flexBasis: "100%" }} />
+              )
+            }
+            <IconButton type="button" onClick={() => icon.stateHandler()}>
+              {icon.children}
+            </IconButton>
+          </Flex>
+          {description && Description}
+          {displayErrors(errorBag)}
+
+        </Grid>
+      )
+    }
     return (
       <Grid gapY="1">
         <Label.Root htmlFor={String(input.id)}>{label}</Label.Root>
@@ -86,35 +54,54 @@ export function InputField({ label, input, errors }: InputFieldProps) {
             <input {...input} />
           )
         }
+        {description && Description}
+        {displayErrors(errorBag)}
+      </Grid>
+    )
+  } else if (typeof label === "object") {
+    console.debug(`InputField[${input.name}] tiene label y es ${input.type}`)
+    return (
+      <Grid gapY="1">
+        <Label.Root htmlFor={String(input.id)}>{label.main}</Label.Root>
+        {input.type === "text"
+          ? (
+            <TextField.Root {...input as TextField.RootProps}>
+              <input {...input} />
+              <TextField.Slot>{label.prefix}</TextField.Slot>
+            </TextField.Root>
+          ) : (
+            <Flex align="center" gapX="4">
+              <input {...input} />
+              <Label.Root asChild>
+                <Text size="3" weight="medium">
+                  {label.suffix}
+                </Text>
+              </Label.Root>
+            </Flex>
+          )
+        }
+        {description && Description}
         {displayErrors(errorBag)}
       </Grid>
     )
   }
 
-  console.debug(`InputField[${input.name}] es ${input.type}`)
   return (
     <Grid gapY="1">
-      <Label.Root htmlFor={String(input.id)}>{label.main}</Label.Root>
       {input.type === "text"
         ? (
           <TextField.Root {...input as TextField.RootProps}>
             <input {...input} />
-            <TextField.Slot>{label.prefix}</TextField.Slot>
           </TextField.Root>
         ) : (
-          <Flex align="center" gapX="4">
-            <input {...input} />
-            <Label.Root asChild>
-              <Text size="3" weight="medium">
-                {label.suffix}
-              </Text>
-            </Label.Root>
-          </Flex>
+          <input {...input} />
         )
       }
+      {description && Description}
       {displayErrors(errorBag)}
     </Grid>
   )
+
 }
 
 function CheckboxField({ label, input }: CheckboxFieldProps) {
@@ -126,7 +113,7 @@ function CheckboxField({ label, input }: CheckboxFieldProps) {
       value={String(input.value)}
       onClick={input.onClick}
     />
-    <Label.Root htmlFor={input.name}>{label}</Label.Root>
+    <Label.Root htmlFor={input.name}>{label ?? ""}</Label.Root>
   </Flex>
 }
 

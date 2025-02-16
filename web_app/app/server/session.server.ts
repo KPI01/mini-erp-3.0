@@ -1,6 +1,6 @@
 import { createCookieSessionStorage, redirect } from "react-router";
 import { config } from "dotenv"
-import { createSecret } from "../lib/auth/secrets.server";
+import { createSecret } from "../lib/auth/secrets";
 import type { RequireAuthCookieProps, SessionData, SessionFlashData } from "~/types/session";
 
 config()
