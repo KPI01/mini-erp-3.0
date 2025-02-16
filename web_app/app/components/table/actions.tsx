@@ -7,7 +7,7 @@ import type { DTRowAction } from "~/types/components";
 const ICON_SIZE = 20
 const ICON_SIZE_PROPS = { height: ICON_SIZE, width: ICON_SIZE }
 
-function DeleteAction({ id, route }: DTRowAction) {
+function DeleteAction({ id, relativeRoute }: DTRowAction) {
     return <Popover.Root>
         <Popover.Trigger>
             <IconButton color="red" variant="ghost" size="3">
@@ -19,7 +19,7 @@ function DeleteAction({ id, route }: DTRowAction) {
                 Estas a punto de eliminar este registro, la acción es irreversible. <Strong>¿Estás seguro?</Strong>
             </Text>
             <Popover.Close className="!my-2 !flex">
-                <Form action={`${id}`} method="delete">
+                <Form action={`/${relativeRoute}/${id}`} method="delete">
                     <Button color="red" size="1" className="!w-auto !ms-auto !p-2" type="submit">
                         <TrashIcon /> Eliminar
                     </Button>
@@ -35,10 +35,10 @@ function EditAction() {
     </IconButton >
 }
 
-function RowActions({ id, route }: DTRowAction) {
+function RowActions(props: DTRowAction) {
     return <Flex justify="end" gapX="6">
         <EditAction />
-        <DeleteAction id={id} route={route} />
+        <DeleteAction {...props} />
     </Flex>
 }
 
