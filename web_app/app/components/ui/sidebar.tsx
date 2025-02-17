@@ -79,7 +79,6 @@ const links: SideBarLink[] = [
 ]
 
 export default function Sidebar({ user, className }: SidebarProps) {
-    console.debug(user)
     return (
         <Menubar.Root className={["px-4 py-2 shadow-md", className].join(" ")}>
             <Heading size="8">Tu Sistema ERP</Heading>

@@ -109,7 +109,7 @@ function CheckboxField({ label, input }: CheckboxFieldProps) {
     <Checkbox
       id={input.name}
       name={input.name}
-      defaultChecked={input.defaultChecked}
+      defaultChecked={Boolean(input.value)}
       value={String(input.value)}
       onClick={input.onClick}
     />

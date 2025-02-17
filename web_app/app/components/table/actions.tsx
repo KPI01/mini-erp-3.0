@@ -20,7 +20,7 @@ function DeleteAction({ id, relativeRoute }: DTRowAction) {
             </Text>
             <Popover.Close className="!my-2 !flex">
                 <Form action={`/${relativeRoute}/${id}`} method="delete">
-                    <Button color="red" size="1" className="!w-auto !ms-auto !p-2" type="submit">
+                    <Button color="red" size="2" className="!w-auto !mx-auto !p-2" type="submit">
                         <TrashIcon /> Eliminar
                     </Button>
                 </Form>
