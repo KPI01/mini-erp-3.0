@@ -18,10 +18,6 @@ export const itemColumn = [
         header: "Ubicación",
         cell: ({ cell }) => (cell.getValue().descripcion)
     }),
-    itemColumnHelper.accessor("precio", {
-        header: "Precio",
-        cell: ({ cell }) => `${cell.getValue()} €`
-    }),
     itemColumnHelper.accessor("stockMin", {
         header: "Stock Mínimo",
     }),

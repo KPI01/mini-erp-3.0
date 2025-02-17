@@ -1,11 +1,13 @@
 import type { User } from "@prisma/client";
 import type { EyeClosedIcon, } from "@radix-ui/react-icons";
-import type { Button, IconButton, Checkbox } from "@radix-ui/themes";
+import type { Button, IconButton, Checkbox, ButtonProps, AlertDialog } from "@radix-ui/themes";
 import type { Column, ColumnDef } from "@tanstack/react-table";
 import type { Routes } from "./session";
 import { Form } from "radix-ui";
 import type { Dispatch } from "react";
 
+type TriggerButton = string | { label: string, icon: React.ReactNode }
+type ButtonVariants = ButtonProps["variant"]
 type IconType = React.ComponentProps<typeof EyeClosedIcon>
 type BtnType = React.ComponentProps<typeof Button>
 
@@ -90,7 +92,7 @@ interface DTColHeaderDropDownProps {
     trigger: string;
 }
 interface DialogFormProps {
-    trigger: string | { label: string, icon: React.ReactNode };
+    trigger: TriggerButton;
     title?: string;
     description?: string;
     form: PartialFormType;
@@ -113,4 +115,18 @@ interface SelectInputProps {
         current?: string;
         containerClass: string
     }>
+}
+
+interface AlertDialogProps extends React.PropsWithChildren {
+    variant?: ButtonVariants;
+    trigger: TriggerButton,
+    header?: Partial<{
+        title: string;
+        description: string
+    }>
+}
+
+interface PopoverProps extends React.PropsWithChildren {
+    variant?: ButtonVariants;
+    trigger: TriggerButton
 }

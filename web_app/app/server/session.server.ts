@@ -26,7 +26,7 @@ const { getSession, commitSession, destroySession } =
 async function validateAuthSession({ request }: RequireAuthCookieProps) {
     const session = await getSession(request.headers.get("Cookie"))
 
-    if (session.has("user") === false) {
+    if (!session.has("user")) {
         console.debug("No existe sesion de usuario, redirigiendo")
         throw redirect("/guest", { headers: { "Set-Cookie": await commitSession(session) } })
     }

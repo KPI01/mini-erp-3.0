@@ -11,7 +11,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export default function Layout({ loaderData }: Route.ComponentProps) {
-  console.debug(loaderData)
   return (
     <div className="flex h-full w-full">
       <Sidebar user={loaderData} className="basis-1/7" />

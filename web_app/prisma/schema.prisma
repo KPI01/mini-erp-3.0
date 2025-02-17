@@ -12,6 +12,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// AUTH
 model User {
   id       Int     @id @default(autoincrement())
   username String  @unique
@@ -21,16 +22,19 @@ model User {
   activo   Boolean @default(true)
 }
 
+// INVENTARIO
 model Item {
-  id          Int        @id @default(autoincrement())
-  descripcion String
-  activo      Boolean    @default(true)
-  stockMin    Float?     @default(0)
-  stockMax    Float?     @default(0)
-  precio      Float?     @default(1)
-  ubicacionId Int?
-  ubicacion   Ubicacion? @relation(fields: [ubicacionId], references: [id])
-  stock       Stock[]
+  id             Int          @id @default(autoincrement())
+  descripcion    String
+  activo         Boolean      @default(true)
+  stockMin       Float?       @default(0)
+  stockMax       Float?       @default(0)
+  precio         Float?       @default(1)
+  ubicacionId    Int?
+  ubicacion      Ubicacion?   @relation(fields: [ubicacionId], references: [id])
+  stock          Stock[]
+  unidadMedidaId Int
+  unidadMedida   UnidadMedida @relation(fields: [unidadMedidaId], references: [id])
 }
 
 model Ubicacion {
@@ -51,4 +55,11 @@ model Stock {
   cant        Int
   itemId      Int
   item        Item     @relation(fields: [itemId], references: [id])
+}
+
+model UnidadMedida {
+  id          Int    @id @default(autoincrement())
+  descripcion String
+  corto       String
+  Item        Item[]
 }

@@ -5,16 +5,19 @@ import { PrismaClient } from "@prisma/client";
 import { type MetaFunction, data, Form } from "react-router";
 import { Header } from "../components";
 import { validateAuthSession } from "~/server/session.server";
-import { Box, Button, Flex, Grid } from "@radix-ui/themes";
+import { Button, Flex, Grid, Text } from "@radix-ui/themes";
 import type { SelectInputOptionsType } from "~/types/components";
 import SelectInput from "~/components/forms/select";
 import { useForm } from '@tanstack/react-form'
-import { addItemSchema, addItemOptions } from "./forms";
+import { AddItemForm, AddUbicacionForm, AddUnidadMedidaForm } from "./forms";
 import { addItem, deleteItem } from "~/server/actions/items.server";
 import { validateSessionErrors } from "~/server/form-validation.server";
 import { useState } from "react";
 import { displayErrors, InputField } from "~/components/forms/input";
 import { cleanErrors } from "~/helpers/utils";
+import { PlusIcon } from "@radix-ui/react-icons";
+import AlertDialog from "~/components/ui/alert-dialog";
+import Popover from "~/components/ui/popover";
 
 export const meta: MetaFunction = () => {
     return [{ title: "Items", description: "Visualización de los items registrados." }];
@@ -25,13 +28,13 @@ export async function loader({ request }: Route.LoaderArgs) {
 
     const prisma = new PrismaClient()
     const aux = {
-        items: await prisma.item.findMany({ include: { ubicacion: true, stock: true } }),
-        ubicaciones: await prisma.ubicacion.findMany({})
+        items: await prisma.item.findMany({ include: { ubicacion: true, stock: true, unidadMedida: true } }),
+        ubicaciones: await prisma.ubicacion.findMany()
     }
 
     const sessionData = await validateSessionErrors({ session, key: "zodErrors", extraData: aux })
     if (sessionData) {
-        return data(...sessionData)
+        return { ...sessionData }
     }
 
     return data(aux)
@@ -52,118 +55,33 @@ export default function Index({ loaderData }: Route.ComponentProps) {
     //@ts-ignore
     const errors = loaderData?.zodErrors
     console.error(errors)
-    const [dialogOpen, setDialogOpen] = useState(false)
-
     //@ts-ignore
-    const opts = loaderData?.ubicaciones.map((ub) => {
+    const ubicaciones = loaderData?.ubicaciones.map((ub) => {
         return { [String(ub.id)]: ub.descripcion } satisfies SelectInputOptionsType
     })
 
-    const form = useForm({
-        ...addItemOptions, onSubmit: () => {
-            setDialogOpen(false)
-            form.reset()
-        }
-    })
-
-
     return (
-        <Box>
+        <Grid gapY="4">
             <Header>Consulta de Artículo</Header>
+            <Flex justify="between" align="end">
+                <Text as="p" weight="light" size="1">Todos los campos que tengan (*), son obligatorios</Text>
+                <Flex gapX="5" align="center" justify="end">
+                    <Popover variant="surface" trigger={{ icon: <PlusIcon />, label: "Und. Medida" }}>
+                        <AddUnidadMedidaForm />
+                    </Popover>
+                    <Popover variant="surface" trigger={{ label: "Ubicación", icon: <PlusIcon /> }}>
+                        <AddUbicacionForm ubicaciones={ubicaciones} />
+                    </Popover>
+                    <AlertDialog
+                        trigger={{ label: "Articulo", icon: <PlusIcon /> }}
+                        header={{ title: "Agregando articulo", description: "Formulario para agregar un articulo." }}
+                    >
+                        <AddItemForm errors={errors} ubicaciones={ubicaciones} />
+                    </AlertDialog>
+                </Flex>
+            </Flex>
             {/* @ts-ignore */}
-            <DataTable data={loaderData?.items} columns={itemColumn} config={{
-                dialog: {
-                    title: "Nuevo articulo",
-                    description: "Formulario para registrar en el sistema un nuevo articulo. Los campos con (*) son obligatorios",
-                    state: { open: dialogOpen, changer: setDialogOpen },
-                    form: <Form method="post" action="/app/items" className="grid gap-y-4" onSubmit={() => form.handleSubmit()}>
-                        <form.Field
-                            name="descripcion"
-                            validators={{ onBlur: addItemSchema.shape.descripcion }}
-                            children={(field) => (
-                                <InputField
-                                    label="Descripción"
-                                    input={{ ...field, type: "text" }}
-                                    errors={{ field: field.name, bag: errors }}
-                                />
-                            )}
-                        />
-                        <form.Field
-                            name="ubicacionId"
-                            validators={{ onChange: addItemSchema.shape.ubicacionId }}
-                            children={(field) => (
-                                <Grid gapY="1">
-                                    <SelectInput
-                                        name={field.name}
-                                        options={opts}
-                                        state={{
-                                            value: field.state.value,
-                                            changer: field.handleChange
-                                        }}
-                                        config={{
-                                            label: "Ubicación *"
-                                        }}
-                                    />
-                                    {displayErrors(cleanErrors(field.name, errors))}
-                                </Grid>
-                            )}
-                        />
-                        <form.Field
-                            name="activo"
-                            validators={{ onChange: addItemSchema.shape.activo }}
-                            children={(field) => (
-                                <InputField
-                                    label="¿Articulo activo?"
-                                    input={{
-                                        ...field,
-                                        type: "checkbox",
-                                        onClick: field.handleChange
-                                    }}
-                                    errors={{ field: field.name, bag: errors }}
-                                />
-                            )}
-                        />
-                        <form.Field
-                            name="precio"
-                            validators={{ onBlur: addItemSchema.shape.precio }}
-                            children={(field) => (
-                                <InputField
-                                    label={{ main: "Precio", suffix: "€" }}
-                                    input={{ ...field, type: "number" }}
-                                    errors={{ field: field.name, bag: errors }}
-                                />
-                            )}
-                        />
-                        <Flex gapX="6">
-                            <form.Field
-                                name="stockMin"
-                                validators={{ onBlur: addItemSchema.shape.stockMin }}
-                                children={(field) => (
-                                    <InputField
-                                        label="Stock Mínimo"
-                                        input={{ ...field, type: "number" }}
-                                        errors={{ field: field.name, bag: errors }}
-                                    />
-                                )}
-                            />
-                            <form.Field
-                                name="stockMax"
-                                validators={{ onBlur: addItemSchema.shape.stockMax }}
-                                children={(field) => (
-                                    <InputField
-                                        label="Stock Máximo"
-                                        input={{ ...field, type: "number" }}
-                                        errors={{ field: field.name, bag: errors }}
-                                    />
-                                )}
-                            />
-                        </Flex>
-                        <form.Subscribe
-                            children={() => (<Button type="submit">Enviar</Button>)}
-                        />
-                    </Form>
-                }
-            }} />
-        </Box>
+            <DataTable data={loaderData?.items} columns={itemColumn} />
+        </Grid>
     )
 }

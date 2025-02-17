@@ -14,20 +14,18 @@ async function addItem(request: Request) {
     const session = await validateAuthSession({ request })
 
     const form = await request.formData()
+    console.debug("request data:", form)
     const formData: Partial<addItemSchemaType> = {
         descripcion: form.get("descripcion")?.toString(),
         activo: Boolean(form.get("activo")),
         ubicacionId: String(form.get("ubicacionId")),
-        stockMin: Number(form.get("stockMin")),
-        stockMax: Number(form.get("stockMax")),
-        precio: Number(form.get("precio"))
     }
 
-    console.debug("validando con zod...")
+    console.debug("validando con zod...", formData)
     const { success, data, error } = await addItemSchema.safeParseAsync(formData)
 
     if (!success) {
-        console.debug("se han encontrado errores en el formulario:")
+        console.debug("se han encontrado errores en el formulario", error.format())
         session.flash("zodErrors", error.format())
         throw redirect(routes.base, {
             headers: { "Set-Cookie": await commitSession(session) }
