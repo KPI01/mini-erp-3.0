@@ -129,4 +129,8 @@ interface AlertDialogProps extends React.PropsWithChildren {
 interface PopoverProps extends React.PropsWithChildren {
     variant?: ButtonVariants;
     trigger: TriggerButton
+    state?: {
+        value: boolean,
+        handler: (boolean) => void
+    }
 }

@@ -60,6 +60,6 @@ model Stock {
 model UnidadMedida {
   id          Int    @id @default(autoincrement())
   descripcion String
-  corto       String
+  corto       String @unique
   Item        Item[]
 }

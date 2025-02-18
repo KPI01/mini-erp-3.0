@@ -14,7 +14,7 @@ export default function SelectInput({ name, options, state, config }: SelectInpu
                 <Select.Trigger variant="surface" placeholder={options.length < 1 ? "Nada que mostrar..." : ""}>
                     {trigger}
                 </Select.Trigger>
-                <Select.Content>
+                <Select.Content position="popper">
                     {options.map((opt, i) => {
                         const value = Object.keys(opt)[0]
                         const display = Object.values(opt)[0]
