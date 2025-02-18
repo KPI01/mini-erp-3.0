@@ -2,6 +2,36 @@ import { cleanErrors } from "~/helpers/utils";
 import type { CheckboxFieldProps, InputFieldProps } from "~/types/components";
 import { Flex, Grid, IconButton, Text, TextField, Checkbox } from "@radix-ui/themes";
 import { Label } from "radix-ui";
+import React from "react";
+
+export function DebouncedInput({
+  value: initialValue,
+  onChange,
+  debounce = 500,
+  ...props
+}: {
+  value: string | number
+  onChange: (value: string | number) => void
+  debounce?: number
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+  const [value, setValue] = React.useState(initialValue)
+
+  React.useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value)
+    }, debounce)
+
+    return () => clearTimeout(timeout)
+  }, [value])
+
+  return (
+    <input {...props} value={value} onChange={e => setValue(e.target.value)} />
+  )
+}
 
 export function InputField({ label, input, errors, icon, description }: InputFieldProps) {
   const errorBag = cleanErrors(errors?.field, errors?.bag)
@@ -27,13 +57,7 @@ export function InputField({ label, input, errors, icon, description }: InputFie
         <Grid gapY="1">
           <Label.Root htmlFor={String(input.id)}>{label}</Label.Root>
           <Flex gapX="4" justify="between">
-            {input.type === "text"
-              ? (
-                <TextField.Root {...input as TextField.RootProps} style={{ flexBasis: "100%" }} />
-              ) : (
-                <input {...input} style={{ flexBasis: "100%" }} />
-              )
-            }
+            <input {...input} style={{ flexBasis: "100%" }} />
             <IconButton type="button" onClick={() => icon.stateHandler()}>
               {icon.children}
             </IconButton>
@@ -47,13 +71,7 @@ export function InputField({ label, input, errors, icon, description }: InputFie
     return (
       <Grid gapY="1">
         <Label.Root htmlFor={String(input.id)}>{label}</Label.Root>
-        {input.type === "text"
-          ? (
-            <TextField.Root {...input as TextField.RootProps} />
-          ) : (
-            <input {...input} />
-          )
-        }
+        <input {...input} />
         {description && Description}
         {displayErrors(errorBag)}
       </Grid>
@@ -65,10 +83,7 @@ export function InputField({ label, input, errors, icon, description }: InputFie
         <Label.Root htmlFor={String(input.id)}>{label.main}</Label.Root>
         {input.type === "text"
           ? (
-            <TextField.Root {...input as TextField.RootProps}>
-              <input {...input} />
-              <TextField.Slot>{label.prefix}</TextField.Slot>
-            </TextField.Root>
+            <input {...input} />
           ) : (
             <Flex align="center" gapX="4">
               <input {...input} />
@@ -88,15 +103,7 @@ export function InputField({ label, input, errors, icon, description }: InputFie
 
   return (
     <Grid gapY="1">
-      {input.type === "text"
-        ? (
-          <TextField.Root {...input as TextField.RootProps}>
-            <input {...input} />
-          </TextField.Root>
-        ) : (
-          <input {...input} />
-        )
-      }
+      <input {...input} />
       {description && Description}
       {displayErrors(errorBag)}
     </Grid>

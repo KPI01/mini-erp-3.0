@@ -2,17 +2,25 @@ import type {
     Item as ItemPrisma,
     Ubicacion as UbicacionPrisma,
     Stock as StockPrisma,
+    UnidadMedida,
 } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
 import { RowActions } from "~/components/table/actions";
 import { ColumnHeader } from "~/components/table/table-header";
 
-export type Item = ItemPrisma & { ubicacion: UbicacionPrisma, stock: StockPrisma[] }
+export type Item = ItemPrisma & { ubicacion: UbicacionPrisma, stock: StockPrisma[], unidadMedida: UnidadMedida }
 const itemColumnHelper = createColumnHelper<Item>()
 export const itemColumn = [
-    itemColumnHelper.accessor("id", { header: "Código" }),
+    itemColumnHelper.accessor("id", {
+        header: ({ header }) => (<ColumnHeader header={header} title="Código" />),
+        sortDescFirst: true
+    }),
     itemColumnHelper.accessor("descripcion", {
-        header: ({ column }) => (<ColumnHeader column={column} title="Descripción" />)
+        header: ({ header }) => (<ColumnHeader header={header} title="Descripción" />),
+        enableColumnFilter: true,
+        meta: {
+            filterVariant: "text"
+        }
     }),
     itemColumnHelper.accessor(col => col.ubicacion, {
         header: "Ubicación",
@@ -26,10 +34,11 @@ export const itemColumn = [
     }),
     itemColumnHelper.accessor(col => col.stock, {
         header: "Stock Actual",
-        cell: ({ cell }) => {
+        cell: ({ cell, row }) => {
             let sum = 0
             cell.getValue().map((mov) => { sum += mov.cant })
-            return `${sum} und.`
+            const und = row.original.unidadMedida.corto
+            return `${sum} ${und}.`
         }
     }),
     itemColumnHelper.display({
@@ -53,7 +62,7 @@ export const stockColumn = [
         cell: ({ cell }) => cell.getValue().toLocaleString()
     }),
     stockColumnHelper.accessor("descripcion", {
-        header: ({ column }) => (<ColumnHeader column={column} title="Descripción" />)
+        header: ({ header }) => (<ColumnHeader header={header} title="Descripción" />)
     }),
     stockColumnHelper.accessor("item.descripcion", {
         header: "Item"

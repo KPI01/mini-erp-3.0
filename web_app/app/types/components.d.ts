@@ -1,7 +1,7 @@
 import type { User } from "@prisma/client";
 import type { EyeClosedIcon, } from "@radix-ui/react-icons";
 import type { Button, IconButton, Checkbox, ButtonProps, AlertDialog } from "@radix-ui/themes";
-import type { Column, ColumnDef } from "@tanstack/react-table";
+import type { Column, ColumnDef, Header } from "@tanstack/react-table";
 import type { Routes } from "./session";
 import { Form } from "radix-ui";
 import type { Dispatch } from "react";
@@ -38,7 +38,7 @@ interface InputProps {
     errors?: unknown;
 };
 
-type InputFieldType = Partial<React.InputHTMLAttributes<HTMLInputElement>> | Record<string, unknown>
+type InputFieldType = React.InputHTMLAttributes<HTMLInputElement>
 interface InputFieldProps {
     label?: string | { main: string, prefix?: string, suffix?: string };
     description?: string;
@@ -81,15 +81,16 @@ interface DataTableProps<TData, TValue> {
 
 interface DTColumnHeaderProps<TData, TValue>
     extends React.HTMLAttributes<HTMLDivElement> {
-    column: Column<TData, TValue>;
+    header: Header<TData, TValue>;
     title: string;
 }
 type DTColHeaderAction = { label: string, action?: () => void }
 interface DTFilterArgs {
-    defaultValue: string;
+    column: Column<any, unknown>
 }
 interface DTColHeaderDropDownProps {
     trigger: string;
+    header: Header<any, unknown>
 }
 interface DialogFormProps {
     trigger: TriggerButton;
