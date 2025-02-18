@@ -1,23 +1,31 @@
 import { Button, DropdownMenu, Flex, Select, Separator, Strong, Text } from "@radix-ui/themes";
 import type { DTColHeaderDropDownProps, DTColumnHeaderProps, DTFilterArgs } from "~/types/components";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import { InputField } from "../forms/input";
+import { DebouncedInput, InputField } from "../forms/input";
+import React from "react";
 
-function Filter({ defaultValue }: DTFilterArgs) {
+function Filter({ column }: DTFilterArgs) {
+    const filterValue = column.getFilterValue()
+    console.debug("filter value:", filterValue)
+    //@ts-ignore
+    const { filterVariant } = column.columnDef.meta ?? {}
+
     return (
         <Flex direction="column" gap="2" className="m-2">
-            <InputField
-                input={{
-                    type: "text",
-                    className: "border-(--gray-6)"
-                }}
+            <DebouncedInput
+                className="!max-w-sm"
+                debounce={250}
+                onChange={value => column.setFilterValue(value)}
+                placeholder={`Search...`}
+                type="text"
+                value={(filterValue ?? '') as string}
             />
         </Flex>
     )
 
 }
 
-function Dropdown({ trigger }: DTColHeaderDropDownProps) {
+function Dropdown({ trigger, header }: DTColHeaderDropDownProps) {
     return <DropdownMenu.Root >
         <DropdownMenu.Trigger>
             <Button color="gray" variant="ghost" className="!font-semibold">
@@ -27,25 +35,25 @@ function Dropdown({ trigger }: DTColHeaderDropDownProps) {
                 <DropdownMenu.TriggerIcon />
             </Button>
         </DropdownMenu.Trigger>
-        <DropdownMenu.Content variant="soft" color="gray" className="!w-[150px]">
-            <DropdownMenu.Item>
-                <Text as="span">Ordenar</Text>
+        <DropdownMenu.Content side="top" variant="soft" color="gray">
+            <DropdownMenu.Item style={{ justifyContent: "center" }} onClick={() => header.column.toggleSorting()}>
+                Ordenar
                 <CaretSortIcon />
             </DropdownMenu.Item>
             <Separator size="4" my="4" />
-            <Filter defaultValue="0" />
+            <Filter column={header.column} />
         </DropdownMenu.Content>
     </DropdownMenu.Root>
 }
 
 function ColumnHeader<TData, TValue>({
-    column,
+    header,
     title,
     className,
 }: DTColumnHeaderProps<TData, TValue>) {
-    if (!column.getCanSort()) return <div className={className}>{title}</div>
+    if (!header.column.getCanSort()) return <div className={className}>{title}</div>
 
-    return <Dropdown trigger={title} />
+    return <Dropdown trigger={title} header={header} />
 }
 
 export { ColumnHeader }
