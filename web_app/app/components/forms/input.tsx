@@ -34,20 +34,8 @@ export function DebouncedInput({
 }
 
 export function InputField({ label, input, errors, icon, description }: InputFieldProps) {
-  const errorBag = cleanErrors(errors?.field, errors?.bag)
+  const errorBag = cleanErrors(input.name, errors)
   const Description = <Text as="p" size="1" weight="light" trim="both"> {description}</Text >
-
-
-  if (label && input.type === "checkbox") {
-    console.debug(`InputField[${input.name}] es Checkbox`)
-    return <Grid gapY="1">
-      <CheckboxField
-        label={typeof label === "string" ? label : label?.main}
-        input={{ ...input }}
-      />
-      {errors && displayErrors(errorBag)}
-    </Grid>
-  }
 
   if (typeof label === "string") {
     console.debug(`InputField[${input.name}] no tiene prefijo y es ${input.type}`)
@@ -55,7 +43,7 @@ export function InputField({ label, input, errors, icon, description }: InputFie
     if (icon) {
       return (
         <Grid gapY="1">
-          <Label.Root htmlFor={String(input.id)}>{label}</Label.Root>
+          <Label.Root htmlFor={String(input.name)}>{label}</Label.Root>
           <Flex gapX="4" justify="between">
             <input {...input} style={{ flexBasis: "100%" }} />
             <IconButton type="button" onClick={() => icon.stateHandler()}>
@@ -80,7 +68,7 @@ export function InputField({ label, input, errors, icon, description }: InputFie
     console.debug(`InputField[${input.name}] tiene label y es ${input.type}`)
     return (
       <Grid gapY="1">
-        <Label.Root htmlFor={String(input.id)}>{label.main}</Label.Root>
+        <Label.Root htmlFor={String(input.name)}>{label.main}</Label.Root>
         {input.type === "text"
           ? (
             <input {...input} />
@@ -110,18 +98,16 @@ export function InputField({ label, input, errors, icon, description }: InputFie
   )
 
 }
-
-function CheckboxField({ label, input }: CheckboxFieldProps) {
-  return <Flex gapX="2" align="center">
-    <Checkbox
-      id={input.name}
-      name={input.name}
-      defaultChecked={Boolean(input.value)}
-      value={String(input.value)}
-      onClick={input.onClick}
-    />
-    <Label.Root htmlFor={input.name}>{label ?? ""}</Label.Root>
-  </Flex>
+export function CheckboxField({ input, label, errors }: CheckboxFieldProps) {
+  const errorBag = cleanErrors(input.name, errors)
+  return (
+    <Grid>
+      <Flex align="center" gapX="2">
+        <Checkbox {...input} id={input.name} /> <Label.Root htmlFor={input.name}>{label}</Label.Root>
+      </Flex>
+      {displayErrors(errorBag)}
+    </Grid>
+  )
 }
 
 export function displayErrors(errors?: string[]) {

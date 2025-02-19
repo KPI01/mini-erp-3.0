@@ -16,8 +16,11 @@ export default [
             route("stock", "routes/app/items/stock.tsx"),
             route("reception", "routes/app/items/reception.tsx")
         ]),
-        ...prefix("unidadMedida", [
+        ...prefix("unidad-medida", [
             index("routes/app/unidad-medida/index.tsx")
+        ]),
+        ...prefix("ubicacion", [
+            index("routes/app/ubicacion/index.tsx")
         ])
     ])
 ] satisfies RouteConfig;

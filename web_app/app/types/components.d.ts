@@ -3,7 +3,7 @@ import type { EyeClosedIcon, } from "@radix-ui/react-icons";
 import type { Button, IconButton, Checkbox, ButtonProps, AlertDialog } from "@radix-ui/themes";
 import type { Column, ColumnDef, Header } from "@tanstack/react-table";
 import type { Routes } from "./session";
-import { Form } from "radix-ui";
+import { Form, Select } from "radix-ui";
 import type { Dispatch } from "react";
 
 type TriggerButton = string | { label: string, icon: React.ReactNode }
@@ -44,12 +44,13 @@ interface InputFieldProps {
     description?: string;
     icon?: { stateHandler: () => void, children: React.ReactNode };
     input: InputFieldType;
-    errors?: { field: string, bag: Record<string, unknown> }
+    errors?: ErrorsFieldType
 
 }
 interface CheckboxFieldProps {
-    label: string,
-    input: Partial<React.ComponentProps<Checkbox>>
+    label: string;
+    input: Partial<React.ComponentProps<typeof Checkbox>>;
+    errors?: ErrorsFieldType
 }
 
 interface IconProps extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> { };
@@ -109,13 +110,14 @@ interface SelectInputProps {
     options: Array<SelectInputOptionsType>;
     state: {
         value: string,
-        changer: Dispatch
+        changer?(value: string): void
     }
     config?: Partial<{
         label?: string;
         current?: string;
         containerClass: string
-    }>
+    }>;
+    errors?: ErrorsFieldType;
 }
 
 interface AlertDialogProps extends React.PropsWithChildren {

@@ -40,7 +40,7 @@ model Item {
 model Ubicacion {
   id          Int         @id @default(autoincrement())
   descripcion String
-  corto       String
+  corto       String      @unique
   isAlmacen   Boolean     @default(false)
   ubicacionId Int?
   item        Item[]

@@ -1,18 +1,23 @@
 import type { Route } from "../+types";
 import DataTable from "~/components/table/data-table";
 import { itemColumn } from "./tables";
+<<<<<<< Updated upstream
 import { PrismaClient, type Item, type Ubicacion, type UnidadMedida } from "@prisma/client";
+=======
+import { PrismaClient, type Ubicacion, type UnidadMedida } from "@prisma/client";
+>>>>>>> Stashed changes
 import { type MetaFunction, data, Form } from "react-router";
 import { Header } from "../components";
 import { validateAuthSession } from "~/server/session.server";
 import { Flex, Grid, Text } from "@radix-ui/themes";
 import type { SelectInputOptionsType } from "~/types/components";
 import { AddItemForm, AddUbicacionForm, AddUnidadMedidaForm } from "./forms";
-import { addItem, deleteItem } from "~/server/actions/items.server";
+import { addItem, deleteItem } from "~/server/actions/item.server";
 import { validateSessionErrors } from "~/server/form-validation.server";
 import { PlusIcon } from "@radix-ui/react-icons";
 import AlertDialog from "~/components/ui/alert-dialog";
 import Popover from "~/components/ui/popover";
+import { useState } from "react";
 
 export const meta: MetaFunction = () => {
     return [{ title: "Items", description: "Visualización de los items registrados." }];
@@ -47,12 +52,17 @@ export async function action({ request, params }: Route.ActionArgs) {
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {
+    const [popoverOpen, setPopoverOpen] = useState(false)
+    console.debug("state popover:", popoverOpen)
+    const closePopover = () => {
+        setPopoverOpen(false)
+    }
     console.debug("loaderData:", loaderData)
     //@ts-ignore
     const errors = loaderData?.zodErrors
-    console.error(errors)
+    console.error("errores:", errors)
     //@ts-ignore
-    const ubicaciones = loaderData?.ubicaciones.map((ub) => {
+    const ubicaciones = loaderData?.ubicaciones.map((ub: Ubicacion) => {
         return { [String(ub.id)]: ub.descripcion } satisfies SelectInputOptionsType
     })
     //@ts-ignore
@@ -70,7 +80,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
                         <AddUnidadMedidaForm errors={errors} />
                     </Popover>
                     <Popover variant="surface" trigger={{ label: "Ubicación", icon: <PlusIcon /> }}>
-                        <AddUbicacionForm ubicaciones={ubicaciones} />
+                        <AddUbicacionForm errors={errors} ubicaciones={ubicaciones} />
                     </Popover>
                     <AlertDialog
                         trigger={{ label: "Articulo", icon: <PlusIcon /> }}

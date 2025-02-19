@@ -1,8 +1,12 @@
 import { Grid, Select } from "@radix-ui/themes";
 import { Label } from "radix-ui";
+import { cleanErrors } from "~/helpers/utils";
 import type { SelectInputProps } from "~/types/components";
+import { displayErrors } from "./input";
 
-export default function SelectInput({ name, options, state, config }: SelectInputProps) {
+export default function SelectInput({ name, options, state, config, errors }: SelectInputProps) {
+
+    const errorBag = cleanErrors(name, errors)
     console.debug("selected:", state.value)
 
     const trigger = state.value && state.value !== "" && options[Number(state.value) - 1][state.value]
@@ -24,6 +28,7 @@ export default function SelectInput({ name, options, state, config }: SelectInpu
                     })}
                 </Select.Content>
             </Select.Root>
+            {errorBag && displayErrors(errorBag)}
         </Grid>
     )
 }

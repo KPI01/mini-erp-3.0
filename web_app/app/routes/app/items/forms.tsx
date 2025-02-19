@@ -16,7 +16,7 @@ export const addItemSchema = z.object({
     descripcion: STRING_FIELD,
     activo: z.boolean().optional().default(true),
     ubicacionId: STRING_FIELD,
-    unidadMedidaId: STRING_FIELD
+    unidadMedidaId: z.string().optional()
 })
 export type addItemSchemaType = z.infer<typeof addItemSchema>
 const addItemOptions = formOptions({
@@ -123,13 +123,7 @@ export const addUbicacionSchema = z.object({
     descripcion: STRING_FIELD,
     corto: STRING_FIELD.max(5, MAX_LENGTH_MSG(5)),
     isAlmacen: z.boolean().default(false),
-    ubicacionId: STRING_FIELD.optional()
-}).superRefine((values, ctx) => {
-    if (!values.isAlmacen && !values.ubicacionId) ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Debes seleccionar una ubicación.",
-        params: ["ubicacionId"]
-    })
+    ubicacionId: z.string().nullish().default(null)
 })
 export type addUbicacionSchemaType = z.infer<typeof addUbicacionSchema>
 const addUbicacionOptions = formOptions({
@@ -137,24 +131,21 @@ const addUbicacionOptions = formOptions({
         descripcion: "",
         corto: "",
         isAlmacen: true,
-        ubicacionId: ""
     } as addUbicacionSchemaType,
-    validators: {
-        onChange: addUbicacionSchema
-    }
+    validators: { onChange: addUbicacionSchema, onSubmit: addUbicacionSchema }
 }
 )
-interface AddUbicacionFormProps { ubicaciones: SelectInputOptionsType[] }
-export function AddUbicacionForm({ ubicaciones }: AddUbicacionFormProps) {
+interface AddUbicacionFormProps { ubicaciones: SelectInputOptionsType[], errors: Record<string, unknown> }
+export function AddUbicacionForm({ ubicaciones, errors }: AddUbicacionFormProps) {
     const [visible, setVisible] = useState(false)
     const form = useForm(addUbicacionOptions)
     return <Grid asChild gapY="3">
-        <Form action="/app/items/ubicacion" method="post" onSubmit={() => form.handleSubmit()}>
+        <Form action="/app/ubicacion" method="post" onSubmit={() => form.handleSubmit()}>
             <form.Field
                 name="descripcion"
                 children={({ name, state, handleBlur, handleChange }) => (
                     <InputField
-                        label="Descripción"
+                        label="Descripción *"
                         input={{
                             type: "text",
                             name,
@@ -162,6 +153,7 @@ export function AddUbicacionForm({ ubicaciones }: AddUbicacionFormProps) {
                             onChange: (e) => handleChange(e.target.value),
                             onBlur: handleBlur
                         }}
+                        errors={errors}
                     />
                 )} />
             <form.Field
@@ -176,6 +168,7 @@ export function AddUbicacionForm({ ubicaciones }: AddUbicacionFormProps) {
                             onChange: (e) => handleChange(e.target.value),
                             onBlur: handleBlur
                         }}
+                        errors={errors}
                     />
                 )} />
             <form.Field
@@ -199,19 +192,18 @@ export function AddUbicacionForm({ ubicaciones }: AddUbicacionFormProps) {
                 <form.Field
                     name="ubicacionId"
                     children={(field) => (
-                        <Grid gapY="1">
-                            <SelectInput
-                                name={field.name}
-                                options={ubicaciones}
-                                state={{
-                                    value: field.state.value ?? "",
-                                    changer: field.handleChange
-                                }}
-                                config={{
-                                    label: "Ubicación *"
-                                }}
-                            />
-                        </Grid>
+                        <SelectInput
+                            name={field.name}
+                            options={ubicaciones}
+                            state={{
+                                value: field.state.value ?? "",
+                                changer: (v) => field.handleChange(v)
+                            }}
+                            config={{
+                                label: "Ubicación *"
+                            }}
+                            errors={errors}
+                        />
                     )}
                 />
             )}
@@ -254,7 +246,7 @@ export function AddUnidadMedidaForm({ errors, submitCallback }: { errors: Record
         }
     })
 
-    return <Form className="grid gap-y-4" action="/app/unidadMedida" method="post">
+    return <Form className="grid gap-y-4" action="/app/unidad-medida" method="post">
         <form.Field
             name="descripcion"
             validators={{ onChange: addUnidadMedidaSchema.shape.descripcion }}
@@ -268,7 +260,7 @@ export function AddUnidadMedidaForm({ errors, submitCallback }: { errors: Record
                         value: field.state.value,
                         onChange: (e) => field.handleChange(e.target.value)
                     }}
-                    errors={{ field: field.name, bag: errors }}
+                    errors={errors}
                 />
             )}
         />
@@ -285,7 +277,7 @@ export function AddUnidadMedidaForm({ errors, submitCallback }: { errors: Record
                         value: field.state.value,
                         onChange: (e) => field.handleChange(e.target.value)
                     }}
-                    errors={{ field: field.name, bag: errors }}
+                    errors={errors}
                 />
             )}
         />
