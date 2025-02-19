@@ -97,14 +97,15 @@ export function AddItemForm({ errors, ubicaciones, unidades }: AddItemFormProps)
             />
             <form.Field
                 name="activo"
-                children={(field) => (
+                children={({ name, state, handleChange, handleBlur }) => (
                     <InputField
                         label="¿Articulo activo?"
                         input={{
-                            ...field,
                             type: "checkbox",
-                            value: field.state.value,
-                            onClick: () => field.handleChange(!field.state.value)
+                            checked: state.value,
+                            value: String(state.value),
+                            onClick: () => handleChange(!state.value),
+                            onBlur: handleBlur
                         }}
                     />
                 )}
@@ -118,7 +119,7 @@ export function AddItemForm({ errors, ubicaciones, unidades }: AddItemFormProps)
 // fin
 
 // inicio: addUbicacion
-const addUbicacionSchema = z.object({
+export const addUbicacionSchema = z.object({
     descripcion: STRING_FIELD,
     corto: STRING_FIELD.max(5, MAX_LENGTH_MSG(5)),
     isAlmacen: z.boolean().default(false),
@@ -151,43 +152,46 @@ export function AddUbicacionForm({ ubicaciones }: AddUbicacionFormProps) {
         <Form action="/app/items/ubicacion" method="post" onSubmit={() => form.handleSubmit()}>
             <form.Field
                 name="descripcion"
-                children={(field) => (
+                children={({ name, state, handleBlur, handleChange }) => (
                     <InputField
                         label="Descripción"
                         input={{
-                            ...field,
                             type: "text",
-                            value: field.state.value,
-                            onChange: (e) => field.handleChange(e.target.value)
+                            name,
+                            value: state.value,
+                            onChange: (e) => handleChange(e.target.value),
+                            onBlur: handleBlur
                         }}
                     />
                 )} />
             <form.Field
                 name="corto"
-                children={(field) => (
+                children={({ name, state, handleBlur, handleChange }) => (
                     <InputField
                         label="Abreviatura"
                         input={{
-                            ...field,
+                            name,
                             type: "text",
-                            value: field.state.value,
-                            onChange: (e) => field.handleChange(e.target.value)
+                            value: state.value,
+                            onChange: (e) => handleChange(e.target.value),
+                            onBlur: handleBlur
                         }}
                     />
                 )} />
             <form.Field
                 name="isAlmacen"
-                children={(field) => (
+                children={({ name, state, handleBlur, handleChange }) => (
                     <InputField
                         label="¿Es un almacén?"
                         input={{
-                            ...field,
+                            name,
                             type: "checkbox",
-                            value: field.state.value,
+                            value: String(state.value),
                             onClick: () => {
                                 setVisible(!visible)
-                                field.handleChange(!field.state.value)
-                            }
+                                handleChange(!state.value)
+                            },
+                            onBlur: handleBlur
                         }}
                     />
                 )} />

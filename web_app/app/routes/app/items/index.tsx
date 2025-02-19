@@ -1,20 +1,15 @@
 import type { Route } from "../+types";
 import DataTable from "~/components/table/data-table";
 import { itemColumn } from "./tables";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type Item, type Ubicacion, type UnidadMedida } from "@prisma/client";
 import { type MetaFunction, data, Form } from "react-router";
 import { Header } from "../components";
 import { validateAuthSession } from "~/server/session.server";
-import { Button, Flex, Grid, Text } from "@radix-ui/themes";
+import { Flex, Grid, Text } from "@radix-ui/themes";
 import type { SelectInputOptionsType } from "~/types/components";
-import SelectInput from "~/components/forms/select";
-import { useForm } from '@tanstack/react-form'
 import { AddItemForm, AddUbicacionForm, AddUnidadMedidaForm } from "./forms";
 import { addItem, deleteItem } from "~/server/actions/items.server";
 import { validateSessionErrors } from "~/server/form-validation.server";
-import { useState } from "react";
-import { displayErrors, InputField } from "~/components/forms/input";
-import { cleanErrors } from "~/helpers/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
 import AlertDialog from "~/components/ui/alert-dialog";
 import Popover from "~/components/ui/popover";
@@ -29,15 +24,16 @@ export async function loader({ request }: Route.LoaderArgs) {
     const prisma = new PrismaClient()
     const aux = {
         items: await prisma.item.findMany({ include: { ubicacion: true, stock: true, unidadMedida: true } }),
-        ubicaciones: await prisma.ubicacion.findMany()
+        ubicaciones: await prisma.ubicacion.findMany(),
+        unidades: await prisma.unidadMedida.findMany()
     }
 
     const sessionData = await validateSessionErrors({ session, key: "zodErrors", extraData: aux })
     if (sessionData) {
-        return { ...sessionData }
+        return data(...sessionData)
     }
 
-    return data(aux)
+    return aux
 }
 
 export async function action({ request, params }: Route.ActionArgs) {
@@ -59,6 +55,10 @@ export default function Index({ loaderData }: Route.ComponentProps) {
     const ubicaciones = loaderData?.ubicaciones.map((ub) => {
         return { [String(ub.id)]: ub.descripcion } satisfies SelectInputOptionsType
     })
+    //@ts-ignore
+    const unidades = loaderData?.unidades.map((ub) => {
+        return { [String(ub.id)]: ub.descripcion } satisfies SelectInputOptionsType
+    })
 
     return (
         <Grid gapY="4">
@@ -67,7 +67,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
                 <Text as="p" weight="light" size="1">Todos los campos que tengan (*), son obligatorios</Text>
                 <Flex gapX="5" align="center" justify="end">
                     <Popover variant="surface" trigger={{ icon: <PlusIcon />, label: "Und. Medida" }}>
-                        <AddUnidadMedidaForm />
+                        <AddUnidadMedidaForm errors={errors} />
                     </Popover>
                     <Popover variant="surface" trigger={{ label: "Ubicación", icon: <PlusIcon /> }}>
                         <AddUbicacionForm ubicaciones={ubicaciones} />
@@ -76,7 +76,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
                         trigger={{ label: "Articulo", icon: <PlusIcon /> }}
                         header={{ title: "Agregando articulo", description: "Formulario para agregar un articulo." }}
                     >
-                        <AddItemForm errors={errors} ubicaciones={ubicaciones} />
+                        <AddItemForm errors={errors} ubicaciones={ubicaciones} unidades={unidades} />
                     </AlertDialog>
                 </Flex>
             </Flex>
