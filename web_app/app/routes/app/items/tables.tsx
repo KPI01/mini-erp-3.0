@@ -22,9 +22,12 @@ export const itemColumn = [
             filterVariant: "text"
         }
     }),
-    itemColumnHelper.accessor(col => col.ubicacion, {
+    itemColumnHelper.accessor("ubicacionId", {
         header: "Ubicación",
-        cell: ({ cell }) => (cell.getValue().descripcion)
+        cell: ({ row }) => {
+            if (row.original.ubicacionId) return row.original.ubicacion.descripcion
+            return "Sin ubicación"
+        }
     }),
     itemColumnHelper.accessor("stockMin", {
         header: "Stock Mínimo",

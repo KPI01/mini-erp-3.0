@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { Button, Grid } from "@radix-ui/themes";
+import { Button, Grid, TextField } from "@radix-ui/themes";
 import { formOptions, useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { Form } from "react-router";
 import { z } from "zod";
-import { InputField } from "~/components/forms/input";
+import { CheckboxField, InputField } from "~/components/forms/input";
 import SelectInput from "~/components/forms/select";
-import { MAX_LENGTH_MSG, STRING_FIELD } from "~/helpers/forms";
+import { INVALID_MSG, MAX_LENGTH_MSG, STRING_FIELD } from "~/helpers/forms";
 import type { SelectInputOptionsType } from "~/types/components";
 
 const prisma = new PrismaClient()
@@ -16,13 +16,14 @@ export const addItemSchema = z.object({
     descripcion: STRING_FIELD,
     activo: z.boolean().optional().default(true),
     ubicacionId: STRING_FIELD,
-    unidadMedidaId: z.string().optional()
+    unidadMedidaId: STRING_FIELD
 })
 export type addItemSchemaType = z.infer<typeof addItemSchema>
 const addItemOptions = formOptions({
     defaultValues: {
         descripcion: "",
         activo: true,
+
     } as addItemSchemaType,
     validators: {
         onChange: addItemSchema
@@ -30,17 +31,10 @@ const addItemOptions = formOptions({
 })
 interface AddItemFormProps { errors: any, ubicaciones: SelectInputOptionsType[], unidades: SelectInputOptionsType[] }
 export function AddItemForm({ errors, ubicaciones, unidades }: AddItemFormProps) {
-    const form = useForm({
-        ...addItemOptions,
-        onSubmit: ({ value }) => {
-            console.debug("enviando formulario...", value)
-        }
-    })
-    console.debug("state:", form.state.values)
-    console.debug("errors", form.state.errorMap)
+    const form = useForm(addItemOptions)
 
     return <Grid asChild gapY="4">
-        <Form onSubmit={() => form.handleSubmit()}>
+        <Form method="post" action="/app/items" onSubmit={() => form.handleSubmit()}>
             <Grid gapX="3" columns="2" className="!w-full">
                 <form.Field
                     name="descripcion"
@@ -56,57 +50,60 @@ export function AddItemForm({ errors, ubicaciones, unidades }: AddItemFormProps)
                                 onChange: (e) => field.handleChange(e.target.value),
                                 onBlur: field.handleBlur,
                             }}
+                            errors={errors}
                         />
                     )} />
                 <form.Field
                     name="unidadMedidaId"
                     children={(field) => (
-                        <Grid gapY="1">
-                            <SelectInput
-                                name={field.name}
-                                options={unidades}
-                                state={{
-                                    value: field.state.value ?? "",
-                                    changer: field.handleChange
-                                }}
-                                config={{
-                                    label: "Unidad de medida *"
-                                }}
-                            />
-                        </Grid>
+                        <SelectInput
+                            name={field.name}
+                            options={unidades}
+                            state={{
+                                value: field.state.value,
+                                changer: field.handleChange
+                            }}
+                            config={{
+                                label: "Unidad de medida *"
+                            }}
+                            errors={errors}
+                        />
                     )}
                 />
             </Grid>
             <form.Field
                 name="ubicacionId"
-                children={(field) => (
-                    <Grid gapY="1">
+                children={(field) => {
+                    console.debug(`[${field.name}]:`, field.state.value)
+                    return (
                         <SelectInput
                             name={field.name}
                             options={ubicaciones}
                             state={{
-                                value: field.state.value ?? "",
+                                value: field.state.value,
                                 changer: field.handleChange
                             }}
                             config={{
                                 label: "Ubicación *"
                             }}
+                            errors={errors}
                         />
-                    </Grid>
-                )}
+                    )
+                }}
             />
             <form.Field
                 name="activo"
                 children={({ name, state, handleChange, handleBlur }) => (
-                    <InputField
+                    <CheckboxField
                         label="¿Articulo activo?"
                         input={{
-                            type: "checkbox",
+                            name,
                             checked: state.value,
                             value: String(state.value),
                             onClick: () => handleChange(!state.value),
                             onBlur: handleBlur
                         }}
+                        errors={errors}
                     />
                 )}
             />
@@ -121,7 +118,7 @@ export function AddItemForm({ errors, ubicaciones, unidades }: AddItemFormProps)
 // inicio: addUbicacion
 export const addUbicacionSchema = z.object({
     descripcion: STRING_FIELD,
-    corto: STRING_FIELD.max(5, MAX_LENGTH_MSG(5)),
+    corto: z.string({ invalid_type_error: INVALID_MSG }).max(10, MAX_LENGTH_MSG(10)).optional(),
     isAlmacen: z.boolean().default(false),
     ubicacionId: z.string().nullish().default(null)
 })
@@ -174,12 +171,12 @@ export function AddUbicacionForm({ ubicaciones, errors }: AddUbicacionFormProps)
             <form.Field
                 name="isAlmacen"
                 children={({ name, state, handleBlur, handleChange }) => (
-                    <InputField
+                    <CheckboxField
                         label="¿Es un almacén?"
                         input={{
                             name,
-                            type: "checkbox",
                             value: String(state.value),
+                            checked: state.value,
                             onClick: () => {
                                 setVisible(!visible)
                                 handleChange(!state.value)
@@ -196,8 +193,8 @@ export function AddUbicacionForm({ ubicaciones, errors }: AddUbicacionFormProps)
                             name={field.name}
                             options={ubicaciones}
                             state={{
-                                value: field.state.value ?? "",
-                                changer: (v) => field.handleChange(v)
+                                value: field.state.value ?? undefined,
+                                changer: field.handleChange
                             }}
                             config={{
                                 label: "Ubicación *"

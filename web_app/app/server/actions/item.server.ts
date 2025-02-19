@@ -14,11 +14,11 @@ async function addItem(request: Request) {
     const session = await validateAuthSession({ request })
 
     const form = await request.formData()
-    console.debug("request data:", form)
     const formData: Partial<addItemSchemaType> = {
-        descripcion: form.get("descripcion")?.toString(),
+        descripcion: String(form.get("descripcion")),
         activo: Boolean(form.get("activo")),
-        ubicacionId: String(form.get("ubicacionId")),
+        ubicacionId: form.get("ubicacionId")?.toString(),
+        unidadMedidaId: form.get("unidadMedidaId")?.toString()
     }
 
     console.debug("validando con zod...", formData)
@@ -33,23 +33,17 @@ async function addItem(request: Request) {
     }
 
     console.debug("creando Item...")
-    let item = await prisma.item.create({
+    const item = await prisma.item.create({
         data: {
-            descripcion: data?.descripcion,
-            activo: data?.activo,
-            ubicacionId: Number(data?.ubicacionId),
-
+            descripcion: data.descripcion,
+            activo: data.activo,
+            unidadMedidaId: Number(data.unidadMedidaId),
+            ubicacionId: Number(data.ubicacionId)
         }
-    }
-    ).then(async (item) => {
-        console.debug("Item:", item)
-        if (!item) return undefined
-        return item
     }).catch(async (e) => {
-        console.error(e)
+        console.error("ha ocurrido un error creando el Item...")
         throw e
     })
-
 
     return item
 }
@@ -62,7 +56,11 @@ async function deleteItem(request: Request, id: number) {
         console.debug("eliminando Item...")
         const item = await prisma.item.delete({
             where: { id },
+        }).catch(async (e) => {
+            console.error("ha ocurrido un error eliminando el Item...")
+            throw e
         })
+
         session.flash("info", { description: "Item eliminado", payload: item })
         throw redirect(routes.base, {
             headers: { "Set-Cookie": await commitSession(session) }

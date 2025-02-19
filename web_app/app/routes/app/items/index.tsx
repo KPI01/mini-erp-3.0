@@ -1,11 +1,7 @@
 import type { Route } from "../+types";
 import DataTable from "~/components/table/data-table";
 import { itemColumn } from "./tables";
-<<<<<<< Updated upstream
 import { PrismaClient, type Item, type Ubicacion, type UnidadMedida } from "@prisma/client";
-=======
-import { PrismaClient, type Ubicacion, type UnidadMedida } from "@prisma/client";
->>>>>>> Stashed changes
 import { type MetaFunction, data, Form } from "react-router";
 import { Header } from "../components";
 import { validateAuthSession } from "~/server/session.server";
@@ -28,7 +24,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 
     const prisma = new PrismaClient()
     const aux = {
-        items: await prisma.item.findMany({ include: { ubicacion: true, stock: true, unidadMedida: true } }),
+        items: await prisma.item.findMany({
+            include: { ubicacion: true, stock: true, unidadMedida: true }
+        }),
         ubicaciones: await prisma.ubicacion.findMany(),
         unidades: await prisma.unidadMedida.findMany()
     }
@@ -52,22 +50,17 @@ export async function action({ request, params }: Route.ActionArgs) {
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {
-    const [popoverOpen, setPopoverOpen] = useState(false)
-    console.debug("state popover:", popoverOpen)
-    const closePopover = () => {
-        setPopoverOpen(false)
-    }
     console.debug("loaderData:", loaderData)
     //@ts-ignore
     const errors = loaderData?.zodErrors
     console.error("errores:", errors)
     //@ts-ignore
-    const ubicaciones = loaderData?.ubicaciones.map((ub: Ubicacion) => {
-        return { [String(ub.id)]: ub.descripcion } satisfies SelectInputOptionsType
+    const ubicaciones = loaderData.ubicaciones.map((ub: Ubicacion) => {
+        return { [String(ub.id)]: `${ub.descripcion} - ${ub.corto}` } satisfies SelectInputOptionsType
     })
     //@ts-ignore
-    const unidades = loaderData?.unidades.map((ub) => {
-        return { [String(ub.id)]: ub.descripcion } satisfies SelectInputOptionsType
+    const unidades = loaderData?.unidades.map((und: UnidadMedida) => {
+        return { [String(und.id)]: `${und.descripcion} (${und.corto}.)` } satisfies SelectInputOptionsType
     })
 
     return (

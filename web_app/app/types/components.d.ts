@@ -109,8 +109,8 @@ interface SelectInputProps {
     name: string;
     options: Array<SelectInputOptionsType>;
     state: {
-        value: string,
-        changer?(value: string): void
+        value: string | undefined,
+        changer(value: string): void
     }
     config?: Partial<{
         label?: string;

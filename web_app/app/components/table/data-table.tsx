@@ -41,7 +41,6 @@ export default function DataTable<TData, TValue>({
         getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        debugAll: true
     })
 
     return <Table.Root variant="surface">
