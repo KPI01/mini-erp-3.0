@@ -7,13 +7,13 @@ import {
     getSortedRowModel,
     useReactTable,
     type ColumnFiltersState,
-    type ColumnOrderState,
     type PaginationState,
     type SortingState,
 } from '@tanstack/react-table'
-import { Box, Flex, Grid, IconButton, Select, Table, Text } from "@radix-ui/themes";
-import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@radix-ui/react-icons";
+import { Flex, IconButton, Select, Separator, Table, Text } from "@radix-ui/themes";
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
+import SelectInput from "../forms/select";
 
 export default function DataTable<TData, TValue>({
     data,
@@ -90,6 +90,22 @@ export default function DataTable<TData, TValue>({
             <Table.Row>
                 <Table.Cell colSpan={columns.length} align="right">
                     <Flex gapX="3" className="w-full" justify="end">
+                        <Flex align="center" gapX="1">
+                            <Text>
+                                Mostrando
+                            </Text>
+                            <Select.Root value={String(table.getState().pagination.pageSize)} onValueChange={(v) => table.setPageSize(Number(v))}>
+                                <Select.Trigger placeholder="Nada que mostrar..." />
+                                <Select.Content>
+                                    {[5, 10, 15, 20].map(pageSize => (
+                                        <Select.Item key={pageSize} value={String(pageSize)}>
+                                            {pageSize}
+                                        </Select.Item>))
+                                    }
+                                </Select.Content>
+                            </Select.Root>
+                        </Flex>
+                        <Separator orientation="vertical" style={{ height: "100%" }} />
                         <IconButton color="gray" variant="outline" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
                             <ChevronLeftIcon />
                         </IconButton>
