@@ -1,16 +1,15 @@
 import { Cross1Icon } from "@radix-ui/react-icons";
-import { AlertDialog as AD, Button, Grid } from "@radix-ui/themes";
+import { AlertDialog as AD, Button, Flex, Grid } from "@radix-ui/themes";
 import type { AlertDialogProps } from "~/types/components";
 
 export default function AlertDialog({ trigger, variant = "solid", children, header }: AlertDialogProps) {
     return <AD.Root>
         <AD.Trigger>
-            <Button variant={variant}>
-                {typeof trigger === "string"
-                    ? trigger
-                    : <>{trigger.icon} {trigger.label}</>
-                }
-            </Button>
+            <Flex align="center" asChild>
+                <Button variant={variant}>
+                    {trigger}
+                </Button>
+            </Flex>
         </AD.Trigger>
         <AD.Content>
             <AD.Cancel>

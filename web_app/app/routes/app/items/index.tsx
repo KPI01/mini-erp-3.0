@@ -1,6 +1,6 @@
 import type { Route } from "../+types";
 import DataTable from "~/components/table/data-table";
-import { itemColumn } from "./tables";
+import { itemColumn, itemColumnHelper } from "./tables";
 import { PrismaClient, type Item, type Ubicacion, type UnidadMedida } from "@prisma/client";
 import { type MetaFunction, data, Form } from "react-router";
 import { Header } from "../components";
@@ -10,10 +10,10 @@ import type { SelectInputOptionsType } from "~/types/components";
 import { AddItemForm, AddUbicacionForm, AddUnidadMedidaForm } from "./forms";
 import { addItem, deleteItem } from "~/server/actions/item.server";
 import { validateSessionErrors } from "~/server/form-validation.server";
-import { PlusIcon } from "@radix-ui/react-icons";
+import { CubeIcon, PlusIcon } from "@radix-ui/react-icons";
 import AlertDialog from "~/components/ui/alert-dialog";
 import Popover from "~/components/ui/popover";
-import { useState } from "react";
+import { RowActions } from "~/components/table/actions";
 
 export const meta: MetaFunction = () => {
     return [{ title: "Items", description: "Visualización de los items registrados." }];
@@ -53,15 +53,24 @@ export default function Index({ loaderData }: Route.ComponentProps) {
     console.debug("loaderData:", loaderData)
     //@ts-ignore
     const errors = loaderData?.zodErrors
-    console.error("errores:", errors)
+    if (errors) console.error("errores:", errors)
+    let ubicaciones: SelectInputOptionsType = {}
     //@ts-ignore
-    const ubicaciones = loaderData.ubicaciones.map((ub: Ubicacion) => {
-        return { [String(ub.id)]: `${ub.descripcion} - ${ub.corto}` } satisfies SelectInputOptionsType
+    loaderData.ubicaciones.map((ub: Ubicacion) => {
+        ubicaciones[String(ub.id)] = `${ub.descripcion} - ${ub.corto}`
     })
+    console.debug("ubicaciones:", ubicaciones)
+    let unidades: SelectInputOptionsType = {}
     //@ts-ignore
-    const unidades = loaderData?.unidades.map((und: UnidadMedida) => {
-        return { [String(und.id)]: `${und.descripcion} (${und.corto}.)` } satisfies SelectInputOptionsType
+    loaderData?.unidades.map((und: UnidadMedida) => {
+        unidades[String(und.id)] = `${und.descripcion} - ${und.corto}`
     })
+    console.debug("unidades:", unidades)
+    let itemColumnWithActions = [...itemColumn, itemColumnHelper.display({
+        id: "actions",
+        header: "Acciones",
+        cell: ({ row }) => (<RowActions id={String(row.original.id)} route="/app/items" values={row.original} aux={ubicaciones} errorBag={errors} />)
+    })]
 
     return (
         <Grid gapY="4">
@@ -69,22 +78,24 @@ export default function Index({ loaderData }: Route.ComponentProps) {
             <Flex justify="between" align="end">
                 <Text as="p" weight="light" size="1">Todos los campos que tengan (*), son obligatorios</Text>
                 <Flex gapX="5" align="center" justify="end">
-                    <Popover variant="surface" trigger={{ icon: <PlusIcon />, label: "Und. Medida" }}>
+                    <Popover variant="surface" trigger={<><PlusIcon /> Und. Medida</>}>
                         <AddUnidadMedidaForm errors={errors} />
                     </Popover>
-                    <Popover variant="surface" trigger={{ label: "Ubicación", icon: <PlusIcon /> }}>
+                    <Popover variant="surface" trigger={<><PlusIcon /> Ubicación</>}>
+                        {/* @ts-ignore */}
                         <AddUbicacionForm errors={errors} ubicaciones={ubicaciones} />
                     </Popover>
                     <AlertDialog
-                        trigger={{ label: "Articulo", icon: <PlusIcon /> }}
+                        trigger={<><CubeIcon /> Agregar articulo</>}
                         header={{ title: "Agregando articulo", description: "Formulario para agregar un articulo." }}
                     >
+                        {/* ts-ignore */}
                         <AddItemForm errors={errors} ubicaciones={ubicaciones} unidades={unidades} />
                     </AlertDialog>
                 </Flex>
             </Flex>
             {/* @ts-ignore */}
-            <DataTable data={loaderData?.items} columns={itemColumn} />
+            <DataTable data={loaderData?.items} columns={itemColumnWithActions} />
         </Grid>
     )
 }

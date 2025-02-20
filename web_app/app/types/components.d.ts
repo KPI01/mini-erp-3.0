@@ -5,9 +5,12 @@ import type { Column, ColumnDef, Header } from "@tanstack/react-table";
 import type { Routes } from "./session";
 import { Form, Select } from "radix-ui";
 import type { Dispatch } from "react";
+import type { Responsive } from "@radix-ui/themes/dist/esm/props/prop-def.js";
 
-type TriggerButton = string | { label: string, icon: React.ReactNode }
-type ButtonVariants = ButtonProps["variant"]
+type TriggerButton = React.ReactNode
+type VariantsType = ButtonProps["variant"]
+type ColorsType = ButtonProps["color"]
+type MaxWidthType = Responsive<string>
 type IconType = React.ComponentProps<typeof EyeClosedIcon>
 type BtnType = React.ComponentProps<typeof Button>
 
@@ -57,7 +60,10 @@ interface IconProps extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>,
 
 interface DTRowAction {
     id: string;
-    relativeRoute: string;
+    route: string;
+    values: any;
+    aux?: any;
+    errorBag: Record<string, unknown>
 }
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -107,7 +113,7 @@ interface DialogFormProps {
 type SelectInputOptionsType = { [x: string]: string }
 interface SelectInputProps {
     name: string;
-    options: Array<SelectInputOptionsType>;
+    options: SelectInputOptionsType;
     state: {
         value: string | undefined,
         changer(value: string): void
@@ -121,7 +127,7 @@ interface SelectInputProps {
 }
 
 interface AlertDialogProps extends React.PropsWithChildren {
-    variant?: ButtonVariants;
+    variant?: VariantsType;
     trigger: TriggerButton,
     header?: Partial<{
         title: string;
@@ -130,7 +136,9 @@ interface AlertDialogProps extends React.PropsWithChildren {
 }
 
 interface PopoverProps extends React.PropsWithChildren {
-    variant?: ButtonVariants;
+    variant?: VariantsType;
+    color?: ColorsType;
+    maxWidth?: MaxWidthType
     trigger: TriggerButton
     state?: {
         value: boolean,

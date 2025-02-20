@@ -1,15 +1,17 @@
-import type {
-    Item as ItemPrisma,
-    Ubicacion as UbicacionPrisma,
-    Stock as StockPrisma,
-    UnidadMedida,
+import {
+    type Item as ItemPrisma,
+    type Ubicacion as UbicacionPrisma,
+    type Stock as StockPrisma,
+    type UnidadMedida,
+    PrismaClient,
 } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
-import { RowActions } from "~/components/table/actions";
 import { ColumnHeader } from "~/components/table/table-header";
 
+const prisma = new PrismaClient()
+
 export type Item = ItemPrisma & { ubicacion: UbicacionPrisma, stock: StockPrisma[], unidadMedida: UnidadMedida }
-const itemColumnHelper = createColumnHelper<Item>()
+export const itemColumnHelper = createColumnHelper<Item>()
 export const itemColumn = [
     itemColumnHelper.accessor("id", {
         header: ({ header }) => (<ColumnHeader header={header} title="Código" />),
@@ -44,11 +46,6 @@ export const itemColumn = [
             return `${sum} ${und}.`
         }
     }),
-    itemColumnHelper.display({
-        id: "actions",
-        header: "Acciones",
-        cell: ({ row }) => (<RowActions id={String(row.original.id)} relativeRoute="app/items" />)
-    })
 ]
 
 export type Stock = {
@@ -56,13 +53,13 @@ export type Stock = {
     fecha: Date | string;
     descripcion: string;
     cant: number;
-    item: ItemPrisma;
+    item: Item;
 }
 const stockColumnHelper = createColumnHelper<Stock>()
 export const stockColumn = [
     stockColumnHelper.accessor("fecha", {
-        header: "Fecha",
-        cell: ({ cell }) => cell.getValue().toLocaleString()
+        header: "Fecha de movimiento",
+        cell: ({ getValue }) => (new Date(getValue()).toLocaleString())
     }),
     stockColumnHelper.accessor("descripcion", {
         header: ({ header }) => (<ColumnHeader header={header} title="Descripción" />)
@@ -71,6 +68,11 @@ export const stockColumn = [
         header: "Item"
     }),
     stockColumnHelper.accessor("cant", {
-        header: "Cantidad"
+        header: "Cantidad",
+        cell: ({ row, getValue }) => (`${getValue()} ${row.original.item.unidadMedida.corto}.`)
+    }),
+    stockColumnHelper.display({
+        header: "Almacén destino",
+        cell: ({ row }) => row.original.item.ubicacion.descripcion
     })
 ]

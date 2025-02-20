@@ -1,44 +1,39 @@
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { Button, Flex, IconButton, Popover, Strong, Text } from "@radix-ui/themes";
-import { useCallback } from "react";
+import { Button, Em, Flex, Grid, IconButton, Strong, Text } from "@radix-ui/themes";
 import { Form, useSubmit } from "react-router";
 import type { DTRowAction } from "~/types/components";
+import Popover from "../ui/popover";
+import { EditItemForm } from "~/routes/app/items/forms";
 
 const ICON_SIZE = 20
 const ICON_SIZE_PROPS = { height: ICON_SIZE, width: ICON_SIZE }
 
-function DeleteAction({ id, relativeRoute }: DTRowAction) {
-    return <Popover.Root>
-        <Popover.Trigger>
-            <IconButton color="red" variant="ghost" size="3">
-                <TrashIcon {...ICON_SIZE_PROPS} />
-            </IconButton >
-        </Popover.Trigger>
-        <Popover.Content align="end" maxWidth="250px">
-            <Text as="p" size="1" wrap="pretty" style={{ lineHeight: "normal" }}>
-                Estas a punto de eliminar este registro, la acción es irreversible. <Strong>¿Estás seguro?</Strong>
-            </Text>
-            <Popover.Close className="!my-2 !flex">
-                <Form action={`/${relativeRoute}/${id}`} method="delete">
-                    <Button color="red" size="2" className="!w-auto !mx-auto !p-2" type="submit">
-                        <TrashIcon /> Eliminar
-                    </Button>
-                </Form>
-            </Popover.Close>
-        </Popover.Content>
-    </Popover.Root>
+function DeleteAction({ id, route }: Omit<DTRowAction, "values" | "errorBag">) {
+    return <Popover trigger={<TrashIcon {...ICON_SIZE_PROPS} />} color="red" maxWidth="210px">
+        <Grid asChild gapY="2">
+            <Form action={`${route}/${id}`} method="delete">
+                <Text as="p" size="2">
+                    Estás a punto de eliminar este registro, ¿estás seguro?<br />
+                    <Em>Esta acción es irreversible</Em>
+                </Text>
+                <Button color="red" type="submit">
+                    <Strong>Confirmar eliminación</Strong>
+                </Button>
+            </Form>
+        </Grid>
+    </Popover>
 }
 
-function EditAction() {
-    return <IconButton color="gray" variant="ghost" size="3">
-        <Pencil1Icon {...ICON_SIZE_PROPS} />
-    </IconButton >
+function EditAction({ id, values, aux, errorBag }: Omit<DTRowAction, "route">) {
+    return <Popover variant="outline" trigger={<Pencil1Icon {...ICON_SIZE_PROPS} />} maxWidth="300px">
+        <EditItemForm id={id} defaults={values} aux={aux} errors={errorBag} />
+    </Popover>
 }
 
-function RowActions(props: DTRowAction) {
+function RowActions({ id, route, values, aux, errorBag }: DTRowAction) {
     return <Flex justify="end" gapX="6">
-        <EditAction />
-        <DeleteAction {...props} />
+        <EditAction id={id} values={values} aux={aux} errorBag={errorBag} />
+        <DeleteAction id={id} route={route} />
     </Flex>
 }
 

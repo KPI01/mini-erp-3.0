@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { Button, Grid, TextField } from "@radix-ui/themes";
+import { CheckIcon } from "@radix-ui/react-icons";
+import { Button, Em, Grid } from "@radix-ui/themes";
 import { formOptions, useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { Form } from "react-router";
@@ -18,27 +19,23 @@ export const addItemSchema = z.object({
     ubicacionId: STRING_FIELD,
     unidadMedidaId: STRING_FIELD
 })
-export type addItemSchemaType = z.infer<typeof addItemSchema>
-const addItemOptions = formOptions({
-    defaultValues: {
-        descripcion: "",
-        activo: true,
-
-    } as addItemSchemaType,
-    validators: {
-        onChange: addItemSchema
-    }
-})
-interface AddItemFormProps { errors: any, ubicaciones: SelectInputOptionsType[], unidades: SelectInputOptionsType[] }
+export type AddItemType = z.infer<typeof addItemSchema>
+interface AddItemFormProps { errors: any, ubicaciones: SelectInputOptionsType, unidades: SelectInputOptionsType }
 export function AddItemForm({ errors, ubicaciones, unidades }: AddItemFormProps) {
-    const form = useForm(addItemOptions)
+    const form = useForm({
+        defaultValues: {
+            descripcion: "",
+            activo: true,
+        } as AddItemType,
+        validators: { onChange: addItemSchema, onBlur: addItemSchema }
+    })
 
     return <Grid asChild gapY="4">
         <Form method="post" action="/app/items" onSubmit={() => form.handleSubmit()}>
             <Grid gapX="3" columns="2" className="!w-full">
                 <form.Field
                     name="descripcion"
-                    validators={{ onChange: addItemSchema.shape.descripcion }}
+                    validators={{ onChange: addItemSchema.shape.descripcion, onBlur: addItemSchema.shape.descripcion }}
                     children={(field) => (
                         <InputField
                             label="Descripción  *"
@@ -55,6 +52,7 @@ export function AddItemForm({ errors, ubicaciones, unidades }: AddItemFormProps)
                     )} />
                 <form.Field
                     name="unidadMedidaId"
+                    validators={{ onChange: addItemSchema.shape.unidadMedidaId }}
                     children={(field) => (
                         <SelectInput
                             name={field.name}
@@ -73,26 +71,25 @@ export function AddItemForm({ errors, ubicaciones, unidades }: AddItemFormProps)
             </Grid>
             <form.Field
                 name="ubicacionId"
-                children={(field) => {
-                    console.debug(`[${field.name}]:`, field.state.value)
-                    return (
-                        <SelectInput
-                            name={field.name}
-                            options={ubicaciones}
-                            state={{
-                                value: field.state.value,
-                                changer: field.handleChange
-                            }}
-                            config={{
-                                label: "Ubicación *"
-                            }}
-                            errors={errors}
-                        />
-                    )
-                }}
+                validators={{ onChange: addItemSchema.shape.ubicacionId }}
+                children={({ name, state, handleChange }) => (
+                    <SelectInput
+                        name={name}
+                        options={ubicaciones}
+                        state={{
+                            value: state.value,
+                            changer: (v) => handleChange(v)
+                        }}
+                        config={{
+                            label: "Ubicación"
+                        }}
+                    />
+                )
+                }
             />
             <form.Field
                 name="activo"
+                validators={{ onChange: addItemSchema.shape.activo, onSubmit: addItemSchema.shape.activo }}
                 children={({ name, state, handleChange, handleBlur }) => (
                     <CheckboxField
                         label="¿Articulo activo?"
@@ -108,7 +105,125 @@ export function AddItemForm({ errors, ubicaciones, unidades }: AddItemFormProps)
                 )}
             />
             <form.Subscribe
-                children={() => (<Button type="submit" className="!w-fit !ms-auto" size="3">Enviar</Button>)}
+                selector={(state) => [state.canSubmit, state.isSubmitting, state.isPristine]}
+            >
+                {([canSubmit, isSubmitting, isPristine]) => (
+                    <Button ml="auto" size="3" type="submit" disabled={!canSubmit || isPristine}>
+                        {isSubmitting ? '...' : 'Enviar'}
+                    </Button>
+                )}
+            </form.Subscribe>
+        </Form>
+    </Grid>
+}
+
+export const editItemSchema = z.object({
+    descripcion: z.string({ invalid_type_error: INVALID_MSG }),
+    activo: z.boolean().optional(),
+    stockMin: z.number({ invalid_type_error: INVALID_MSG }).optional(),
+    stockMax: z.number({ invalid_type_error: INVALID_MSG }).optional(),
+    ubicacionId: z.string({ invalid_type_error: INVALID_MSG }).optional(),
+})
+export type EditItemType = z.infer<typeof editItemSchema>
+interface EditItemFormProps { defaults: EditItemType, id: number | string, aux: SelectInputOptionsType, errors: Record<string, unknown> }
+export function EditItemForm({ defaults, id, aux, errors }: EditItemFormProps) {
+    console.debug("EditItemForm:", defaults, id, aux)
+    const form = useForm({
+        defaultValues: defaults,
+        validators: { onChange: editItemSchema, onBlur: editItemSchema }
+    })
+
+    return <Grid asChild gapY="2">
+        <Form method="put" action={`/app/items/${id}`}>
+            <form.Field
+                name="descripcion"
+                validators={{ onChange: editItemSchema.shape.descripcion, onBlur: editItemSchema.shape.descripcion }}
+                children={(field) => (
+                    <InputField
+                        label="Descripción  *"
+                        input={{
+                            type: "text",
+                            name: field.name,
+                            id: field.name,
+                            value: field.state.value,
+                            onChange: (e) => field.handleChange(e.target.value),
+                            onBlur: field.handleBlur,
+                        }}
+                        errors={errors}
+                    />
+                )} />
+            <form.Field
+                name="activo"
+                children={({ name, state, handleChange, handleBlur }) => (
+                    <CheckboxField
+                        label="¿Esta activo?"
+                        input={{
+                            name,
+                            checked: state.value,
+                            value: String(state.value),
+                            onClick: () => handleChange(!state.value),
+                            onBlur: handleBlur
+                        }}
+                    />
+                )}
+            />
+            <form.Field
+                name="ubicacionId"
+                validators={{ onChange: editItemSchema.shape.ubicacionId }}
+                children={({ name, state, handleChange }) => (
+                    <SelectInput
+                        name={name}
+                        options={aux}
+                        state={{
+                            value: state.value,
+                            changer: (v) => handleChange(v)
+                        }}
+                        config={{
+                            label: "Ubicación"
+                        }}
+                    />
+                )}
+            />
+            <Grid columns="2" gapX="3">
+                <form.Field
+                    name="stockMin"
+                    validators={{ onChange: editItemSchema.shape.stockMin, onBlur: editItemSchema.shape.stockMin }}
+                    children={({ name, state, handleBlur, handleChange }) => (
+                        <InputField
+                            label="Stock Mínimo"
+                            input={{
+                                min: 0,
+                                type: "number",
+                                name,
+                                value: state.value,
+                                onChange: (e) => handleChange(Number(e.target.value)),
+                                onBlur: handleBlur
+                            }} />
+                    )}
+                />
+                <form.Field
+                    name="stockMax"
+                    validators={{ onChange: editItemSchema.shape.stockMax, onBlur: editItemSchema.shape.stockMax }}
+                    children={({ name, state, handleBlur, handleChange }) => (
+                        <InputField
+                            label="Stock Máximo"
+                            input={{
+                                min: 0,
+                                type: "number",
+                                name,
+                                value: state.value,
+                                onChange: (e) => handleChange(Number(e.target.value)),
+                                onBlur: handleBlur
+                            }} />
+                    )}
+                />
+            </Grid>
+            <form.Subscribe
+                selector={({ isPristine, isDirty }) => [isPristine, isDirty]}
+                children={([isPristine, isDirty]) => (<Button type="submit" disabled={isPristine}>
+                    {isDirty && <><CheckIcon /> Guardar cambios</>}
+                    {isPristine && <Em>No se han detectado cambios</Em>}
+                </Button>)}
             />
         </Form>
     </Grid>
@@ -120,22 +235,20 @@ export const addUbicacionSchema = z.object({
     descripcion: STRING_FIELD,
     corto: z.string({ invalid_type_error: INVALID_MSG }).max(10, MAX_LENGTH_MSG(10)).optional(),
     isAlmacen: z.boolean().default(false),
-    ubicacionId: z.string().nullish().default(null)
+    ubicacionId: z.string().optional()
 })
-export type addUbicacionSchemaType = z.infer<typeof addUbicacionSchema>
-const addUbicacionOptions = formOptions({
-    defaultValues: {
-        descripcion: "",
-        corto: "",
-        isAlmacen: true,
-    } as addUbicacionSchemaType,
-    validators: { onChange: addUbicacionSchema, onSubmit: addUbicacionSchema }
-}
-)
-interface AddUbicacionFormProps { ubicaciones: SelectInputOptionsType[], errors: Record<string, unknown> }
+export type AddUbicacionType = z.infer<typeof addUbicacionSchema>
+interface AddUbicacionFormProps { ubicaciones: SelectInputOptionsType, errors: Record<string, unknown> }
 export function AddUbicacionForm({ ubicaciones, errors }: AddUbicacionFormProps) {
     const [visible, setVisible] = useState(false)
-    const form = useForm(addUbicacionOptions)
+    const form = useForm({
+        defaultValues: {
+            descripcion: "",
+            corto: "",
+            isAlmacen: true,
+        } as AddUbicacionType,
+        validators: { onChange: addUbicacionSchema, onSubmit: addUbicacionSchema }
+    })
     return <Grid asChild gapY="3">
         <Form action="/app/ubicacion" method="post" onSubmit={() => form.handleSubmit()}>
             <form.Field
@@ -221,26 +334,19 @@ export const addUnidadMedidaSchema = z.object({
             where: {
                 corto: value
             }
-        }).then(async (db) => db?.corto !== value)
+        }).then(async (record) => record?.corto !== value)
     }, {
         message: "Este valor ya existe."
     })
 })
-export type addUnidadMedidaType = z.infer<typeof addUnidadMedidaSchema>
-const addUnidadMedidaOptions = formOptions({
-    defaultValues: {
-        descripcion: "",
-        corto: ""
-    } as addUnidadMedidaType,
-    validators: { onChange: addUnidadMedidaSchema, onSubmit: addUnidadMedidaSchema }
-})
+export type AddUnidadMedidaType = z.infer<typeof addUnidadMedidaSchema>
 export function AddUnidadMedidaForm({ errors, submitCallback }: { errors: Record<string, unknown>, submitCallback?: Function }) {
     const form = useForm({
-        ...addUnidadMedidaOptions,
-        onSubmit: () => {
-            form.reset()
-            if (submitCallback) submitCallback()
-        }
+        defaultValues: {
+            descripcion: "",
+            corto: ""
+        } as AddUnidadMedidaType,
+        validators: { onChange: addUnidadMedidaSchema, onSubmit: addUnidadMedidaSchema }
     })
 
     return <Form className="grid gap-y-4" action="/app/unidad-medida" method="post">

@@ -36,7 +36,7 @@ export function fakeItemComplete() {
     stockMax: 0,
     precio: 1,
     ubicacionId: undefined,
-    unidadMedidaId: faker.number.int(),
+    unidadMedidaId: undefined,
   };
 }
 export function fakeUbicacion() {

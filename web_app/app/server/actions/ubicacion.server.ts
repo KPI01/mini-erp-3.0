@@ -1,6 +1,6 @@
 import { redirect } from "react-router";
 import { commitSession, validateAuthSession } from "../session.server";
-import { addUbicacionSchema } from "~/routes/app/items/forms";
+import { addUbicacionSchema, type AddUbicacionType } from "~/routes/app/items/forms";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient()
@@ -10,11 +10,11 @@ async function addUbicacion(request: Request) {
 
     const form = await request.formData()
     console.debug("ubicacionId:", form.get("ubicacionId"))
-    const formData = {
-        descripcion: form.get("descripcion")?.toString(),
-        corto: form.get("corto")?.toString(),
+    const formData: AddUbicacionType = {
+        descripcion: String(form.get("descripcion")),
+        corto: String(form.get("corto")),
         isAlmacen: Boolean(form.get("isAlmacen")) ?? false,
-        ubicacionId: String(form.get("ubicacionId"))
+        ubicacionId: form.get("ubicacionId")?.toString()
     }
 
     console.debug("validando con zod...", formData)

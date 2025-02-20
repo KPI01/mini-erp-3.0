@@ -24,6 +24,38 @@
             "runOptions": {
                 "runOn": "folderOpen"
             }
+        },
+        {
+            "label": "prisma generate",
+            "type": "shell",
+            "command": "pnpm prisma generate",
+            "options": {
+                "cwd": "${workspaceFolder}/web_app"
+            },
+        },
+        {
+            "label": "prisma seed",
+            "type": "shell",
+            "command": "pnpm prisma db seed",
+            "options": {
+                "cwd": "${workspaceFolder}/web_app"
+            },
+        },
+        {
+            "label": "prisma push",
+            "type": "shell",
+            "command": "pnpm prisma db push",
+            "options": {
+                "cwd": "${workspaceFolder}/web_app"
+            },
+        },
+        {
+            "label": "prisma pull",
+            "type": "shell",
+            "command": "pnpm prisma db pull",
+            "options": {
+                "cwd": "${workspaceFolder}/web_app"
+            },
         }
     ]
 }

@@ -1,4 +1,4 @@
-import { addUnidadMedidaSchema, type addUnidadMedidaType } from "~/routes/app/items/forms";
+import { addUnidadMedidaSchema, type AddUnidadMedidaType } from "~/routes/app/items/forms";
 import { commitSession, validateAuthSession } from "../session.server";
 import { redirect } from "react-router";
 import { PrismaClient } from "@prisma/client";
@@ -9,7 +9,7 @@ async function addUnidadMedida(request: Request) {
     const session = await validateAuthSession({ request })
 
     const form = await request.formData()
-    const formData: Partial<addUnidadMedidaType> = {
+    const formData: Partial<AddUnidadMedidaType> = {
         descripcion: form.get("descripcion")?.toString(),
         corto: form.get("corto")?.toString()
     }

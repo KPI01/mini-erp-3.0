@@ -1,18 +1,17 @@
-import { Button, Popover as PO } from "@radix-ui/themes"
+import { Button, Flex, Popover as PO } from "@radix-ui/themes"
 import type { PopoverProps } from "~/types/components"
 
-export default function Popover({ trigger, variant, children, state }: PopoverProps) {
+export default function Popover({ color, trigger, variant, children, state, maxWidth = "fit" }: PopoverProps) {
     console.debug("popover state:", state)
     return <PO.Root open={state?.value} onOpenChange={state?.handler}>
         <PO.Trigger>
-            <Button variant={variant}>
-                {typeof trigger === "string"
-                    ? trigger
-                    : <>{trigger.icon} {trigger.label}</>
-                }
-            </Button>
+            <Flex align="center" asChild>
+                <Button color={color} variant={variant}>
+                    {trigger}
+                </Button>
+            </Flex>
         </PO.Trigger>
-        <PO.Content align="end">
+        <PO.Content align="end" maxWidth={maxWidth}>
             {children}
         </PO.Content>
     </PO.Root>
