@@ -18,20 +18,9 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
       style={{ gridTemplateColumns: "0.18fr 1fr" }}
     >
       <Sidebar user={loaderData} className="basis-1/7" />
-      <Grid
-        px="9"
-        py="5"
-        columns="1"
-        gapY="5"
-        style={{
-          gridTemplateRows: "min-content 1fr",
-        }}
-        asChild
-      >
-        <main>
-          <Outlet />
-        </main>
-      </Grid>
+      <main className="px-10 py-6">
+        <Outlet />
+      </main>
     </Grid>
   );
 }

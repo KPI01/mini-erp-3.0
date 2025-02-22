@@ -94,65 +94,63 @@ export default function Index({ loaderData }: Route.ComponentProps) {
   ];
 
   return (
-    <>
-      <Grid gapY="3" align="center" maxHeight="fit-content">
-        <Heading as="h1" size="8">
-          Consulta de Articulo
-        </Heading>
-        <Flex justify="between" align="end" maxHeight="fit-content">
-          <Text as="p" weight="light" size="2">
-            Todos los campos que tengan (*), son obligatorios
-          </Text>
-          <Flex
-            gapX="5"
-            align="center"
-            justify="end"
-            style={{ maxHeight: "fit-content" }}
+    <Grid gapY="6">
+      <Heading as="h1" size="8">
+        Consulta de Articulo
+      </Heading>
+      <Flex justify="between" align="end" maxHeight="fit-content">
+        <Text as="p" weight="light" size="2">
+          Todos los campos que tengan (*), son obligatorios
+        </Text>
+        <Flex
+          gapX="5"
+          align="center"
+          justify="end"
+          style={{ maxHeight: "fit-content" }}
+        >
+          <Popover
+            variant="surface"
+            trigger={
+              <>
+                <PlusIcon /> Und. Medida
+              </>
+            }
           >
-            <Popover
-              variant="surface"
-              trigger={
-                <>
-                  <PlusIcon /> Und. Medida
-                </>
-              }
-            >
-              <AddUnidadMedidaForm errors={errors} />
-            </Popover>
-            <Popover
-              variant="surface"
-              trigger={
-                <>
-                  <PlusIcon /> Ubicación
-                </>
-              }
-            >
-              {/* @ts-ignore */}
-              <AddUbicacionForm errors={errors} ubicaciones={ubicaciones} />
-            </Popover>
-            <AlertDialog
-              trigger={
-                <>
-                  <CubeIcon /> Agregar articulo
-                </>
-              }
-              header={{
-                title: "Agregando articulo",
-                description: "Formulario para agregar un articulo.",
-              }}
-            >
-              {/* ts-ignore */}
-              <AddItemForm
-                errors={errors}
-                ubicaciones={ubicaciones}
-                unidades={unidades}
-              />
-            </AlertDialog>
-          </Flex>
+            <AddUnidadMedidaForm errors={errors} />
+          </Popover>
+          <Popover
+            variant="surface"
+            trigger={
+              <>
+                <PlusIcon /> Ubicación
+              </>
+            }
+          >
+            {/* @ts-ignore */}
+            <AddUbicacionForm errors={errors} ubicaciones={ubicaciones} />
+          </Popover>
+          <AlertDialog
+            trigger={
+              <>
+                <CubeIcon /> Agregar articulo
+              </>
+            }
+            header={{
+              title: "Agregando articulo",
+              description: "Formulario para agregar un articulo.",
+            }}
+          >
+            {/* ts-ignore */}
+            <AddItemForm
+              errors={errors}
+              ubicaciones={ubicaciones}
+              unidades={unidades}
+            />
+          </AlertDialog>
         </Flex>
-      </Grid>
+      </Flex>
       {/* @ts-ignore */}
       <DataTable data={loaderData?.items} columns={itemColumnWithActions} />
-    </>
+    </Grid>
   );
 }

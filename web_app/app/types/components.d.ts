@@ -123,7 +123,7 @@ interface SelectInputProps {
   options: SelectInputOptionsType;
   state: {
     value: string | undefined;
-    changer(value: string): void;
+    changer(value: strin | undefined): void;
   };
   config?: Partial<{
     label?: string;

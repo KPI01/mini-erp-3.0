@@ -1,15 +1,16 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type Item, type UnidadMedida } from "@prisma/client";
 import { CheckIcon } from "@radix-ui/react-icons";
-import { Button, Em, Grid } from "@radix-ui/themes";
+import { Button, Em, Flex, Grid, TextArea } from "@radix-ui/themes";
 import { formOptions, useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { Form } from "react-router";
 import { z } from "zod";
-import DatePicker from "~/components/forms/date-picker";
 import { CheckboxField, InputField } from "~/components/forms/input";
 import SelectInput from "~/components/forms/select";
 import { INVALID_MSG, MAX_LENGTH_MSG, STRING_FIELD } from "~/helpers/forms";
 import type { SelectInputOptionsType } from "~/types/components";
+import { format } from "date-fns";
+import { Label } from "radix-ui";
 
 const prisma = new PrismaClient();
 
@@ -396,7 +397,7 @@ export function AddUbicacionForm({
 }
 // fin
 
-//inicio: addUnidadMedida
+//inicio: unidadMedida
 export const addUnidadMedidaSchema = z.object({
   descripcion: STRING_FIELD,
   corto: STRING_FIELD.max(5, MAX_LENGTH_MSG(5)).refine(
@@ -417,10 +418,8 @@ export const addUnidadMedidaSchema = z.object({
 export type AddUnidadMedidaType = z.infer<typeof addUnidadMedidaSchema>;
 export function AddUnidadMedidaForm({
   errors,
-  submitCallback,
 }: {
   errors: Record<string, unknown>;
-  submitCallback?: Function;
 }) {
   const form = useForm({
     defaultValues: {
@@ -473,33 +472,169 @@ export function AddUnidadMedidaForm({
     </Form>
   );
 }
+// fin
 
+// inicio: Stock
 export const addStockSchema = z.object({
   fecha: z.date(),
-  itemId: z.string(),
+  itemId: z.number(),
+  tipo: z.enum(["Ingreso", "Egreso"]).optional(),
   cant: z.number(),
   descripcion: z.string(),
 });
 export type addStockType = z.infer<typeof addStockSchema>;
-export function AddStockForm() {
+type ItemWithUnidad = Item & { unidadMedida: UnidadMedida | null };
+interface AddStockFormProps {
+  aux: {
+    items: SelectInputOptionsType;
+    itemsObj: ItemWithUnidad[];
+  };
+}
+export function AddStockForm({ aux }: AddStockFormProps) {
   const form = useForm({
     defaultValues: {
       fecha: new Date(),
-      itemId: "",
+      itemId: 0,
       cant: 0,
+      tipo: "Ingreso",
       descripcion: "",
     } satisfies addStockType,
     validators: { onChange: addStockSchema, onBlur: addStockSchema },
   });
 
+  const [tipo, setTipo] = useState<addStockType["tipo"]>("Ingreso");
+  const handleTipoChange = (value: addStockType["tipo"]) => {
+    if (!value) {
+      setTipo("Ingreso");
+      form.setFieldValue("tipo", "Ingreso");
+    } else {
+      setTipo(value);
+      form.setFieldValue("tipo", value);
+    }
+    form.setFieldValue("cant", 0);
+  };
+
+  const [unidad, setUnidad] = useState<string>();
+  const handleItemChange = (value: string | undefined) => {
+    if (!value) {
+      setUnidad("");
+      form.setFieldValue("itemId", 0);
+    } else {
+      const item = aux.itemsObj.filter((i) => String(i.id) === value)[0];
+      setUnidad(item?.unidadMedida?.corto ?? "");
+      form.setFieldValue("itemId", Number(value));
+    }
+  };
+
   return (
-    <Form>
-      <form.Field
-        name="fecha"
-        children={(field) => (
-          <DatePicker name={field.name} label="Fecha del movimiento" />
-        )}
-      />
-    </Form>
+    <Grid gapY="5" asChild>
+      <Form method="post" action="/app/items/reception">
+        <form.Field
+          name="fecha"
+          validators={{ onChange: addStockSchema.shape.fecha }}
+          children={(field) => (
+            <InputField
+              label="Fecha de movimiento *"
+              input={{
+                name: field.name,
+                type: "datetime-local",
+                max: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+                value: format(field.state.value, "yyyy-MM-dd'T'HH:mm"),
+                onChange: (e) => field.handleChange(new Date(e.target.value)),
+              }}
+            />
+          )}
+        />
+        <form.Field
+          name="itemId"
+          validators={{ onChange: addStockSchema.shape.itemId }}
+          children={(field) => (
+            <SelectInput
+              name={field.name}
+              options={aux.items}
+              state={{
+                value: String(field.state.value),
+                changer: handleItemChange,
+              }}
+              config={{
+                label: "Articulo *",
+              }}
+            />
+          )}
+        />
+        <Grid columns="2" gapX="4" align="end">
+          <form.Field
+            name="tipo"
+            children={(field) => (
+              <SelectInput
+                name={field.name}
+                options={{ Ingreso: "Ingreso", Egreso: "Egreso" }}
+                state={{
+                  value: field.state.value,
+                  changer: handleTipoChange,
+                }}
+                config={{
+                  label: "Tipo de movimiento",
+                }}
+              />
+            )}
+          />
+          <form.Field
+            name="cant"
+            validators={{ onChange: addStockSchema.shape.cant }}
+            children={(field) => (
+              <Flex gapX="4" align="end" justify="between">
+                <InputField
+                  label="Cantidad *"
+                  input={{
+                    name: field.name,
+                    min: tipo === "Ingreso" ? 0 : undefined,
+                    max: tipo === "Egreso" ? 0 : undefined,
+                    type: "number",
+                    value: String(field.state.value),
+                    onChange: (e) => field.handleChange(Number(e.target.value)),
+                  }}
+                />
+                {(unidad || unidad !== "") && (
+                  <InputField
+                    input={{
+                      disabled: true,
+                      value: unidad,
+                      style: {
+                        height: "fit-content",
+                        width: "8ch",
+                      },
+                    }}
+                  />
+                )}
+              </Flex>
+            )}
+          />
+        </Grid>
+        <form.Field
+          name="descripcion"
+          children={(field) => (
+            <Grid>
+              <Label.Root>Descripción del movimiento</Label.Root>
+              <TextArea
+                name={field.name}
+                placeholder="Escribe aqui la razon por la que se realiza este movimiento..."
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+              />
+            </Grid>
+          )}
+        />
+        <form.Subscribe
+          children={() => (
+            <Button ml="auto" size="4">
+              Enviar
+            </Button>
+          )}
+        />
+      </Form>
+    </Grid>
   );
 }
+//fin
