@@ -1,26 +1,37 @@
 import { Outlet } from "react-router";
-import { Flex } from "@radix-ui/themes";
+import { Flex, Grid } from "@radix-ui/themes";
 import Sidebar from "~/components/ui/sidebar";
 import type { Route } from "./+types";
 import { validateAuthSession } from "~/server/session.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const session = await validateAuthSession({ request })
+  const session = await validateAuthSession({ request });
 
-  return { user: session.get("user") }
+  return { user: session.get("user") };
 }
 
 export default function Layout({ loaderData }: Route.ComponentProps) {
   return (
-    <div className="flex h-full w-full">
+    <Grid
+      columns="2"
+      height="100%"
+      style={{ gridTemplateColumns: "0.18fr 1fr" }}
+    >
       <Sidebar user={loaderData} className="basis-1/7" />
-      <main className="basis-full grid">
-        <Flex direction="column" className="px-24">
+      <Grid
+        px="9"
+        py="5"
+        columns="1"
+        gapY="5"
+        style={{
+          gridTemplateRows: "min-content 1fr",
+        }}
+        asChild
+      >
+        <main>
           <Outlet />
-        </Flex>
-      </main>
-    </div >
-
-  )
-
+        </main>
+      </Grid>
+    </Grid>
+  );
 }
