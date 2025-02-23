@@ -2,9 +2,15 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator custom_generator {
+generator fake_data {
   provider = "prisma-generator-fake-data"
   output   = "./fake-data.ts"
+}
+
+generator zod {
+  provider                         = "zod-prisma-types"
+  output                           = "../app/utils/zod-schemas"
+  createOptionalDefaultValuesTypes = true
 }
 
 datasource db {
@@ -12,7 +18,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// //////////
 // AUTH
+// /////////
 model User {
   id       Int     @id @default(autoincrement())
   username String  @unique
@@ -22,19 +30,22 @@ model User {
   activo   Boolean @default(true)
 }
 
+// ////////////
 // INVENTARIO
+// ///////////
 model Item {
-  id             Int           @id @default(autoincrement())
+  id             Int              @id @default(autoincrement())
   descripcion    String
-  activo         Boolean       @default(true)
-  stockMin       Float?        @default(0)
-  stockMax       Float?        @default(0)
-  precio         Float?        @default(1)
+  activo         Boolean          @default(true)
+  stockMin       Float?           @default(0)
+  stockMax       Float?           @default(0)
+  precio         Float?           @default(1)
   ubicacionId    Int?
-  ubicacion      Ubicacion?    @relation(fields: [ubicacionId], references: [id])
-  stock          Stock[]
   unidadMedidaId Int?
-  unidadMedida   UnidadMedida? @relation(fields: [unidadMedidaId], references: [id])
+  unidadMedida   UnidadMedida?    @relation(fields: [unidadMedidaId], references: [id])
+  ubicacion      Ubicacion?       @relation(fields: [ubicacionId], references: [id])
+  ItemsOnPedidos ItemsOnPedidos[]
+  stock          Stock[]
 }
 
 model Ubicacion {
@@ -62,4 +73,48 @@ model UnidadMedida {
   descripcion String
   corto       String @unique
   Item        Item[]
+}
+
+// ////////////
+// COMPRAS
+// ///////////
+model Proveedor {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  razonSocial   String
+  idFiscal      String   @unique
+  direccion     String
+  correo        String   @unique
+  telefono      String?  @default("")
+  url           String?  @default("")
+  observaciones String?  @default("")
+  activo        Boolean  @default(true)
+  Pedido        Pedido[]
+}
+
+model Pedido {
+  id             Int              @id @default(autoincrement())
+  proveedorId    Int
+  creado         DateTime
+  subTotal       Float
+  totalImpuestos Float
+  total          Float
+  fechaPrevista  DateTime
+  fechaEntrega   DateTime
+  pagado         Boolean
+  entregado      Boolean
+  ItemsOnPedidos ItemsOnPedidos[]
+  proveedor      Proveedor        @relation(fields: [proveedorId], references: [id])
+}
+
+model ItemsOnPedidos {
+  pedidoId Int
+  itemId   Int
+  cant     Int
+  precio   Float
+  asignado DateTime @default(now())
+  items    Item     @relation(fields: [itemId], references: [id])
+  pedido   Pedido   @relation(fields: [pedidoId], references: [id])
+
+  @@id([itemId, pedidoId])
 }

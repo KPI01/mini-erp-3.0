@@ -59,6 +59,7 @@ interface InputFieldProps {
   errors?: ErrorsFieldType;
 }
 interface CheckboxFieldProps {
+  containerProps?: GridProps;
   label: string;
   input: Partial<React.ComponentProps<typeof Checkbox>>;
   errors?: ErrorsFieldType;
@@ -73,24 +74,11 @@ interface DTRowAction {
   values: any;
   aux?: any;
   errorBag: Record<string, unknown>;
+  editForm: { type?: "popover" | "alertDialog"; children: React.ReactNode };
 }
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  config?: {
-    dialog: Partial<{
-      title: string;
-      description: string;
-      form: React.ReactNode;
-      confirm: React.ReactNode;
-    }> & {
-      state: {
-        open: boolean;
-        changer: Dispatch;
-      };
-    };
-    buttons?: Record<DTButtons, DTButtonType>;
-  };
 }
 
 interface DTColumnHeaderProps<TData, TValue>

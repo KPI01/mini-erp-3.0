@@ -132,16 +132,9 @@ export function AddItemForm({
             state.isPristine,
           ]}
         >
-          {([canSubmit, isSubmitting, isPristine]) => (
-            <Button
-              ml="auto"
-              size="3"
-              type="submit"
-              disabled={!canSubmit || isPristine}
-            >
-              {isSubmitting ? "..." : "Enviar"}
-            </Button>
-          )}
+          <Button ml="auto" size="3" type="submit">
+            {"Enviar"}
+          </Button>
         </form.Subscribe>
       </Form>
     </Grid>
@@ -270,7 +263,7 @@ export function EditItemForm({ defaults, id, aux, errors }: EditItemFormProps) {
         <form.Subscribe
           selector={({ isPristine, isDirty }) => [isPristine, isDirty]}
           children={([isPristine, isDirty]) => (
-            <Button type="submit" disabled={isPristine}>
+            <Button type="submit">
               {isDirty && (
                 <>
                   <CheckIcon /> Guardar cambios

@@ -12,7 +12,13 @@ import { Header } from "../components";
 import { validateAuthSession } from "~/server/session.server";
 import { Box, Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import type { SelectInputOptionsType } from "~/types/components";
-import { AddItemForm, AddUbicacionForm, AddUnidadMedidaForm } from "./forms";
+import {
+  AddItemForm,
+  AddUbicacionForm,
+  AddUnidadMedidaForm,
+  EditItemForm,
+  type EditItemType,
+} from "./forms";
 import { addItem, deleteItem } from "~/server/actions/item.server";
 import { validateSessionErrors } from "~/server/form-validation.server";
 import { CubeIcon, PlusIcon } from "@radix-ui/react-icons";
@@ -86,6 +92,16 @@ export default function Index({ loaderData }: Route.ComponentProps) {
           id={String(row.original.id)}
           route="/app/items"
           values={row.original}
+          editForm={{
+            children: (
+              <EditItemForm
+                id={row.original.id}
+                defaults={row.original as any}
+                aux={ubicaciones}
+                errors={errors}
+              />
+            ),
+          }}
           aux={ubicaciones}
           errorBag={errors}
         />

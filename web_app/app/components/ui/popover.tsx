@@ -15,7 +15,7 @@ export default function Popover({
           {trigger}
         </Button>
       </PO.Trigger>
-      <PO.Content sideOffset={5} align="end">
+      <PO.Content sideOffset={5} align="end" maxWidth={maxWidth}>
         {children}
       </PO.Content>
     </PO.Root>

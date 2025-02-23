@@ -82,3 +82,67 @@ export function fakeUnidadMedidaComplete() {
     corto: faker.lorem.words(5),
   };
 }
+export function fakeProveedor() {
+  return {
+    nombre: faker.lorem.words(5),
+    razonSocial: faker.lorem.words(5),
+    idFiscal: faker.lorem.words(5),
+    direccion: faker.lorem.words(5),
+    correo: faker.lorem.words(5),
+  };
+}
+export function fakeProveedorComplete() {
+  return {
+    id: faker.number.int({ max: 2147483647 }),
+    nombre: faker.lorem.words(5),
+    razonSocial: faker.lorem.words(5),
+    idFiscal: faker.lorem.words(5),
+    direccion: faker.lorem.words(5),
+    correo: faker.lorem.words(5),
+    telefono: '',
+    url: '',
+    observaciones: '',
+    activo: true,
+  };
+}
+export function fakePedido() {
+  return {
+    creado: faker.date.anytime(),
+    subTotal: faker.number.float(),
+    totalImpuestos: faker.number.float(),
+    total: faker.number.float(),
+    fechaPrevista: faker.date.anytime(),
+    fechaEntrega: faker.date.anytime(),
+    pagado: faker.datatype.boolean(),
+    entregado: faker.datatype.boolean(),
+  };
+}
+export function fakePedidoComplete() {
+  return {
+    id: faker.number.int({ max: 2147483647 }),
+    proveedorId: faker.number.int(),
+    creado: faker.date.anytime(),
+    subTotal: faker.number.float(),
+    totalImpuestos: faker.number.float(),
+    total: faker.number.float(),
+    fechaPrevista: faker.date.anytime(),
+    fechaEntrega: faker.date.anytime(),
+    pagado: faker.datatype.boolean(),
+    entregado: faker.datatype.boolean(),
+  };
+}
+export function fakeItemsOnPedidos() {
+  return {
+    cant: faker.number.int(),
+    precio: faker.number.float(),
+  };
+}
+export function fakeItemsOnPedidosComplete() {
+  return {
+    pedidoId: faker.number.int(),
+    itemId: faker.number.int(),
+    cant: faker.number.int(),
+    precio: faker.number.float(),
+    asignado: new Date(),
+  };
+}
