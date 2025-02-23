@@ -23,9 +23,5 @@ export default [
     ]),
     ...prefix("unidad-medida", [index("routes/app/unidad-medida/index.tsx")]),
     ...prefix("ubicacion", [index("routes/app/ubicacion/index.tsx")]),
-    ...prefix("compras", [
-      route("proveedores", "routes/app/compras/proveedores.tsx"),
-      route("proveedores/:id", "routes/app/compras/detail.tsx"),
-    ]),
   ]),
 ] satisfies RouteConfig;
