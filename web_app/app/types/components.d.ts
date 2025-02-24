@@ -9,7 +9,13 @@ import type {
   CardProps,
   GridProps,
 } from "@radix-ui/themes";
-import type { Column, ColumnDef, Header } from "@tanstack/react-table";
+import type {
+  Column,
+  ColumnDef,
+  type ColumnFiltersState,
+  Header,
+  OnChangeFn,
+} from "@tanstack/react-table";
 import type { Routes } from "./session";
 import { Form, Select } from "radix-ui";
 import type { Dispatch } from "react";
@@ -79,6 +85,10 @@ interface DTRowAction {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  state?: {
+    filter: ColumnFiltersState;
+    onFilterChange?: OnChangeFn<ColumnFiltersState>;
+  };
 }
 
 interface DTColumnHeaderProps<TData, TValue>
