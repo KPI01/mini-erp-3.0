@@ -19,17 +19,20 @@ export type Item = ItemPrisma & {
 export const itemColumnHelper = createColumnHelper<Item>();
 export const itemColumn = [
   itemColumnHelper.accessor("id", {
-    header: ({ header }) => <ColumnHeader header={header} title="Código" />,
-    sortDescFirst: true,
+    header: "Codigo",
+
+    filterFn: (row, columnId, filterValue) => {
+      const rowValue = row.getValue(columnId);
+
+      // Si no hay valor de filtro, no mostramos nada
+      if (!filterValue) return false;
+
+      // Si estamos filtrando por id, convertimos ambos a string para comparar
+      return String(rowValue).includes(String(filterValue));
+    },
   }),
   itemColumnHelper.accessor("descripcion", {
-    header: ({ header }) => (
-      <ColumnHeader header={header} title="Descripción" />
-    ),
-    enableColumnFilter: true,
-    meta: {
-      filterVariant: "text",
-    },
+    header: "Descripcion",
   }),
   itemColumnHelper.accessor("ubicacionId", {
     header: "Ubicación",

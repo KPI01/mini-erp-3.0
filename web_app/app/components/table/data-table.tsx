@@ -24,8 +24,15 @@ import { useState } from "react";
 export default function DataTable<TData, TValue>({
   data,
   columns,
+  state = { filter: [] },
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  console.debug("filter:", state.filter);
+  const [internalFilters, setInternalFilters] = useState<ColumnFiltersState>(
+    [],
+  );
+  const columnFilters = state.filter || internalFilters;
+  const setColumnFilters = state.onFilterChange || setInternalFilters;
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -47,7 +54,10 @@ export default function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    debugAll: true,
   });
+
+  console.debug("state:", table.getState());
 
   return (
     <Table.Root variant="surface">

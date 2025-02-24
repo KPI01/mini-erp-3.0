@@ -3,7 +3,11 @@ import { itemColumn } from "./tables";
 import { PrismaClient } from "@prisma/client";
 import { type MetaFunction, data } from "react-router";
 import { Flex, Grid, Heading } from "@radix-ui/themes";
-import type { ColumnDef } from "@tanstack/react-table";
+import {
+  type ColumnFiltersState,
+  type ColumnDef,
+  type ColumnFilter,
+} from "@tanstack/react-table";
 import { InputField } from "~/components/forms/input";
 import {
   QueryClient,
@@ -33,29 +37,21 @@ export default function Index({ loaderData }: Route.ComponentProps) {
   const columns = {
     id: "Codigo",
     descripcion: "Descripcion",
-    ubicacion: "Ubicacion",
   };
   const [column, setColumn] = useState<keyof typeof columns>("id");
-  const [data, setData] = useState<typeof loaderData.items>([]);
+  const [filter, setFilter] = useState<ColumnFiltersState>([]);
+  const [showData, setShowData] = useState(false);
+  console.debug("table filters:", filter);
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value.toLowerCase();
-    let filtered: typeof data = [];
+    const input = e.target.value;
+    console.debug(`valor para [${column}]:`, input);
 
-    if (value === "") {
-      setData([]);
-      return;
-    }
+    if (input !== "") setShowData(true);
 
-    filtered = loaderData.items.filter((val) => {
-      if (column === "ubicacion") {
-        return String(val[column]?.descripcion).toLowerCase().includes(value);
-      }
-      return String(val[column]).toLowerCase().includes(value);
-    });
-
-    setData(filtered);
+    setFilter([{ id: column, value: input }]);
   }
+
   return (
     <Grid gapY="6">
       <Heading as="h1" size="9">
@@ -72,12 +68,19 @@ export default function Index({ loaderData }: Route.ComponentProps) {
         />
         <InputField
           input={{
-            type: "search",
-            onChange: (e) => setTimeout(() => handleChange(e), 500),
+            type: "text",
+            onChange: (e) => handleChange(e),
           }}
         />
       </Flex>
-      <DataTable data={data} columns={itemColumn as ColumnDef<any>[]} />
+      <DataTable
+        data={showData ? loaderData.items : []}
+        columns={itemColumn as ColumnDef<any>[]}
+        state={{
+          filter,
+          onFilterChange: setFilter,
+        }}
+      />
     </Grid>
   );
 }
