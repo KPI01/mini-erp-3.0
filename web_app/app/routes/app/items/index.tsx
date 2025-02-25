@@ -63,13 +63,13 @@ export default function Index({ loaderData }: Route.ComponentProps) {
           options={columns}
           state={{
             value: column,
-            changer: (value) => setColumn(value),
+            changer: setColumn,
           }}
         />
         <InputField
           input={{
             type: "text",
-            onChange: (e) => handleChange(e),
+            onChange: handleChange,
           }}
         />
       </Flex>

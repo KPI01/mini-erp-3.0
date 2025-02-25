@@ -21,14 +21,12 @@ export const itemColumn = [
   itemColumnHelper.accessor("id", {
     header: "Codigo",
 
-    filterFn: (row, columnId, filterValue) => {
-      const rowValue = row.getValue(columnId);
-
+    filterFn: (row, _, filterValue) => {
+      const value = row.original.id;
       // Si no hay valor de filtro, no mostramos nada
       if (!filterValue) return false;
-
       // Si estamos filtrando por id, convertimos ambos a string para comparar
-      return String(rowValue).includes(String(filterValue));
+      return String(value).includes(String(filterValue));
     },
   }),
   itemColumnHelper.accessor("descripcion", {
@@ -71,21 +69,38 @@ const stockColumnHelper = createColumnHelper<Stock>();
 export const stockColumn = [
   stockColumnHelper.accessor("fecha", {
     header: "Fecha de movimiento",
-    cell: ({ getValue }) =>
-      format(getValue(), "'El' dd/MM/yyyy 'a las' hh:mm aaa"),
+    cell: ({ getValue }) => getValue().toLocaleString(),
+    filterFn: (row, _, filterValue) => {
+      const { original } = row;
+      const search = new Date(filterValue).toLocaleDateString();
+      const current = new Date(row.original.fecha).toLocaleDateString();
+
+      return search === current;
+    },
   }),
-  stockColumnHelper.accessor("descripcion", {
-    header: ({ header }) => (
-      <ColumnHeader header={header} title="Descripción" />
-    ),
+  stockColumnHelper.accessor("item.descripcion", {
+    id: "item",
+    header: "Descripción del Artículo",
+    cell: ({ row }) => row.original.item.descripcion,
+    filterFn: (row, colId, filterValue) => {
+      const value = String(row.getValue(colId)).toLowerCase();
+      if (!filterValue) return true;
+      return value.includes(String(filterValue).toLowerCase());
+    },
   }),
-  stockColumnHelper.accessor("item.descripcion", { header: "Item" }),
   stockColumnHelper.accessor("cant", {
     header: "Cantidad",
     cell: ({ row }) =>
       `${row.original.cant} ${row.original.item.unidadMedida.corto}.`,
   }),
   stockColumnHelper.accessor("item.ubicacion.descripcion", {
-    header: "Ubicacion",
+    id: "ubicacion",
+    header: "Ubicación",
+    cell: ({ row }) => row.original.item.ubicacion.descripcion,
+    filterFn: (row, colId, filterValue) => {
+      const value = String(row.getValue(colId)).toLowerCase();
+      if (!filterValue) return true;
+      return value.includes(String(filterValue).toLowerCase());
+    },
   }),
 ];
