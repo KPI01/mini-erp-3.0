@@ -24,7 +24,7 @@ import { useState } from "react";
 export default function DataTable<TData, TValue>({
   data,
   columns,
-  state = { filter: [] },
+  state = { filter: undefined, onFilterChange: () => {} },
 }: DataTableProps<TData, TValue>) {
   console.debug("filter:", state.filter);
   const [internalFilters, setInternalFilters] = useState<ColumnFiltersState>(
@@ -41,7 +41,6 @@ export default function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-    filterFns: {},
     state: {
       columnFilters,
       sorting,

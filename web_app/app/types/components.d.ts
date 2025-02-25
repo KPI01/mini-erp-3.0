@@ -85,10 +85,10 @@ interface DTRowAction {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  state?: {
+  state?: Partial<{
     filter: ColumnFiltersState;
-    onFilterChange?: OnChangeFn<ColumnFiltersState>;
-  };
+    onFilterChange: OnChangeFn<ColumnFiltersState>;
+  }>;
 }
 
 interface DTColumnHeaderProps<TData, TValue>
