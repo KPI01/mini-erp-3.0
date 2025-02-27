@@ -7,12 +7,6 @@ generator fake_data {
   output   = "./fake-data.ts"
 }
 
-generator zod {
-  provider                         = "zod-prisma-types"
-  output                           = "../app/utils/zod-schemas"
-  createOptionalDefaultValuesTypes = true
-}
-
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
