@@ -13,6 +13,7 @@ import type {
   Column,
   ColumnDef,
   type ColumnFiltersState,
+  type PaginationState,
   Header,
   OnChangeFn,
 } from "@tanstack/react-table";
@@ -86,6 +87,8 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   state?: Partial<{
+    pagination: PaginationState;
+    changePageSize: boolean;
     filter: ColumnFiltersState;
     onFilterChange: OnChangeFn<ColumnFiltersState>;
   }>;

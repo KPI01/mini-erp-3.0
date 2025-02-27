@@ -24,8 +24,14 @@ import { useState } from "react";
 export default function DataTable<TData, TValue>({
   data,
   columns,
-  state = { filter: undefined, onFilterChange: () => {} },
+  state = {
+    filter: undefined,
+    onFilterChange: () => {},
+    changePageSize: true,
+  },
 }: DataTableProps<TData, TValue>) {
+  console.debug("data:", data);
+  console.debug("columns:", columns);
   console.debug("filter:", state.filter);
   const [internalFilters, setInternalFilters] = useState<ColumnFiltersState>(
     [],
@@ -34,10 +40,12 @@ export default function DataTable<TData, TValue>({
   const setColumnFilters = state.onFilterChange || setInternalFilters;
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [pagination, setPagination] = useState<PaginationState>({
+  const [internalPagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
+  const pagination = state.pagination || internalPagination;
+
   const table = useReactTable({
     data,
     columns,
@@ -106,19 +114,21 @@ export default function DataTable<TData, TValue>({
             <Flex gapX="3" className="w-full" justify="end">
               <Flex align="center" gapX="1">
                 <Text>Mostrando</Text>
-                <Select.Root
-                  value={String(table.getState().pagination.pageSize)}
-                  onValueChange={(v) => table.setPageSize(Number(v))}
-                >
-                  <Select.Trigger placeholder="Nada que mostrar..." />
-                  <Select.Content>
-                    {[5, 10, 15, 20].map((pageSize) => (
-                      <Select.Item key={pageSize} value={String(pageSize)}>
-                        {pageSize}
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Root>
+                {state.changePageSize && (
+                  <Select.Root
+                    value={String(table.getState().pagination.pageSize)}
+                    onValueChange={(v) => table.setPageSize(Number(v))}
+                  >
+                    <Select.Trigger placeholder="Nada que mostrar..." />
+                    <Select.Content>
+                      {[5, 10, 15, 20].map((pageSize) => (
+                        <Select.Item key={pageSize} value={String(pageSize)}>
+                          {pageSize}
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Root>
+                )}
               </Flex>
               <Separator orientation="vertical" style={{ height: "100%" }} />
               <IconButton
