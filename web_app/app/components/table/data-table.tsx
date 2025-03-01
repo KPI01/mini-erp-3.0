@@ -24,6 +24,7 @@ import { useState } from "react";
 export default function DataTable<TData, TValue>({
   data,
   columns,
+  bodyFallback,
   state = {
     filter: undefined,
     onFilterChange: () => {},
@@ -42,7 +43,7 @@ export default function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [internalPagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: state.pageSize || 10,
   });
   const pagination = state.pagination || internalPagination;
 
@@ -104,7 +105,9 @@ export default function DataTable<TData, TValue>({
           ))
         ) : (
           <Table.Row>
-            <Table.Cell colSpan={columns.length}>Nada que mostrar.</Table.Cell>
+            <Table.Cell colSpan={columns.length}>
+              {bodyFallback ? bodyFallback : "Nada que mostrar"}
+            </Table.Cell>
           </Table.Row>
         )}
       </Table.Body>
@@ -132,6 +135,7 @@ export default function DataTable<TData, TValue>({
               </Flex>
               <Separator orientation="vertical" style={{ height: "100%" }} />
               <IconButton
+                type="button"
                 color="gray"
                 variant="outline"
                 onClick={() => table.previousPage()}
@@ -147,6 +151,7 @@ export default function DataTable<TData, TValue>({
                 value={table.getState().pagination.pageIndex + 1}
               />
               <IconButton
+                type="button"
                 color="gray"
                 variant="outline"
                 onClick={() => table.nextPage()}

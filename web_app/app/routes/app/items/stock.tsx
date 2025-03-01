@@ -3,13 +3,10 @@ import { PrismaClient } from "@prisma/client";
 import type { MetaFunction } from "react-router";
 import DataTable from "~/components/table/data-table";
 import { stockColumn } from "./tables";
-import { Button, Flex, Grid, Heading } from "@radix-ui/themes";
+import { Grid, Heading } from "@radix-ui/themes";
 import { type ColumnDef, type ColumnFiltersState } from "@tanstack/react-table";
 import type { Route } from "./+types/stock";
-import { useState, type ChangeEvent } from "react";
-import SelectInput from "~/components/forms/select";
-import { InputField } from "~/components/forms/input";
-import { Label } from "radix-ui";
+import { useState } from "react";
 import TableQuery from "./forms/tableQuery";
 
 const prisma = new PrismaClient();

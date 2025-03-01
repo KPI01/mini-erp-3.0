@@ -8,6 +8,7 @@ import type {
   AlertDialog,
   CardProps,
   GridProps,
+  Popover,
 } from "@radix-ui/themes";
 import type {
   Column,
@@ -23,6 +24,7 @@ import type { Dispatch } from "react";
 import type { Responsive } from "@radix-ui/themes/dist/esm/props/prop-def.js";
 import type { TriggerProps } from "@radix-ui/themes/components/popover";
 
+type SideType = Popover.ContentProps["side"];
 type TriggerButton = React.ReactNode;
 type VariantsType = ButtonProps["variant"];
 type ColorsType = ButtonProps["color"];
@@ -86,7 +88,9 @@ interface DTRowAction {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  bodyFallback?: React.ReactNode;
   state?: Partial<{
+    pageSize: number;
     pagination: PaginationState;
     changePageSize: boolean;
     filter: ColumnFiltersState;
@@ -148,6 +152,7 @@ interface PopoverProps extends React.PropsWithChildren {
   color?: ColorsType;
   maxWidth?: MaxWidthType;
   trigger: TriggerButton;
+  side?: SideType;
   state?: {
     value: boolean;
     handler: (boolean) => void;

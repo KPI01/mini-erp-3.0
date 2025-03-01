@@ -6,6 +6,7 @@ export default function Popover({
   trigger,
   variant,
   children,
+  side = "bottom",
   maxWidth = "fit",
 }: PopoverProps) {
   return (
@@ -15,7 +16,7 @@ export default function Popover({
           {trigger}
         </Button>
       </PO.Trigger>
-      <PO.Content sideOffset={5} align="end" maxWidth={maxWidth}>
+      <PO.Content side={side} sideOffset={5} align="end" maxWidth={maxWidth}>
         {children}
       </PO.Content>
     </PO.Root>

@@ -21,11 +21,9 @@ export const itemColumn = [
   itemColumnHelper.accessor("id", {
     header: "Codigo",
 
-    filterFn: (row, _, filterValue) => {
-      const value = row.original.id;
-      // Si no hay valor de filtro, no mostramos nada
+    filterFn: (row, colId, filterValue) => {
+      const value = row.getValue(colId);
       if (!filterValue) return false;
-      // Si estamos filtrando por id, convertimos ambos a string para comparar
       return String(value).includes(String(filterValue));
     },
   }),
