@@ -1,5 +1,4 @@
 import { data, Form, type MetaFunction, Link as Anchor } from "react-router";
-import type { Route } from "./+types/login";
 import { InputField } from "~/components/forms/input";
 import { getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
@@ -19,6 +18,7 @@ import { CardDescription, Header } from "./components";
 import { validateSessionErrors } from "~/server/form-validation.server";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
+import type { Route } from "./+types/login";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Login", description: "Iniciar sesión en la plataforma" }];
@@ -37,6 +37,7 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Login({ loaderData }: Route.ComponentProps) {
   console.log("LoginForm");
+  //@ts-ignore
   const errors = loaderData?.zodErrors;
   console.debug("errors:", errors);
 

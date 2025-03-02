@@ -3,7 +3,6 @@ import { Grid } from "@radix-ui/themes";
 import Sidebar from "~/components/ui/sidebar";
 import type { Route } from "./+types";
 import { validateAuthSession } from "~/server/session.server";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await validateAuthSession({ request });
