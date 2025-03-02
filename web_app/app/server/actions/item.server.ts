@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { redirect } from "react-router";
 import {
-  addItemSchema,
   editItemSchema,
   type AddItemType,
   type EditItemType,
@@ -69,7 +68,6 @@ async function updateItem(request: Request, id: number) {
   const form = await request.formData();
   const formData: EditItemType = {
     descripcion: String(form.get("descripcion")),
-    ubicacionId: form.get("ubicacionId")?.toString(),
     activo: Boolean(form.get("activo")),
     stockMax: form.get("stockMax")
       ? Number(form.get("stockMax")?.toString())
@@ -78,6 +76,7 @@ async function updateItem(request: Request, id: number) {
       ? Number(form.get("stockMax")?.toString())
       : undefined,
   };
+  const route = form.get("redirectRoute")?.toString() ?? "/app";
 
   console.debug("validando con zod...", formData);
   const { success, data, error } = editItemSchema
@@ -90,7 +89,7 @@ async function updateItem(request: Request, id: number) {
   if (!success) {
     console.debug("se han encontrado errores en el formulario", error.format());
     session.flash("zodErrors", error.format());
-    throw redirect(routes.base, {
+    throw redirect(route, {
       headers: { "Set-Cookie": await commitSession(session) },
     });
   }
@@ -102,7 +101,6 @@ async function updateItem(request: Request, id: number) {
       data: {
         descripcion: data.descripcion,
         activo: data.activo,
-        ubicacionId: Number(data.ubicacionId),
         stockMax: data.stockMax,
         stockMin: data.stockMin,
       },
@@ -116,7 +114,7 @@ async function updateItem(request: Request, id: number) {
     description: "Se ha actualizado el Item",
     payload: item,
   });
-  throw redirect(routes.base, {
+  throw redirect(route, {
     headers: { "Set-Cookie": await commitSession(session) },
   });
 }
@@ -124,7 +122,7 @@ async function updateItem(request: Request, id: number) {
 async function clearItem(id: number) {
   await prisma.item.update({
     where: { id },
-    data: { ubicacionId: null, unidadMedidaId: null },
+    data: { unidadMedidaId: null },
   });
   console.debug("El item ya no tiene relaciones...");
   await prisma.stock.deleteMany({ where: { itemId: id } });

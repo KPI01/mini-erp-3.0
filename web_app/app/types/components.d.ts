@@ -20,7 +20,7 @@ import type {
 } from "@tanstack/react-table";
 import type { Routes } from "./session";
 import { Form, Select } from "radix-ui";
-import type { Dispatch } from "react";
+import type { CSSProperties, Dispatch } from "react";
 import type { Responsive } from "@radix-ui/themes/dist/esm/props/prop-def.js";
 import type { TriggerProps } from "@radix-ui/themes/components/popover";
 
@@ -93,6 +93,7 @@ interface DataTableProps<TData, TValue> {
     pageSize: number;
     pagination: PaginationState;
     changePageSize: boolean;
+    showPagination: boolean;
     filter: ColumnFiltersState;
     onFilterChange: OnChangeFn<ColumnFiltersState>;
   }>;
@@ -126,14 +127,16 @@ type SelectInputOptionsType = { [x: string]: string };
 interface SelectInputProps {
   name: string;
   options: SelectInputOptionsType;
+  placeholder?: string;
   state: {
     value: string | undefined;
     changer(value: strin | undefined): void;
   };
   config?: Partial<{
-    label?: string;
-    current?: string;
-    containerClass: string;
+    label: string;
+    current: string;
+    rootSize: Responsive<"1" | "2" | "3">;
+    containerStyle: CSSProperties;
   }>;
   errors?: ErrorsFieldType;
 }
