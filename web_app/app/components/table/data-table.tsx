@@ -63,7 +63,6 @@ export default function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    debugAll: true,
   });
 
   console.debug("state:", table.getState());
@@ -117,9 +116,9 @@ export default function DataTable<TData, TValue>({
           <Table.Row>
             <Table.Cell colSpan={columns.length} align="right">
               <Flex gapX="3" className="w-full" justify="end">
-                <Flex align="center" gapX="1">
-                  <Text>Mostrando</Text>
-                  {state.changePageSize && (
+                {state.changePageSize && (
+                  <Flex align="center" gapX="1">
+                    <Text>Mostrando</Text>
                     <Select.Root
                       value={String(table.getState().pagination.pageSize)}
                       onValueChange={(v) => table.setPageSize(Number(v))}
@@ -133,8 +132,8 @@ export default function DataTable<TData, TValue>({
                         ))}
                       </Select.Content>
                     </Select.Root>
-                  )}
-                </Flex>
+                  </Flex>
+                )}
                 <Separator orientation="vertical" style={{ height: "100%" }} />
                 <IconButton
                   type="button"
