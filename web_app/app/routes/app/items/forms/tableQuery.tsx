@@ -49,7 +49,7 @@ export default function TableQuery({
           options={options}
           state={{
             value: String(key),
-            changer: handleColumnChange,
+            changer: (v) => handleColumnChange(String(v)),
           }}
           config={{ rootSize: "3" }}
         />

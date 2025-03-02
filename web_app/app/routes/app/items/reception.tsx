@@ -41,9 +41,27 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Reception({ loaderData }: Route.ComponentProps) {
   let ubicaciones: SelectInputOptionsType = {};
+  const almacenDescriptions = {} as Record<number, string>;
   //@ts-ignore
-  loaderData.ubicaciones.map((i: Ubicacion) => {
-    ubicaciones[String(i.id)] = i.descripcion;
+  loaderData.ubicaciones
+    .filter((ub: Ubicacion) => ub.isAlmacen === true)
+    .forEach((almacen: Ubicacion) => {
+      almacenDescriptions[almacen.id] = almacen.descripcion;
+    });
+
+  //@ts-ignore
+  loaderData.ubicaciones.forEach((ubicacion: Ubicacion) => {
+    let displayValue = ubicacion.descripcion;
+
+    if (
+      ubicacion.ubicacionId &&
+      ubicacion.ubicacionId > 0 &&
+      almacenDescriptions[ubicacion.ubicacionId]
+    ) {
+      displayValue = `${displayValue} (${almacenDescriptions[ubicacion.ubicacionId]})`;
+    }
+
+    ubicaciones[String(ubicacion.id)] = displayValue;
   });
   return (
     <Grid height="100%" style={{ gridAutoRows: "auto 1fr" }}>

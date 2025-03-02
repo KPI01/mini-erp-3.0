@@ -77,7 +77,7 @@ export function AddItemForm({
                 options={unidades}
                 state={{
                   value: field.state.value,
-                  changer: field.handleChange,
+                  changer: (v) => field.handleChange(String(v)),
                 }}
                 config={{
                   label: "Unidad de medida *",

@@ -1,4 +1,4 @@
-import { PlusIcon } from "@radix-ui/react-icons";
+import { Pencil1Icon, PlusIcon } from "@radix-ui/react-icons";
 import { Box, Button, Flex, Grid } from "@radix-ui/themes";
 import { useForm } from "@tanstack/react-form";
 import { format } from "date-fns";
@@ -20,6 +20,8 @@ import {
   itemInPedidoColHelper,
 } from "~/lib/column-definitions/item";
 import Popover from "~/components/ui/popover";
+import { CreateUbicacionForm } from "./ubicacion";
+import { useState } from "react";
 
 interface AddStockFormProps {
   aux: {
@@ -27,18 +29,10 @@ interface AddStockFormProps {
   };
 }
 export function AddStockForm({ aux }: AddStockFormProps) {
-  const columns = [
-    ...itemInPedidoCol,
-    itemInPedidoColHelper.display({
-      id: "actions",
-      cell: () => "Acciones ",
-    }),
-  ] as ColumnDef<any>[];
-
   const form = useForm({
     defaultValues: {
       fecha: new Date(),
-      ubicacion: 0,
+      ubicacionId: 0,
       items: [],
     } satisfies addStockType,
     validators: {
@@ -46,19 +40,28 @@ export function AddStockForm({ aux }: AddStockFormProps) {
       onBlur: addStockSchema,
     },
   });
+  const [ubicacionSelected, setUbicacionSelected] = useState(false);
 
   const itemToPedido = (item: ItemForPedidoType) => {
-    let exists: boolean = false;
+    let exists = false;
+    const currentItems = form.getFieldValue("items");
 
-    form.getFieldValue("items").forEach((i) => {
+    const updatedItems = currentItems.map((i) => {
       if (i.id === item.id) {
-        console.error(`el articulo {${item.id}} ya esta agregado`);
+        console.info(
+          `El artículo {${item.id}} ya está agregado, incrementando cantidad`,
+        );
         exists = true;
+        return {
+          ...i,
+          cant: i.cant + (item.cant || 1),
+        };
       }
+      return i;
     });
 
     if (exists) {
-      return;
+      form.setFieldValue("items", updatedItems);
     } else {
       form.pushFieldValue("items", item);
     }
@@ -84,14 +87,17 @@ export function AddStockForm({ aux }: AddStockFormProps) {
         />
         <Flex align="end" gapX="5">
           <form.Field
-            name="ubicacion"
+            name="ubicacionId"
             children={(field) => (
               <SelectInput
                 name={field.name}
                 options={aux.ubicaciones}
                 state={{
                   value: String(field.state.value),
-                  changer: (value) => field.handleChange(Number(value)),
+                  changer: (value) => {
+                    field.handleChange(Number(value));
+                    if (value !== "0") setUbicacionSelected(true);
+                  },
                 }}
                 config={{
                   label: "Ubicación en la que se recibe el material",
@@ -100,12 +106,18 @@ export function AddStockForm({ aux }: AddStockFormProps) {
               />
             )}
           />
-          <Popover trigger={<PlusIcon />}>
-            Formulario para agregar una ubicación
-          </Popover>
+          {!ubicacionSelected ? (
+            <Popover trigger={<PlusIcon />}>
+              <CreateUbicacionForm redirectRoute="/app/items/reception" />
+            </Popover>
+          ) : (
+            <Popover trigger={<Pencil1Icon />}>
+              Formulario para editar la ubicación
+            </Popover>
+          )}
         </Flex>
         <Grid columns="2" gapY="3" justify="end">
-          <Box gridColumnEnd="3" width="fit-content" ml="auto">
+          <Box gridColumnEnd="3" width="fit-conte nt" ml="auto">
             <AlertDialog
               trigger={
                 <>
@@ -122,6 +134,7 @@ export function AddStockForm({ aux }: AddStockFormProps) {
               columns={itemInPedidoCol as ColumnDef<any>[]}
               state={{
                 pageSize: 5,
+                showPagination: true,
               }}
             />
           </Box>

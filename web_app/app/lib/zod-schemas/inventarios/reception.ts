@@ -10,6 +10,6 @@ export type ItemForPedidoType = z.infer<typeof itemForPedido>;
 export const addStockSchema = z.object({
   fecha: z.date(),
   items: itemForPedido.array(),
-  ubicacion: z.number(),
+  ubicacionId: z.number(),
 });
 export type addStockType = z.infer<typeof addStockSchema>;
