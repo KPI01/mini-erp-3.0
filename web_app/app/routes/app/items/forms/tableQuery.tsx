@@ -51,6 +51,7 @@ export default function TableQuery({
             value: String(key),
             changer: handleColumnChange,
           }}
+          config={{ rootSize: "3" }}
         />
         <TextField.Root
           size="3"

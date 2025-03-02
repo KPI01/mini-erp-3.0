@@ -24,7 +24,7 @@ export const meta: MetaFunction = () => {
 export async function loader({ request }: Route.LoaderArgs) {
   await validateAuthSession({ request });
   const stock = await prisma.stock.findMany({
-    include: { item: { include: { unidadMedida: true, ubicacion: true } } },
+    include: { item: { include: { unidadMedida: true } } },
   });
 
   return { stock };
@@ -58,7 +58,12 @@ export default function Stock({ loaderData }: Route.ComponentProps) {
       <DataTable
         data={stock}
         columns={stockColumn as ColumnDef<any>[]}
-        state={{ filter, onFilterChange: setFilter }}
+        state={{
+          filter,
+          onFilterChange: setFilter,
+          showPagination: true,
+          changePageSize: true,
+        }}
       />
     </Grid>
   );

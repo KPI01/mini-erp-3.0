@@ -6,10 +6,6 @@ import {
   PrismaClient,
 } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
-import { ColumnHeader } from "~/components/table/table-header";
-import { format } from "date-fns";
-
-const prisma = new PrismaClient();
 
 export type Item = ItemPrisma & {
   ubicacion: UbicacionPrisma;
@@ -19,7 +15,7 @@ export type Item = ItemPrisma & {
 export const itemColumnHelper = createColumnHelper<Item>();
 export const itemColumn = [
   itemColumnHelper.accessor("id", {
-    header: "Codigo",
+    header: "Código",
 
     filterFn: (row, colId, filterValue) => {
       const value = row.getValue(colId);
@@ -28,14 +24,7 @@ export const itemColumn = [
     },
   }),
   itemColumnHelper.accessor("descripcion", {
-    header: "Descripcion",
-  }),
-  itemColumnHelper.accessor("ubicacionId", {
-    header: "Ubicación",
-    cell: ({ row }) => {
-      if (row.original.ubicacionId) return row.original.ubicacion.descripcion;
-      return "Sin ubicación";
-    },
+    header: "Descripción",
   }),
   itemColumnHelper.accessor("stockMin", {
     header: "Stock Mínimo",
@@ -51,7 +40,7 @@ export const itemColumn = [
         sum += mov.cant;
       });
       const und = row.original.unidadMedida.corto;
-      return `${sum} ${und}.`;
+      return `${sum} ${und}`;
     },
   }),
 ];

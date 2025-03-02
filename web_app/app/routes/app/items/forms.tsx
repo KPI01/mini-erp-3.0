@@ -18,7 +18,6 @@ const prisma = new PrismaClient();
 export const addItemSchema = z.object({
   descripcion: STRING_FIELD,
   activo: z.boolean().optional().default(true),
-  ubicacionId: STRING_FIELD,
   unidadMedidaId: STRING_FIELD,
 });
 export type AddItemType = z.infer<typeof addItemSchema>;
@@ -89,23 +88,6 @@ export function AddItemForm({
           />
         </Grid>
         <form.Field
-          name="ubicacionId"
-          validators={{ onChange: addItemSchema.shape.ubicacionId }}
-          children={({ name, state, handleChange }) => (
-            <SelectInput
-              name={name}
-              options={ubicaciones}
-              state={{
-                value: state.value,
-                changer: (v) => handleChange(v),
-              }}
-              config={{
-                label: "Ubicación",
-              }}
-            />
-          )}
-        />
-        <form.Field
           name="activo"
           validators={{
             onChange: addItemSchema.shape.activo,
@@ -146,7 +128,6 @@ export const editItemSchema = z.object({
   activo: z.boolean().optional(),
   stockMin: z.number({ invalid_type_error: INVALID_MSG }).optional(),
   stockMax: z.number({ invalid_type_error: INVALID_MSG }).optional(),
-  ubicacionId: z.string({ invalid_type_error: INVALID_MSG }).optional(),
 });
 export type EditItemType = z.infer<typeof editItemSchema>;
 interface EditItemFormProps {
@@ -197,23 +178,6 @@ export function EditItemForm({ defaults, id, aux, errors }: EditItemFormProps) {
                 value: String(state.value),
                 onClick: () => handleChange(!state.value),
                 onBlur: handleBlur,
-              }}
-            />
-          )}
-        />
-        <form.Field
-          name="ubicacionId"
-          validators={{ onChange: editItemSchema.shape.ubicacionId }}
-          children={({ name, state, handleChange }) => (
-            <SelectInput
-              name={name}
-              options={aux}
-              state={{
-                value: state.value,
-                changer: (v) => handleChange(v),
-              }}
-              config={{
-                label: "Ubicación",
               }}
             />
           )}

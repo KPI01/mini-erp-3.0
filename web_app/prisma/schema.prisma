@@ -2,11 +2,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator fake_data {
-  provider = "prisma-generator-fake-data"
-  output   = "./fake-data.ts"
-}
-
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
@@ -34,10 +29,8 @@ model Item {
   stockMin       Float?           @default(0)
   stockMax       Float?           @default(0)
   precio         Float?           @default(1)
-  ubicacionId    Int?
   unidadMedidaId Int?
   unidadMedida   UnidadMedida?    @relation(fields: [unidadMedidaId], references: [id])
-  ubicacion      Ubicacion?       @relation(fields: [ubicacionId], references: [id])
   ItemsOnPedidos ItemsOnPedidos[]
   stock          Stock[]
 }
@@ -48,18 +41,20 @@ model Ubicacion {
   corto       String      @unique
   isAlmacen   Boolean     @default(false)
   ubicacionId Int?
-  item        Item[]
   seccion     Ubicacion?  @relation("locacion", fields: [ubicacionId], references: [id])
   almacen     Ubicacion[] @relation("locacion")
+  Stock       Stock[]
 }
 
 model Stock {
-  id          Int      @id @default(autoincrement())
-  fecha       DateTime @default(now())
+  id          Int       @id @default(autoincrement())
+  fecha       DateTime  @default(now())
   descripcion String
   cant        Int
   itemId      Int
-  item        Item     @relation(fields: [itemId], references: [id])
+  item        Item      @relation(fields: [itemId], references: [id])
+  ubicacionId Int
+  ubicacion   Ubicacion @relation(fields: [ubicacionId], references: [id])
 }
 
 model UnidadMedida {

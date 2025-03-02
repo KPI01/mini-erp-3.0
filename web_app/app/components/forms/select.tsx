@@ -8,8 +8,11 @@ import { useState } from "react";
 export default function SelectInput({
   name,
   options,
+  placeholder,
   state,
-  config,
+  config = {
+    rootSize: "2",
+  },
   errors,
 }: SelectInputProps) {
   const keys = Object.keys(options);
@@ -24,26 +27,25 @@ export default function SelectInput({
     setValue(value);
   };
 
+  // Determine placeholder text
+  const defaultPlaceholder =
+    keys.length < 1 ? "Nada que mostrar..." : "Selecciona una opción...";
+
+  // Use provided placeholder or default
+  const placeholderText = placeholder || defaultPlaceholder;
+
   return (
-    <Grid
-      columns="1"
-      gapY="1"
-      align="center"
-      className={config?.containerClass}
-    >
+    <Grid columns="1" gapY="1" align="center" style={config.containerStyle}>
       {config?.label && <Label.Root>{config.label}</Label.Root>}
       <Select.Root
         name={name}
-        size="3"
+        size={config.rootSize}
         value={state.value}
         onValueChange={handleChange}
         disabled={keys.length < 1}
       >
-        <Select.Trigger
-          variant="surface"
-          placeholder={keys.length < 1 ? "Nada que mostrar..." : ""}
-        >
-          {value && options[value]}
+        <Select.Trigger variant="surface">
+          {value && options[value] ? options[value] : placeholderText}
         </Select.Trigger>
         <Select.Content position="popper">
           {keys.map((k, i) => {

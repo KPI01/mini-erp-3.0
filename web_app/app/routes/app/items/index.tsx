@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { Button, Flex, Grid, Heading } from "@radix-ui/themes";
+import { Button, Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { type ColumnDef, type ColumnFiltersState } from "@tanstack/react-table";
 import { Label } from "radix-ui";
 import { useState, type ChangeEvent } from "react";
@@ -18,7 +18,10 @@ const prisma = new PrismaClient();
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Items", description: "Visualización de los items registrados." },
+    {
+      title: "Artículos",
+      description: "Visualización de los items registrados.",
+    },
   ];
 };
 
@@ -63,7 +66,6 @@ export async function loader({ request }: Route.LoaderArgs) {
   items = await prisma.item.findMany({
     include: {
       unidadMedida: true,
-      ubicacion: true,
       stock: true,
     },
   });
@@ -87,18 +89,24 @@ export default function Index({ loaderData }: Route.ComponentProps) {
   const { items } = loaderData;
 
   const columns = {
-    id: "Codigo",
-    descripcion: "Descripcion",
+    id: "Código",
+    descripcion: "Descripción",
   };
 
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
   const [showData, setShowData] = useState(false);
+  const body =
+    filter.length > 0 && showData ? (
+      <Text color="red" weight="bold">
+        No se ha encontrado el código ingresado.
+      </Text>
+    ) : undefined;
   console.debug("table filters:", filter);
 
   return (
     <Grid gapY="6">
       <Heading as="h1" size="9">
-        Consulta de Articulo
+        Consulta de Artículo
       </Heading>
       <Flex align="center" justify="start" gapX="2">
         <TableQuery
@@ -109,7 +117,11 @@ export default function Index({ loaderData }: Route.ComponentProps) {
           }}
           changeQueryCallback={(col, val) => {
             setFilter([{ id: col, value: val }]);
-            if (val !== "") setShowData(true);
+            if (val !== "") {
+              setShowData(true);
+            } else {
+              setShowData(false);
+            }
           }}
           clearQueryCallback={() => {
             setFilter([]);
@@ -124,7 +136,9 @@ export default function Index({ loaderData }: Route.ComponentProps) {
         state={{
           filter,
           onFilterChange: setFilter,
+          changePageSize: false,
         }}
+        bodyFallback={body}
       />
     </Grid>
   );

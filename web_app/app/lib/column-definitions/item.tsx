@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import type { ItemPedido } from "../forms/item";
-import type { Item, UnidadMedida } from "@prisma/client";
+import type { Item } from "@prisma/client";
+import type { ItemPedido } from "~/routes/app/items/forms/item";
 
 export const addItemToFormColHelper = createColumnHelper<ItemPedido>();
 export const addItemToFormCol = [
@@ -30,6 +30,8 @@ export const itemInPedidoCol = [
   }),
   itemInPedidoColHelper.accessor("cant", {
     header: "Cantidad",
-    cell: ({ getValue, row }) => `${getValue()} ${row.original.unidadMedida}.`,
+  }),
+  itemInPedidoColHelper.accessor("unidadMedida", {
+    header: "Unidad",
   }),
 ];

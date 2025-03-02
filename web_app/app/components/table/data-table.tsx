@@ -29,6 +29,7 @@ export default function DataTable<TData, TValue>({
     filter: undefined,
     onFilterChange: () => {},
     changePageSize: true,
+    showPagination: true,
   },
 }: DataTableProps<TData, TValue>) {
   console.debug("data:", data);
@@ -112,56 +113,58 @@ export default function DataTable<TData, TValue>({
         )}
       </Table.Body>
       <tfoot style={{ marginTop: "100px" }}>
-        <Table.Row>
-          <Table.Cell colSpan={columns.length} align="right">
-            <Flex gapX="3" className="w-full" justify="end">
-              <Flex align="center" gapX="1">
-                <Text>Mostrando</Text>
-                {state.changePageSize && (
-                  <Select.Root
-                    value={String(table.getState().pagination.pageSize)}
-                    onValueChange={(v) => table.setPageSize(Number(v))}
-                  >
-                    <Select.Trigger placeholder="Nada que mostrar..." />
-                    <Select.Content>
-                      {[5, 10, 15, 20].map((pageSize) => (
-                        <Select.Item key={pageSize} value={String(pageSize)}>
-                          {pageSize}
-                        </Select.Item>
-                      ))}
-                    </Select.Content>
-                  </Select.Root>
-                )}
+        {state.showPagination && (
+          <Table.Row>
+            <Table.Cell colSpan={columns.length} align="right">
+              <Flex gapX="3" className="w-full" justify="end">
+                <Flex align="center" gapX="1">
+                  <Text>Mostrando</Text>
+                  {state.changePageSize && (
+                    <Select.Root
+                      value={String(table.getState().pagination.pageSize)}
+                      onValueChange={(v) => table.setPageSize(Number(v))}
+                    >
+                      <Select.Trigger placeholder="Nada que mostrar..." />
+                      <Select.Content>
+                        {[5, 10, 15, 20].map((pageSize) => (
+                          <Select.Item key={pageSize} value={String(pageSize)}>
+                            {pageSize}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                  )}
+                </Flex>
+                <Separator orientation="vertical" style={{ height: "100%" }} />
+                <IconButton
+                  type="button"
+                  color="gray"
+                  variant="outline"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  <ChevronLeftIcon />
+                </IconButton>
+                <input
+                  min={0}
+                  type="number"
+                  className="w-[6ch] border-(--gray-8) no-spinner text-center"
+                  disabled
+                  value={table.getState().pagination.pageIndex + 1}
+                />
+                <IconButton
+                  type="button"
+                  color="gray"
+                  variant="outline"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                >
+                  <ChevronRightIcon />
+                </IconButton>
               </Flex>
-              <Separator orientation="vertical" style={{ height: "100%" }} />
-              <IconButton
-                type="button"
-                color="gray"
-                variant="outline"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <ChevronLeftIcon />
-              </IconButton>
-              <input
-                min={0}
-                type="number"
-                className="w-[6ch] border-(--gray-8) no-spinner text-center"
-                disabled
-                value={table.getState().pagination.pageIndex + 1}
-              />
-              <IconButton
-                type="button"
-                color="gray"
-                variant="outline"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                <ChevronRightIcon />
-              </IconButton>
-            </Flex>
-          </Table.Cell>
-        </Table.Row>
+            </Table.Cell>
+          </Table.Row>
+        )}
       </tfoot>
     </Table.Root>
   );

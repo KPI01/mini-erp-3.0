@@ -1,5 +1,5 @@
 import { PlusIcon } from "@radix-ui/react-icons";
-import { Box, Button, Grid } from "@radix-ui/themes";
+import { Box, Button, Flex, Grid } from "@radix-ui/themes";
 import { useForm } from "@tanstack/react-form";
 import { format } from "date-fns";
 import { Form } from "react-router";
@@ -14,8 +14,12 @@ import {
   type ItemForPedidoType,
 } from "~/lib/zod-schemas/inventarios/reception";
 import DataTable from "~/components/table/data-table";
-import { itemInPedidoCol, itemInPedidoColHelper } from "../columns/item";
 import { type ColumnDef } from "@tanstack/react-table";
+import {
+  itemInPedidoCol,
+  itemInPedidoColHelper,
+} from "~/lib/column-definitions/item";
+import Popover from "~/components/ui/popover";
 
 interface AddStockFormProps {
   aux: {
@@ -78,23 +82,28 @@ export function AddStockForm({ aux }: AddStockFormProps) {
             />
           )}
         />
-        <form.Field
-          name="ubicacion"
-          children={(field) => (
-            <SelectInput
-              name={field.name}
-              options={aux.ubicaciones}
-              state={{
-                value: String(field.state.value),
-                changer: (value) => field.handleChange(Number(value)),
-              }}
-              config={{
-                label:
-                  "Selecciona la ubicación en la que se recibe el material",
-              }}
-            />
-          )}
-        />
+        <Flex align="end" gapX="5">
+          <form.Field
+            name="ubicacion"
+            children={(field) => (
+              <SelectInput
+                name={field.name}
+                options={aux.ubicaciones}
+                state={{
+                  value: String(field.state.value),
+                  changer: (value) => field.handleChange(Number(value)),
+                }}
+                config={{
+                  label: "Ubicación en la que se recibe el material",
+                  containerStyle: { width: "100%" },
+                }}
+              />
+            )}
+          />
+          <Popover trigger={<PlusIcon />}>
+            Formulario para agregar una ubicación
+          </Popover>
+        </Flex>
         <Grid columns="2" gapY="3" justify="end">
           <Box gridColumnEnd="3" width="fit-content" ml="auto">
             <AlertDialog
