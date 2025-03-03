@@ -118,7 +118,7 @@ async function addStock(request: Request) {
       payload: stockMovements,
     });
 
-    return redirect("/app/items", {
+    return redirect("/app/items/stock", {
       headers: {
         "Set-Cookie": await commitSession(session),
       },
