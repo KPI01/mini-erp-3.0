@@ -2,7 +2,7 @@ import { Pencil1Icon, PlusIcon } from "@radix-ui/react-icons";
 import { Box, Button, Flex, Grid } from "@radix-ui/themes";
 import { useForm } from "@tanstack/react-form";
 import { format } from "date-fns";
-import { Form } from "react-router";
+import { Form, useSubmit } from "react-router";
 import { InputField } from "~/components/forms/input";
 import SelectInput from "~/components/forms/select";
 import AlertDialog from "~/components/ui/alert-dialog";
@@ -10,31 +10,31 @@ import type { SelectInputOptionsType } from "~/types/components";
 import { AddItemToForm } from "./item";
 import {
   addStockSchema,
-  type addStockType,
+  type AddStockType,
   type ItemForPedidoType,
-} from "~/lib/zod-schemas/inventarios/reception";
+} from "~/lib/zod-schemas/inventarios/stock";
 import DataTable from "~/components/table/data-table";
 import { type ColumnDef } from "@tanstack/react-table";
-import {
-  itemInPedidoCol,
-  itemInPedidoColHelper,
-} from "~/lib/column-definitions/item";
+import { itemInPedidoCol } from "~/lib/column-definitions/item";
 import Popover from "~/components/ui/popover";
-import { CreateUbicacionForm } from "./ubicacion";
+import { CreateUbicacionForm, UpdateUbicacionForm } from "./ubicacion";
 import { useState } from "react";
+import type { Item } from "@prisma/client";
 
 interface AddStockFormProps {
   aux: {
     ubicaciones: SelectInputOptionsType;
   };
 }
+
 export function AddStockForm({ aux }: AddStockFormProps) {
+  const submit = useSubmit();
   const form = useForm({
     defaultValues: {
       fecha: new Date(),
       ubicacionId: 0,
       items: [],
-    } satisfies addStockType,
+    } satisfies AddStockType,
     validators: {
       onChange: addStockSchema,
       onBlur: addStockSchema,
@@ -67,9 +67,31 @@ export function AddStockForm({ aux }: AddStockFormProps) {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Create FormData object to handle form submission
+    const formData = new FormData();
+
+    // Add fecha in ISO format
+    formData.append("fecha", form.getFieldValue("fecha").toISOString());
+
+    // Add ubicacionId
+    formData.append("ubicacionId", String(form.getFieldValue("ubicacionId")));
+
+    // Handle items array - convert to JSON string
+    formData.append("items", JSON.stringify(form.getFieldValue("items")));
+
+    // Submit the form
+    submit(formData, {
+      method: "post",
+      action: "/app/items/reception",
+    });
+  };
+
   return (
-    <Grid gapY="5" asChild>
-      <Form method="post" action="/app/items/reception">
+    <Grid asChild gapY="5">
+      <Form method="post" action="/app/items/reception" onSubmit={handleSubmit}>
         <form.Field
           name="fecha"
           children={(field) => (
@@ -112,12 +134,15 @@ export function AddStockForm({ aux }: AddStockFormProps) {
             </Popover>
           ) : (
             <Popover trigger={<Pencil1Icon />}>
-              Formulario para editar la ubicación
+              <UpdateUbicacionForm
+                ubicacion={String(form.getFieldValue("ubicacionId"))}
+                redirectRoute="/app/items/reception"
+              />
             </Popover>
           )}
         </Flex>
         <Grid columns="2" gapY="3" justify="end">
-          <Box gridColumnEnd="3" width="fit-conte nt" ml="auto">
+          <Box gridColumnEnd="3" width="fit-content" ml="auto">
             <AlertDialog
               trigger={
                 <>
@@ -139,9 +164,27 @@ export function AddStockForm({ aux }: AddStockFormProps) {
             />
           </Box>
         </Grid>
+
+        {/* Hidden input fields to store serialized items data */}
+        <form.Field
+          name="items"
+          children={(field) => (
+            <input
+              type="hidden"
+              name="itemsJSON"
+              value={JSON.stringify(field.state.value)}
+            />
+          )}
+        />
+
         <form.Subscribe
-          children={() => (
-            <Button ml="auto" size="4">
+          children={({ isSubmitting, canSubmit, isValid }) => (
+            <Button
+              ml="auto"
+              size="4"
+              type="submit"
+              disabled={isSubmitting || !canSubmit || !isValid}
+            >
               Enviar
             </Button>
           )}

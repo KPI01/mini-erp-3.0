@@ -8,9 +8,8 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function addUnidadMedida(request: Request) {
+async function createUnidadMedida(request: Request) {
   const url = new URL(request.url);
-  console.debug("url:", url);
   const session = await validateAuthSession({ request });
 
   const form = await request.formData();
@@ -44,6 +43,7 @@ async function addUnidadMedida(request: Request) {
       console.error(e);
       throw e;
     });
+  console.debug("UnidadMedida creada");
 
   session.flash("info", {
     description: "Creada Unidad Medida",
@@ -55,4 +55,4 @@ async function addUnidadMedida(request: Request) {
   });
 }
 
-export { addUnidadMedida };
+export { createUnidadMedida };

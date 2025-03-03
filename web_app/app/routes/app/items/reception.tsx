@@ -2,12 +2,7 @@ import { Box, Grid, Heading } from "@radix-ui/themes";
 import { validateAuthSession } from "~/server/session.server";
 import type { MetaFunction } from "react-router";
 import CardContructor from "~/components/ui/card";
-import {
-  PrismaClient,
-  type Item,
-  type Ubicacion,
-  type UnidadMedida,
-} from "@prisma/client";
+import { PrismaClient, type Ubicacion } from "@prisma/client";
 import type { Route } from "./+types/reception";
 import type { SelectInputOptionsType } from "~/types/components";
 import { addStock } from "~/server/actions/stock.server";

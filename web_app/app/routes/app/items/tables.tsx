@@ -1,15 +1,15 @@
 import {
   type Item as ItemPrisma,
   type Ubicacion as UbicacionPrisma,
-  type Stock as StockPrisma,
   type UnidadMedida,
-  PrismaClient,
+  type Stock,
+  Prisma,
 } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
 
 export type Item = ItemPrisma & {
   ubicacion: UbicacionPrisma;
-  stock: StockPrisma[];
+  stock: Stock[];
   unidadMedida: UnidadMedida;
 };
 export const itemColumnHelper = createColumnHelper<Item>();
@@ -45,14 +45,11 @@ export const itemColumn = [
   }),
 ];
 
-export type Stock = {
-  id: string | number;
-  fecha: Date | string;
-  descripcion: string;
-  cant: number;
-  item: Item;
-};
-const stockColumnHelper = createColumnHelper<Stock>();
+const stockColumnHelper = createColumnHelper<
+  Prisma.StockGetPayload<{
+    include: { item: { include: { unidadMedida: true } }; ubicacion: true };
+  }>
+>();
 export const stockColumn = [
   stockColumnHelper.accessor("fecha", {
     header: "Fecha de movimiento",
@@ -65,7 +62,7 @@ export const stockColumn = [
       return search === current;
     },
   }),
-  stockColumnHelper.accessor("item.descripcion", {
+  stockColumnHelper.accessor("descripcion", {
     id: "item",
     header: "Descripción del Artículo",
     cell: ({ row }) => row.original.item.descripcion,
@@ -78,12 +75,12 @@ export const stockColumn = [
   stockColumnHelper.accessor("cant", {
     header: "Cantidad",
     cell: ({ row }) =>
-      `${row.original.cant} ${row.original.item.unidadMedida.corto}.`,
+      `${row.original.cant} ${row.original.item.unidadMedida?.corto}`,
   }),
-  stockColumnHelper.accessor("item.ubicacion.descripcion", {
+  stockColumnHelper.accessor("ubicacion.descripcion", {
     id: "ubicacion",
     header: "Ubicación",
-    cell: ({ row }) => row.original.item.ubicacion.descripcion,
+    cell: ({ row }) => row.original.ubicacion.descripcion,
     filterFn: (row, colId, filterValue) => {
       const value = String(row.getValue(colId)).toLowerCase();
       if (!filterValue) return true;

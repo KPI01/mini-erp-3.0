@@ -16,12 +16,10 @@ export const createUbicacionSchema = z
       })
       .min(1, REQUIRED_MSG)
       .max(8, MAX_LENGTH_MSG(8)),
-    isAlmacen: z
-      .boolean({
-        invalid_type_error: INVALID_MSG,
-        required_error: REQUIRED_MSG,
-      })
-      .default(true),
+    isAlmacen: z.boolean({
+      invalid_type_error: INVALID_MSG,
+      required_error: REQUIRED_MSG,
+    }),
     ubicacionId: z.number().optional(),
   })
   .superRefine((value, ctx) => {
@@ -44,3 +42,26 @@ export const createUbicacionSchema = z
     return value;
   });
 export type CreateUbicacionType = z.infer<typeof createUbicacionSchema>;
+
+export const updateUbicacionSchema = z.object({
+  id: z.number(),
+  descripcion: z
+    .string({
+      required_error: REQUIRED_MSG,
+      invalid_type_error: INVALID_MSG,
+    })
+    .min(1, REQUIRED_MSG),
+  corto: z
+    .string({
+      required_error: REQUIRED_MSG,
+      invalid_type_error: INVALID_MSG,
+    })
+    .min(1, REQUIRED_MSG)
+    .max(8, MAX_LENGTH_MSG(8)),
+  isAlmacen: z.boolean({
+    invalid_type_error: INVALID_MSG,
+    required_error: REQUIRED_MSG,
+  }),
+  ubicacionId: z.number().optional(),
+});
+export type UpdateUbicacionType = z.infer<typeof updateUbicacionSchema>;

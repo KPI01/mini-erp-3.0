@@ -1,5 +1,5 @@
 import { commitSession, validateAuthSession } from "~/server/session.server";
-import { addUnidadMedida } from "~/server/actions/unidadMedida.server";
+import { createUnidadMedida } from "~/server/actions/unidadMedida.server";
 import { redirect } from "react-router";
 import type { Route } from "./+types";
 import { PrismaClient } from "@prisma/client";
@@ -20,7 +20,7 @@ export async function action({ request }: Route.ActionArgs) {
 
   if (request.method.toLocaleLowerCase() === "post") {
     console.debug("la petición es POST");
-    const data = await addUnidadMedida(request);
+    const data = await createUnidadMedida(request);
     session.flash("info", {
       description: "Creada UnidadMedida",
       payload: data,

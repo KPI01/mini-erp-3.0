@@ -24,7 +24,7 @@ export const meta: MetaFunction = () => {
 export async function loader({ request }: Route.LoaderArgs) {
   await validateAuthSession({ request });
   const stock = await prisma.stock.findMany({
-    include: { item: { include: { unidadMedida: true } } },
+    include: { item: { include: { unidadMedida: true } }, ubicacion: true },
   });
 
   return { stock };
