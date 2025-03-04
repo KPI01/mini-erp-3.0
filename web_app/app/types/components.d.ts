@@ -9,7 +9,6 @@ import type {
   CardProps,
   GridProps,
   Popover,
-  HeadingProps,
 } from "@radix-ui/themes";
 import type {
   Column,
@@ -42,11 +41,6 @@ type SideBarLink = {
 interface SidebarProps {
   user?: Omit<User, "password">;
   className?: string;
-}
-
-interface PageHeaderProps {
-  title: string;
-  props?: Omit<HeadingProps, "size" | "as">;
 }
 
 interface InputProps {
