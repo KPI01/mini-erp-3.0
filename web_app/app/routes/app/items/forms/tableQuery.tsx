@@ -1,6 +1,7 @@
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { Flex, Grid, IconButton, Text, TextField } from "@radix-ui/themes";
 import { useState, type ChangeEventHandler } from "react";
+import { DebouncedInput } from "~/components/forms/input";
 import SelectInput from "~/components/forms/select";
 import type { SelectInputOptionsType } from "~/types/components";
 
@@ -29,11 +30,10 @@ export default function TableQuery({
     if (changeColumnCallback) changeColumnCallback();
   };
 
-  const handleQueryChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const value = e.target.value;
+  function handleQueryChange(value: string) {
     setQuery(value);
     if (changeQueryCallback) changeQueryCallback(String(key), value);
-  };
+  }
 
   const clearQuery = () => {
     setQuery("");
@@ -53,12 +53,13 @@ export default function TableQuery({
           }}
           config={{ rootSize: "3" }}
         />
-        <TextField.Root
+        <DebouncedInput
+          debounce={250}
           size="3"
           type={key !== "fecha" ? "text" : "date"}
           name="query"
           value={query}
-          onChange={handleQueryChange}
+          onChange={(v) => handleQueryChange(String(v))}
         >
           {clearAction && (
             <TextField.Slot side="right">
@@ -71,7 +72,7 @@ export default function TableQuery({
               </IconButton>
             </TextField.Slot>
           )}
-        </TextField.Root>
+        </DebouncedInput>
       </Flex>
     </Grid>
   );

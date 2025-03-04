@@ -59,7 +59,10 @@ interface InputProps {
   errors?: unknown;
 }
 
-type InputFieldType = React.InputHTMLAttributes<HTMLInputElement>;
+type BaseInputFieldProps = React.InputHTMLAttributes<HTMLInputElement> &
+  Omit<React.PropsWithoutRef<TextField.RootProps>, "onChange"> & {
+    slots: React.ReactNode;
+  };
 interface InputFieldProps {
   label?: string | { main: string; prefix?: string; suffix?: string };
   description?: string;
@@ -67,6 +70,12 @@ interface InputFieldProps {
   input: InputFieldType;
   errors?: ErrorsFieldType;
 }
+interface DebouncedInputProps extends Omit<BaseInputFieldProps, "value"> {
+  value: string | number;
+  onChange: (value: string | number) => void;
+  debounce?: number;
+}
+
 interface CheckboxFieldProps {
   containerProps?: GridProps;
   label: string;
