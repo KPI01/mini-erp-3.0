@@ -10,6 +10,7 @@ import type {
   GridProps,
   Popover,
   HeadingProps,
+  Dialog,
 } from "@radix-ui/themes";
 import type {
   Column,
@@ -32,6 +33,7 @@ type ColorsType = ButtonProps["color"];
 type MaxWidthType = Responsive<string>;
 type IconType = React.ComponentProps<typeof EyeClosedIcon>;
 type BtnType = React.ComponentProps<typeof Button>;
+type DialogContentProps = React.ComponentProps<typeof Dialog.ContentProps>;
 
 type SideBarLink = {
   label: string;
@@ -145,6 +147,15 @@ interface SelectInputProps {
     containerStyle: CSSProperties;
   }>;
   errors?: ErrorsFieldType;
+}
+
+interface DialogProps extends React.PropsWithChildren {
+  trigger: TriggerButton;
+  header: Partial<{ title: string; description: string }>;
+  config: {
+    trigger: BtnType;
+    content: DialogContentProps;
+  };
 }
 
 interface AlertDialogProps extends React.PropsWithChildren {
