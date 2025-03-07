@@ -1,5 +1,9 @@
 import { cleanErrors } from "~/helpers/utils";
-import type { CheckboxFieldProps, InputFieldProps } from "~/types/components";
+import type {
+  CheckboxFieldProps,
+  DebouncedInputProps,
+  InputFieldProps,
+} from "~/types/components";
 import {
   Flex,
   Grid,
@@ -15,12 +19,9 @@ export function DebouncedInput({
   value: initialValue,
   onChange,
   debounce = 500,
+  slots,
   ...props
-}: {
-  value: string | number;
-  onChange: (value: string | number) => void;
-  debounce?: number;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) {
+}: DebouncedInputProps) {
   const [value, setValue] = React.useState(initialValue);
 
   React.useEffect(() => {
@@ -35,13 +36,23 @@ export function DebouncedInput({
     return () => clearTimeout(timeout);
   }, [value]);
 
-  return (
-    <input
+  if (slots) {
+    <TextField.Root
       {...props}
       value={value}
       onChange={(e) => setValue(e.target.value)}
-    />
-  );
+    >
+      {slots}
+    </TextField.Root>;
+  } else {
+    return (
+      <TextField.Root
+        {...props}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+    );
+  }
 }
 
 export function InputField({
@@ -52,13 +63,8 @@ export function InputField({
   description,
 }: InputFieldProps) {
   const errorBag = cleanErrors(input.name, errors);
-  const Description = (
-    <Text as="p" size="1" weight="light" trim="both">
-      {" "}
-      {description}
-    </Text>
-  );
 
+  // Simple string label
   if (typeof label === "string") {
     console.debug(
       `InputField[${input.name}] no tiene prefijo y es ${input.type}`,
@@ -68,52 +74,75 @@ export function InputField({
       return (
         <Grid gapY="1">
           <Label.Root htmlFor={String(input.name)}>{label}</Label.Root>
-          <Flex gapX="4" justify="between">
-            <input {...input} style={{ flexBasis: "100%" }} />
-            <IconButton type="button" onClick={() => icon.stateHandler()}>
-              {icon.children}
-            </IconButton>
-          </Flex>
-          {description && Description}
+          <TextField.Root {...input} id={String(input.name)}>
+            <TextField.Slot side="right">
+              <IconButton type="button" onClick={() => icon.stateHandler()}>
+                {icon.children}
+              </IconButton>
+            </TextField.Slot>
+          </TextField.Root>
+          {description && (
+            <Text as="p" size="1" weight="light" trim="both">
+              {description}
+            </Text>
+          )}
           {displayErrors(errorBag)}
         </Grid>
       );
     }
+
     return (
       <Grid gapY="1">
-        <Label.Root htmlFor={String(input.id)}>{label}</Label.Root>
-        <input {...input} />
-        {description && Description}
+        <Label.Root htmlFor={String(input.id || input.name)}>
+          {label}
+        </Label.Root>
+        <TextField.Root {...input} id={String(input.id || input.name)} />
+        {description && (
+          <Text as="p" size="1" weight="light" trim="both">
+            {description}
+          </Text>
+        )}
         {displayErrors(errorBag)}
       </Grid>
     );
-  } else if (typeof label === "object") {
+  }
+  // Object label with main/suffix
+  else if (typeof label === "object") {
     console.debug(`InputField[${input.name}] tiene label y es ${input.type}`);
+
     return (
       <Grid gapY="1">
-        <Label.Root htmlFor={String(input.name)}>{label.main}</Label.Root>
-        {input.type === "text" ? (
-          <input {...input} />
-        ) : (
-          <Flex align="center" gapX="4">
-            <input {...input} />
-            <Label.Root asChild>
+        <TextField.Root {...input} id={String(input.name)}>
+          <TextField.Slot>
+            <Label.Root htmlFor={String(input.name)}>{label.main}</Label.Root>
+          </TextField.Slot>
+          {label.suffix && (
+            <TextField.Slot side="right">
               <Text size="3" weight="medium">
                 {label.suffix}
               </Text>
-            </Label.Root>
-          </Flex>
+            </TextField.Slot>
+          )}
+        </TextField.Root>
+        {description && (
+          <Text as="p" size="1" weight="light" trim="both">
+            {description}
+          </Text>
         )}
-        {description && Description}
         {displayErrors(errorBag)}
       </Grid>
     );
   }
 
+  // No label case
   return (
     <Grid gapY="1">
-      <input {...input} />
-      {description && Description}
+      <TextField.Root {...input} />
+      {description && (
+        <Text as="p" size="1" weight="light" trim="both">
+          {description}
+        </Text>
+      )}
       {displayErrors(errorBag)}
     </Grid>
   );
