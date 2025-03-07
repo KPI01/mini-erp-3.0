@@ -11,6 +11,7 @@ import type {
 
 export default function TableQuery({
   options,
+  placeholder,
   changeColumnCallback,
   changeQueryCallback,
   clearQueryCallback,
@@ -39,9 +40,13 @@ export default function TableQuery({
 
   return (
     <Grid columns="1" gapY="2" align="center">
-      <Text as="label">Ingresa un valor para iniciar la búsqueda:</Text>
+      <Text as="label">
+        {placeholder
+          ? placeholder
+          : "Ingresa un valor para iniciar la búsqueda:"}
+      </Text>
       <Flex gapX="3" align="center">
-        {typeof options === "object" ? (
+        {options && typeof options === "object" && (
           <SelectInput
             name="tableQuery"
             options={options}
@@ -51,8 +56,6 @@ export default function TableQuery({
             }}
             config={{ rootSize: "3" }}
           />
-        ) : (
-          <Label.Root>{options}</Label.Root>
         )}
         <DebouncedInput
           debounce={250}
