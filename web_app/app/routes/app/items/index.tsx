@@ -13,7 +13,6 @@ import { Item } from "@radix-ui/themes/components/segmented-control";
 import TableQuery from "./forms/tableQuery";
 import { validateAuthSession } from "~/server/session.server";
 import { addItem } from "~/server/actions/item.server";
-import { PageHeader } from "~/components/ui/header";
 
 const prisma = new PrismaClient();
 
@@ -106,7 +105,9 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
   return (
     <Grid gapY="6">
-      <PageHeader title="Consulta de Artículo" />
+      <Heading as="h1" size="9">
+        Consulta de Artículo
+      </Heading>
       <Flex align="center" justify="start" gapX="2">
         <TableQuery
           options={columns}

@@ -8,7 +8,6 @@ import { type ColumnDef, type ColumnFiltersState } from "@tanstack/react-table";
 import type { Route } from "./+types/stock";
 import { useState } from "react";
 import TableQuery from "./forms/tableQuery";
-import { PageHeader } from "~/components/ui/header";
 
 const prisma = new PrismaClient();
 
@@ -44,7 +43,9 @@ export default function Stock({ loaderData }: Route.ComponentProps) {
 
   return (
     <Grid gapY="8">
-      <PageHeader title="Rotación de Material" />
+      <Heading as="h1" size="9">
+        Rotación de Material
+      </Heading>
       <TableQuery
         options={columns}
         changeColumnCallback={() => {

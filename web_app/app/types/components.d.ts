@@ -9,7 +9,6 @@ import type {
   CardProps,
   GridProps,
   Popover,
-  HeadingProps,
 } from "@radix-ui/themes";
 import type {
   Column,
@@ -42,11 +41,6 @@ type SideBarLink = {
 interface SidebarProps {
   user?: Omit<User, "password">;
   className?: string;
-}
-
-interface PageHeaderProps {
-  title: string;
-  props?: Omit<HeadingProps, "size" | "as">;
 }
 
 interface InputProps {
@@ -92,14 +86,6 @@ interface CheckboxFieldProps {
 interface IconProps
   extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> {}
 
-interface DTRowAction {
-  id: string;
-  route: string;
-  values: any;
-  aux?: any;
-  errorBag: Record<string, unknown>;
-  editForm: { type?: "popover" | "alertDialog"; children: React.ReactNode };
-}
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -112,6 +98,14 @@ interface DataTableProps<TData, TValue> {
     filter: ColumnFiltersState;
     onFilterChange: OnChangeFn<ColumnFiltersState>;
   }>;
+}
+interface TableQueryProps {
+  options: SelectInputOptionsType | string;
+  changeColumnCallback?: () => void;
+  changeQueryCallback?: (column: string, qValue?: string) => void;
+  clearQueryCallback?: () => void;
+
+  clearAction?: boolean;
 }
 
 interface DTColumnHeaderProps<TData, TValue>
