@@ -9,6 +9,8 @@ import type {
   CardProps,
   GridProps,
   Popover,
+  HeadingProps,
+  Dialog,
 } from "@radix-ui/themes";
 import type {
   Column,
@@ -31,6 +33,7 @@ type ColorsType = ButtonProps["color"];
 type MaxWidthType = Responsive<string>;
 type IconType = React.ComponentProps<typeof EyeClosedIcon>;
 type BtnType = React.ComponentProps<typeof Button>;
+type DialogContentProps = React.ComponentProps<typeof Dialog.ContentProps>;
 
 type SideBarLink = {
   label: string;
@@ -41,6 +44,11 @@ type SideBarLink = {
 interface SidebarProps {
   user?: Omit<User, "password">;
   className?: string;
+}
+
+interface PageHeaderProps {
+  title: string;
+  props?: Omit<HeadingProps, "size" | "as">;
 }
 
 interface InputProps {
@@ -59,10 +67,7 @@ interface InputProps {
   errors?: unknown;
 }
 
-type BaseInputFieldProps = React.InputHTMLAttributes<HTMLInputElement> &
-  Omit<React.PropsWithoutRef<TextField.RootProps>, "onChange"> & {
-    slots: React.ReactNode;
-  };
+type InputFieldType = React.InputHTMLAttributes<HTMLInputElement>;
 interface InputFieldProps {
   label?: string | { main: string; prefix?: string; suffix?: string };
   description?: string;
@@ -70,12 +75,6 @@ interface InputFieldProps {
   input: InputFieldType;
   errors?: ErrorsFieldType;
 }
-interface DebouncedInputProps extends Omit<BaseInputFieldProps, "value"> {
-  value: string | number;
-  onChange: (value: string | number) => void;
-  debounce?: number;
-}
-
 interface CheckboxFieldProps {
   containerProps?: GridProps;
   label: string;
@@ -86,6 +85,14 @@ interface CheckboxFieldProps {
 interface IconProps
   extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> {}
 
+interface DTRowAction {
+  id: string;
+  route: string;
+  values: any;
+  aux?: any;
+  errorBag: Record<string, unknown>;
+  editForm: { type?: "popover" | "alertDialog"; children: React.ReactNode };
+}
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -98,14 +105,6 @@ interface DataTableProps<TData, TValue> {
     filter: ColumnFiltersState;
     onFilterChange: OnChangeFn<ColumnFiltersState>;
   }>;
-}
-interface TableQueryProps {
-  options: SelectInputOptionsType | string;
-  changeColumnCallback?: () => void;
-  changeQueryCallback?: (column: string, qValue?: string) => void;
-  clearQueryCallback?: () => void;
-
-  clearAction?: boolean;
 }
 
 interface DTColumnHeaderProps<TData, TValue>
@@ -148,6 +147,15 @@ interface SelectInputProps {
     containerStyle: CSSProperties;
   }>;
   errors?: ErrorsFieldType;
+}
+
+interface DialogProps extends React.PropsWithChildren {
+  trigger: TriggerButton;
+  header: Partial<{ title: string; description: string }>;
+  config: {
+    trigger: BtnType;
+    content: DialogContentProps;
+  };
 }
 
 interface AlertDialogProps extends React.PropsWithChildren {
