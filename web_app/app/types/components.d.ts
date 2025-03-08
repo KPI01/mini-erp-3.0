@@ -146,6 +146,10 @@ interface DTColHeaderDropDownProps {
   trigger: string;
   header: Header<any, unknown>;
 }
+interface RowMenuProps {
+  items: Array<React.ReactNode>
+}
+
 interface DialogFormProps {
   trigger: TriggerButton;
   title?: string;
