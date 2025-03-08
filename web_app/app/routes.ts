@@ -27,5 +27,8 @@ export default [
       index("routes/app/ubicacion/index.tsx"),
       route(":id", "routes/app/ubicacion/detail.tsx"),
     ]),
+    ...prefix("compras", [
+      route("proveedores", "routes/app/compras/proveedores.tsx"),
+    ]),
   ]),
 ] satisfies RouteConfig;

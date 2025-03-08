@@ -35,7 +35,7 @@ import {
   type CreateItemType,
   type UpdateItemType,
 } from "~/lib/zod-schemas/inventarios/item";
-import type { ItemForPedidoType } from "~/lib/zod-schemas/inventarios/reception";
+import type { ItemForPedidoType } from "~/lib/zod-schemas/inventarios/stock.ts";
 import type { SelectInputOptionsType } from "~/types/components";
 import { CreateUnidadMedidaForm } from "./unidad-medida";
 import AlertDialog from "~/components/ui/alert-dialog";

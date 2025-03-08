@@ -11,6 +11,7 @@ import type {
   Popover,
   HeadingProps,
   Dialog,
+  TextField,
 } from "@radix-ui/themes";
 import type {
   Column,
@@ -25,6 +26,8 @@ import { Form, Select } from "radix-ui";
 import type { CSSProperties, Dispatch } from "react";
 import type { Responsive } from "@radix-ui/themes/dist/esm/props/prop-def.js";
 import type { TriggerProps } from "@radix-ui/themes/components/popover";
+import type { TextArea } from "@radix-ui/themes";
+import type { Responsive } from "@radix-ui/themes/dist/esm/props/prop-def.js";
 
 type SideType = Popover.ContentProps["side"];
 type TriggerButton = React.ReactNode;
@@ -67,13 +70,20 @@ interface InputProps {
   errors?: unknown;
 }
 
-type InputFieldType = React.InputHTMLAttributes<HTMLInputElement>;
+type InputFieldType = React.InputHTMLAttributes<HTMLInputElement> & TextField.RootProps;
 interface InputFieldProps {
   label?: string | { main: string; prefix?: string; suffix?: string };
   description?: string;
   icon?: { stateHandler: () => void; children: React.ReactNode };
   input: InputFieldType;
   errors?: ErrorsFieldType;
+}
+type DebouncedInputBase = React.InputHTMLAttributes<HTMLInputElement> | React.ComponentProps<typeof TextField.RootProps>
+interface DebouncedInputProps extends DebouncedInputBase {
+  value: string | number;
+  onChange: (value: string | number) => void;
+  debounce?: number;
+  slots: React.ReactNode
 }
 interface CheckboxFieldProps {
   containerProps?: GridProps;
@@ -82,8 +92,24 @@ interface CheckboxFieldProps {
   errors?: ErrorsFieldType;
 }
 
+export interface TextAreaSlots {
+  labelPosition?: 'inside' | 'outside';
+  size?: React.ComponentProps<typeof TextArea>["size"];
+  variant?: React.ComponentProps<typeof TextArea>["variant"];
+  resize?: React.ComponentProps<typeof TextArea>["resize"];
+}
+
+export interface TextAreaFieldProps {
+  label?: string;
+  textarea: React.ComponentProps<typeof TextArea>;
+  errors?: Record<string, unknown & { _errors: string[] }>;
+  description?: string;
+  slots?: TextAreaSlots;
+  config?: Partial<{ container: GridProps }>
+}
+
 interface IconProps
-  extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> {}
+  extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> { }
 
 interface DTRowAction {
   id: string;
@@ -151,8 +177,12 @@ interface SelectInputProps {
 
 interface DialogProps extends React.PropsWithChildren {
   trigger: TriggerButton;
-  header: Partial<{ title: string; description: string }>;
-  config: {
+  header?: Partial<{ title: string; description: string }>;
+  state?: Partial<{
+    open: boolean;
+    setOpen: (update: boolean) => void
+  }>
+  config?: {
     trigger: BtnType;
     content: DialogContentProps;
   };

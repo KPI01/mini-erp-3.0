@@ -64,7 +64,6 @@ export function InputField({
 }: InputFieldProps) {
   const errorBag = cleanErrors(input.name, errors);
 
-  // Simple string label
   if (typeof label === "string") {
     console.debug(
       `InputField[${input.name}] no tiene prefijo y es ${input.type}`,
@@ -106,7 +105,6 @@ export function InputField({
       </Grid>
     );
   }
-  // Object label with main/suffix
   else if (typeof label === "object") {
     console.debug(`InputField[${input.name}] tiene label y es ${input.type}`);
 

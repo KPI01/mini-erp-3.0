@@ -6,7 +6,7 @@ import { InputField } from "~/components/forms/input";
 import {
   createUnidadMedidaSchema,
   type CreateUnidadMedidaType,
-} from "~/lib/zod-schemas/unidad-medida";
+} from "~/lib/zod-schemas/inventarios/unidad-medida";
 
 interface CreateUnidadMedidaFormProps {
   redirectRoute: string;
