@@ -83,7 +83,7 @@ interface CheckboxFieldProps {
 }
 
 interface IconProps
-  extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> {}
+  extends Omit<React.HtmlHTMLAttributes<typeof EyeClosedIcon>, "children"> { }
 
 interface DTRowAction {
   id: string;
@@ -120,6 +120,10 @@ interface DTColHeaderDropDownProps {
   trigger: string;
   header: Header<any, unknown>;
 }
+interface RowMenuProps {
+  items: Array<React.ReactNode>
+}
+
 interface DialogFormProps {
   trigger: TriggerButton;
   title?: string;
