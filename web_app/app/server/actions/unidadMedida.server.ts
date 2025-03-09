@@ -1,10 +1,7 @@
-import {
-  addUnidadMedidaSchema,
-  type AddUnidadMedidaType,
-} from "~/routes/app/items/forms";
 import { commitSession, validateAuthSession } from "../session.server";
 import { redirect } from "react-router";
 import { PrismaClient } from "@prisma/client";
+import { createUnidadMedidaSchema, type CreateUnidadMedida } from "~/lib/zod-schemas/inventarios/unidadMedida";
 
 const prisma = new PrismaClient();
 
@@ -13,7 +10,7 @@ async function createUnidadMedida(request: Request) {
   const session = await validateAuthSession({ request });
 
   const form = await request.formData();
-  const formData: Partial<AddUnidadMedidaType> = {
+  const formData: Partial<CreateUnidadMedida> = {
     descripcion: form.get("descripcion")?.toString(),
     corto: form.get("corto")?.toString(),
   };
@@ -21,7 +18,7 @@ async function createUnidadMedida(request: Request) {
 
   console.debug("validando con zod...", formData);
   const { success, data, error } =
-    await addUnidadMedidaSchema.safeParseAsync(formData);
+    await createUnidadMedidaSchema.safeParseAsync(formData);
 
   if (!success) {
     console.debug("se han encontrado errores en el formulario", error.format());

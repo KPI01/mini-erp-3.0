@@ -7,9 +7,9 @@ export const itemForPedido = z.object({
   cant: z.number().min(0),
 });
 export type ItemForPedido = z.infer<typeof itemForPedido>;
-export const addStockSchema = z.object({
+export const createStockSchema = z.object({
   fecha: z.date(),
   items: itemForPedido.array(),
   ubicacionId: z.number(),
 });
-export type AddStock = z.infer<typeof addStockSchema>;
+export type CreateStock = z.infer<typeof createStockSchema>;

@@ -4,8 +4,8 @@ import { PrismaClient } from "@prisma/client";
 import {
   createUbicacionSchema,
   updateUbicacionSchema,
-  type CreateUbicacionType,
-  type UpdateUbicacionType,
+  type CreateUbicacion,
+  type UpdateUbicacion,
 } from "~/lib/zod-schemas/inventarios/ubicacion";
 
 const prisma = new PrismaClient();
@@ -14,7 +14,7 @@ async function createUbicacion(request: Request) {
   const session = await validateAuthSession({ request });
 
   const form = await request.formData();
-  const formData: CreateUbicacionType = {
+  const formData: CreateUbicacion = {
     descripcion: String(form.get("descripcion")),
     corto: String(form.get("corto")),
     isAlmacen: Boolean(form.get("isAlmacen")),
@@ -131,7 +131,7 @@ async function updateUbicacion(request: Request, id: number) {
       ubicacionId: form.get("ubicacionId")
         ? Number(form.get("ubicacionId"))
         : undefined,
-    } satisfies UpdateUbicacionType;
+    } satisfies UpdateUbicacion;
     const route =
       form.get("redirectRoute")?.toString() ?? "/app/items/reception";
 

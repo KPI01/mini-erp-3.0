@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { commitSession, validateAuthSession } from "../session.server";
-import { data, redirect } from "react-router";
+import { redirect } from "react-router";
 import {
-  addStockSchema,
-  type AddStockType,
-  type ItemForPedidoType,
+  createStockSchema,
+  type CreateStock
+  type ItemForPedido,
 } from "~/lib/zod-schemas/inventarios/stock";
 
 const prisma = new PrismaClient();
@@ -15,7 +15,7 @@ async function addStock(request: Request) {
   const form = await request.formData();
 
   // Parse the form data - handling both approaches (JSON or indexed fields)
-  let items: ItemForPedidoType[] = [];
+  let items: ItemForPedido[] = [];
 
   // First, try to get items from JSON string
   const itemsJSON = form.get("items");
@@ -66,14 +66,14 @@ async function addStock(request: Request) {
   }
 
   // Construct the form data object
-  const formData: AddStockType = {
+  const formData: CreateStock = {
     fecha: new Date(String(form.get("fecha"))),
     ubicacionId: parseInt(String(form.get("ubicacionId"))),
     items: items,
   };
 
   const { success, data, error } =
-    await addStockSchema.safeParseAsync(formData);
+    await createStockSchema.safeParseAsync(formData);
 
   if (!success) {
     console.error(
@@ -118,7 +118,7 @@ async function addStock(request: Request) {
       payload: stockMovements,
     });
 
-    return redirect("/app/items", {
+    return redirect("/app/items/stock", {
       headers: {
         "Set-Cookie": await commitSession(session),
       },

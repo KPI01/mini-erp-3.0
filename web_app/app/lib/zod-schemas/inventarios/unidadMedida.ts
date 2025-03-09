@@ -16,4 +16,4 @@ export const createUnidadMedidaSchema = z.object({
     .min(1, REQUIRED_MSG)
     .max(6, "Debe tener máximo 6 caracteres."),
 });
-export type CreateUnidadMedidaType = z.infer<typeof createUnidadMedidaSchema>;
+export type CreateUnidadMedida = z.infer<typeof createUnidadMedidaSchema>;

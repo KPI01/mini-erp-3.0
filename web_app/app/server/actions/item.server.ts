@@ -1,14 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { redirect } from "react-router";
-import {
-  editItemSchema,
-  type AddItemType,
-  type EditItemType,
-} from "~/routes/app/items/forms";
 import { commitSession, validateAuthSession } from "../session.server";
 import {
   createItemSchema,
-  type CreateItemType,
+  updateItemSchema,
+  type CreateItem,
+  type UpdateItem,
 } from "~/lib/zod-schemas/inventarios/item";
 
 const routes = {
@@ -21,7 +18,7 @@ async function addItem(request: Request) {
   const session = await validateAuthSession({ request });
 
   const form = await request.formData();
-  const formData: CreateItemType = {
+  const formData: CreateItem = {
     id: Number(form.get("id")),
     descripcion: String(form.get("descripcion")),
     activo: Boolean(form.get("activo")),
@@ -66,7 +63,7 @@ async function updateItem(request: Request, id: number) {
   const session = await validateAuthSession({ request });
 
   const form = await request.formData();
-  const formData: EditItemType = {
+  const formData: UpdateItem = {
     descripcion: String(form.get("descripcion")),
     activo: Boolean(form.get("activo")),
     stockMax: form.get("stockMax")
@@ -79,7 +76,7 @@ async function updateItem(request: Request, id: number) {
   const route = form.get("redirectRoute")?.toString() ?? "/app";
 
   console.debug("validando con zod...", formData);
-  const { success, data, error } = editItemSchema
+  const { success, data, error } = updateItemSchema
     .refine(({ descripcion }) => descripcion !== "", {
       message: "La descripción no puede estar vacía.",
       path: ["descripcion"],

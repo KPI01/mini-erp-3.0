@@ -5,8 +5,8 @@ import { useFetcher } from "react-router";
 import { InputField } from "~/components/forms/input";
 import {
     createUnidadMedidaSchema,
-    type CreateUnidadMedidaType,
-} from "~/lib/zod-schemas/inventarios/unidad-medida";
+    type CreateUnidadMedida,
+} from "~/lib/zod-schemas/inventarios/unidadMedida";
 
 interface CreateUnidadMedidaFormProps {
     redirectRoute: string;
@@ -28,7 +28,7 @@ export function CreateUnidadMedidaForm({
         defaultValues: {
             descripcion: "",
             corto: "",
-        } satisfies CreateUnidadMedidaType,
+        } satisfies CreateUnidadMedida,
         validators: {
             onChange: createUnidadMedidaSchema,
             onBlur: createUnidadMedidaSchema,
