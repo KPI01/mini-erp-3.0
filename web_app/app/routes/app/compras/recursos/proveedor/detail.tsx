@@ -1,5 +1,5 @@
 import { validateAuthSession } from "~/server/session.server";
-import type { Route } from "./+types/proveedorDetail";
+import type { Route } from "./+types/detail";
 import { updateProveedor } from "~/server/actions/proveedor.server";
 
 export async function action({ request, params }: Route.ActionArgs) {

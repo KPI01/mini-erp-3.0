@@ -6,10 +6,10 @@ export const itemForPedido = z.object({
   unidadMedida: z.string(),
   cant: z.number().min(0),
 });
-export type ItemForPedidoType = z.infer<typeof itemForPedido>;
+export type ItemForPedido = z.infer<typeof itemForPedido>;
 export const addStockSchema = z.object({
   fecha: z.date(),
   items: itemForPedido.array(),
   ubicacionId: z.number(),
 });
-export type AddStockType = z.infer<typeof addStockSchema>;
+export type AddStock = z.infer<typeof addStockSchema>;

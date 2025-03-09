@@ -9,7 +9,7 @@ export const createItemSchema = z.object({
   stockMax: z.number().optional().default(0),
   unidadMedidaId: z.number({ required_error: REQUIRED_MSG }).nullish(),
 });
-export type CreateItemType = z.infer<typeof createItemSchema>;
+export type CreateItem = z.infer<typeof createItemSchema>;
 
 export const updateItemSchema = z
   .object({
@@ -20,4 +20,4 @@ export const updateItemSchema = z
     unidadMedidaId: z.number({ invalid_type_error: INVALID_MSG }),
   })
   .partial();
-export type UpdateItemType = z.infer<typeof updateItemSchema>;
+export type UpdateItem = z.infer<typeof updateItemSchema>;

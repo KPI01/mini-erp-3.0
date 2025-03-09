@@ -41,7 +41,7 @@ export const createUbicacionSchema = z
     }
     return value;
   });
-export type CreateUbicacionType = z.infer<typeof createUbicacionSchema>;
+export type CreateUbicacion = z.infer<typeof createUbicacionSchema>;
 
 export const updateUbicacionSchema = z.object({
   id: z.number(),
@@ -64,4 +64,4 @@ export const updateUbicacionSchema = z.object({
   }),
   ubicacionId: z.number().optional(),
 });
-export type UpdateUbicacionType = z.infer<typeof updateUbicacionSchema>;
+export type UpdateUbicacion = z.infer<typeof updateUbicacionSchema>;

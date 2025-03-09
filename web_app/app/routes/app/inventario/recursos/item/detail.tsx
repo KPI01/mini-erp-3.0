@@ -1,6 +1,6 @@
 import { deleteItem, updateItem } from "~/server/actions/item.server";
-import type { Route } from "../+types";
 import { validateAuthSession } from "~/server/session.server";
+import type { Route } from "./+types/detail";
 
 export async function loader({ request }: Route.LoaderArgs) {
     await validateAuthSession({ request })
@@ -9,10 +9,10 @@ export async function loader({ request }: Route.LoaderArgs) {
 export async function action({ request, params }: Route.ActionArgs) {
     const { method } = request
     if (method.toLocaleLowerCase() === "delete") {
-        return await deleteItem(request, Number(params.id))
+        return await deleteItem(request, Number(params.itemId))
     }
 
     if (method.toLocaleLowerCase() === "put") {
-        return await updateItem(request, Number(params.id))
+        return await updateItem(request, Number(params.itemId))
     }
 }

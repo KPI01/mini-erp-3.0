@@ -1,6 +1,45 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import type { Item } from "@prisma/client";
+import type { Item as ItemPrisma, Stock, Ubicacion, UnidadMedida } from "@prisma/client";
 import type { ItemPedido } from "~/routes/app/items/forms/item";
+
+
+export type Item = ItemPrisma & {
+  ubicacion: Ubicacion;
+  stock: Stock[];
+  unidadMedida: UnidadMedida;
+};
+export const itemColumnHelper = createColumnHelper<Item>();
+export const itemColumn = [
+  itemColumnHelper.accessor("id", {
+    header: "Código",
+
+    filterFn: (row, colId, filterValue) => {
+      const value = row.getValue(colId);
+      if (!filterValue) return false;
+      return String(value).includes(String(filterValue));
+    },
+  }),
+  itemColumnHelper.accessor("descripcion", {
+    header: "Descripción",
+  }),
+  itemColumnHelper.accessor("stockMin", {
+    header: "Stock Mínimo",
+  }),
+  itemColumnHelper.accessor("stockMax", {
+    header: "Stock Máximo",
+  }),
+  itemColumnHelper.accessor((col) => col.stock, {
+    header: "Stock Actual",
+    cell: ({ cell, row }) => {
+      let sum = 0;
+      cell.getValue().map((mov) => {
+        sum += mov.cant;
+      });
+      const und = row.original.unidadMedida.corto;
+      return `${sum} ${und}`;
+    },
+  }),
+];
 
 export const addItemToFormColHelper = createColumnHelper<ItemPedido>();
 export const addItemToFormCol = [
@@ -11,7 +50,7 @@ export const addItemToFormCol = [
   }),
 ];
 
-export type ItemInPedido = Pick<Item, "id" | "descripcion"> & {
+export type ItemInPedido = Pick<ItemPrisma, "id" | "descripcion"> & {
   unidadMedida: string;
   cant: number;
 };

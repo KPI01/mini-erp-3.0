@@ -18,7 +18,7 @@ const links: SideBarLink[] = [
     nested: [
       {
         label: "Consulta de articulo",
-        action: "/app/items",
+        action: "/app/items/consulta",
       },
       {
         label: "Rotación de material",
@@ -26,7 +26,7 @@ const links: SideBarLink[] = [
       },
       {
         label: "Recepción de material",
-        action: "/app/items/reception",
+        action: "/app/items/recepcion",
       },
     ],
   },

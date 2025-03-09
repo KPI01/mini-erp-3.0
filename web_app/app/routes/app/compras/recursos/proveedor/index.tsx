@@ -14,7 +14,7 @@ import { type ColumnFiltersState, type ColumnDef } from "@tanstack/react-table";
 import RowMenu from "~/components/table/actions";
 import { AlertDialogContent, AlertDialogRoot } from "~/components/ui/alert-dialog";
 import UpdateProveedorForm from "~/routes/app/compras/forms/proveedor/Update";
-import type { Route } from "./+types/proveedor";
+import type { Route } from "./+types/index";
 
 const prisma = new PrismaClient();
 
