@@ -2,7 +2,7 @@ import { commitSession, validateAuthSession } from "~/server/session.server";
 import { redirect } from "react-router";
 import { createUbicacion } from "~/server/actions/ubicacion.server";
 import { PrismaClient } from "@prisma/client";
-import type { Route } from "../../../ubicacion/+types";
+import type { Route } from "./+types";
 
 const prisma = new PrismaClient();
 
@@ -40,7 +40,7 @@ export async function action({ request }: Route.ActionArgs) {
             description: "Creada UnidadMedida",
             payload: data,
         });
-        throw redirect("/app/items", {
+        throw redirect("/app/inventario/consulta", {
             headers: { "Set-Cookie": await commitSession(session) },
         });
     }

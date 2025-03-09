@@ -105,7 +105,7 @@ export function UpdateUbicacionForm({
             // Submit with the fetcher
             fetcher.submit(formData, {
                 method: "put",
-                action: `/app/ubicacion/${value.id}`,
+                action: `/app/Wubicacion/${value.id}`,
             });
         },
     });

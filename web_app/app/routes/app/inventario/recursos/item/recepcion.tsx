@@ -1,12 +1,12 @@
-import { Box, Grid, Heading } from "@radix-ui/themes";
-import { validateAuthSession } from "~/server/session.server";
-import type { MetaFunction } from "react-router";
-import CardContructor from "~/components/ui/card";
 import { PrismaClient, type Ubicacion } from "@prisma/client";
-import type { SelectInputOptionsType } from "~/types/components";
-import { addStock } from "~/server/actions/stock.server";
+import type { MetaFunction } from "react-router";
+import type { Route } from "./+types/recepcion";
+import { validateAuthSession } from "~/server/session.server";
+import { createStock } from "~/server/actions/stock.server";
+import { Box, Grid, Heading } from "@radix-ui/themes";
+import CardContructor from "~/components/ui/card";
 import { CreateStockForm } from "../../forms/stock/Create";
-import type { Route } from "../../../items/+types/reception";
+import type { SelectInputOptionsType } from "~/types/components";
 
 const prisma = new PrismaClient();
 
@@ -21,7 +21,7 @@ export const meta: MetaFunction = () => [
 export async function loader({ request }: Route.LoaderArgs) {
     await validateAuthSession({ request });
 
-    const ubicaciones = await prisma.ubicacion.findMany();
+    const ubicaciones = await prisma.ubicacion.findMany({});
 
     return { ubicaciones };
 }
@@ -30,21 +30,20 @@ export async function action({ request }: Route.ActionArgs) {
     await validateAuthSession({ request });
 
     if (request.method.toLowerCase() === "post") {
-        return await addStock(request);
+        return await createStock(request);
     }
 }
 
-export default function Reception({ loaderData }: Route.ComponentProps) {
+export default function Recepcion({ loaderData }: Route.ComponentProps) {
+    console.log("dentro del componente en item/recepcion")
     let ubicaciones: SelectInputOptionsType = {};
     const almacenDescriptions = {} as Record<number, string>;
-    //@ts-ignore
     loaderData.ubicaciones
         .filter((ub: Ubicacion) => ub.isAlmacen === true)
         .forEach((almacen: Ubicacion) => {
             almacenDescriptions[almacen.id] = almacen.descripcion;
         });
 
-    //@ts-ignore
     loaderData.ubicaciones.forEach((ubicacion: Ubicacion) => {
         let displayValue = ubicacion.descripcion;
 
@@ -58,6 +57,7 @@ export default function Reception({ loaderData }: Route.ComponentProps) {
 
         ubicaciones[String(ubicacion.id)] = displayValue;
     });
+
     return (
         <Grid height="100%" style={{ gridAutoRows: "auto 1fr" }}>
             <Heading as="h1" size="9">

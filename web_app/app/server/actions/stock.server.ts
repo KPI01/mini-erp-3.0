@@ -3,13 +3,19 @@ import { commitSession, validateAuthSession } from "../session.server";
 import { redirect } from "react-router";
 import {
   createStockSchema,
-  type CreateStock
+  type CreateStock,
   type ItemForPedido,
 } from "~/lib/zod-schemas/inventarios/stock";
 
+const routes = {
+  consulta: "/app/inventario/consulta",
+  stock: "/app/inventario/stock",
+  recepcion: "/app/inventario/recepcion"
+}
+
 const prisma = new PrismaClient();
 
-async function addStock(request: Request) {
+async function createStock(request: Request) {
   const session = await validateAuthSession({ request });
 
   const form = await request.formData();
@@ -83,7 +89,7 @@ async function addStock(request: Request) {
 
     session.flash("zodErrors", error.format());
 
-    return redirect("/app/items/reception", {
+    return redirect(routes.recepcion, {
       headers: {
         "Set-Cookie": await commitSession(session),
       },
@@ -118,7 +124,7 @@ async function addStock(request: Request) {
       payload: stockMovements,
     });
 
-    return redirect("/app/items/stock", {
+    return redirect(routes.stock, {
       headers: {
         "Set-Cookie": await commitSession(session),
       },
@@ -132,7 +138,7 @@ async function addStock(request: Request) {
       ],
     });
 
-    return redirect("/app/items/reception", {
+    return redirect(routes.recepcion, {
       headers: {
         "Set-Cookie": await commitSession(session),
       },
@@ -140,4 +146,4 @@ async function addStock(request: Request) {
   }
 }
 
-export { addStock };
+export { createStock };

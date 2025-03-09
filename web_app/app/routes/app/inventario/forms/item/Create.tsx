@@ -68,7 +68,7 @@ export function CreateItemForm({ id, redirectRoute }: CreateItemFormProps) {
             // Submit with the fetcher
             fetcher.submit(formData, {
                 method: "post",
-                action: "/app/items",
+                action: "/app/inventario/consulta",
             });
         },
     });
@@ -119,18 +119,20 @@ export function CreateItemForm({ id, redirectRoute }: CreateItemFormProps) {
                         <form.Field
                             name="unidadMedidaId"
                             children={(field) => (
-                                <SelectInput
-                                    name={field.name}
-                                    options={unidadesOptions ?? {}}
-                                    placeholder="Unidad..."
-                                    config={{
-                                        label: "Medida",
-                                    }}
-                                    state={{
-                                        value: String(field.state.value),
-                                        changer: (v) => field.handleChange(Number(v)),
-                                    }}
-                                />
+                                <Box width="100%">
+                                    <SelectInput
+                                        name={field.name}
+                                        options={unidadesOptions ?? {}}
+                                        placeholder="Unidad..."
+                                        config={{
+                                            label: "Medida",
+                                        }}
+                                        state={{
+                                            value: String(field.state.value),
+                                            changer: (v) => field.handleChange(Number(v)),
+                                        }}
+                                    />
+                                </Box>
                             )}
                         />
                         <Popover side="right" maxWidth="200px" trigger={<PlusIcon />}>

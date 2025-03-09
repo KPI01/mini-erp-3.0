@@ -15,22 +15,25 @@ export default [
   route("/logout", "routes/app/logout.tsx"),
   route("/app", "routes/app/layout.tsx", [
     index("routes/app/index.tsx"),
-    ...prefix("items", [
+    ...prefix("inventario", [
       route("consulta", "routes/app/inventario/recursos/item/index.tsx"),
-      route(":itemId", "routes/app/inventario/recursos/item/detail.tsx"),
-      route("recepcion", "routes/app/inventario/recursos/item/recepcion.tsx"),
       route("stock", "routes/app/inventario/recursos/stock/index.tsx"),
+      route("recepcion", "routes/app/inventario/recursos/item/recepcion.tsx"),
+
+      route(":itemId", "routes/app/inventario/recursos/item/detail.tsx"),
     ]),
     ...prefix("unidad-medida", [
       index("routes/app/inventario/recursos/unidadMedida/index.tsx")
     ]),
     ...prefix("ubicacion", [
-      index("routes/app/ubicacion/index.tsx"),
+      index("routes/app/inventario/recursos/ubicacion/index.tsx"),
       route(":ubicacionId", "routes/app/inventario/recursos/ubicacion/detail.tsx"),
     ]),
     ...prefix("compras", [
-      route("proveedor", "routes/app/compras/recursos/proveedor/index.tsx"),
-      route("proveedor/:proveedorId", "routes/app/compras/recursos/proveedor/detail.tsx")
+      ...prefix("proveedor", [
+        index("routes/app/compras/recursos/proveedor/index.tsx"),
+        route(":proveedorId", "routes/app/compras/recursos/proveedor/detail.tsx")
+      ])
     ])
   ]),
 ] satisfies RouteConfig;

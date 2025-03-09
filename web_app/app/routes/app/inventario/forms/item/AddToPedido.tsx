@@ -1,7 +1,7 @@
 import type { Item, UnidadMedida } from "@prisma/client";
 import { DotsHorizontalIcon, MinusIcon, Pencil2Icon, PlusCircledIcon, PlusIcon } from "@radix-ui/react-icons";
-import { Em, Flex, Grid, IconButton, Separator, Table, Text, TextField } from "@radix-ui/themes";
-import { DropdownMenu } from "radix-ui";
+import { Button, Em, Flex, Grid, IconButton, Separator, Table, Text, TextField } from "@radix-ui/themes";
+import { DropdownMenu } from "@radix-ui/themes";
 import { useState, type ChangeEvent } from "react";
 import { useFetcher } from "react-router";
 import { InputField } from "~/components/forms/input";
@@ -55,7 +55,7 @@ export function AddItemToPedidoForm({ addItemFn }: AddItemToFormProps) {
 
     return (
         <Grid p="4">
-            <Form action="/app/items" method="get">
+            <Form action="/app/inventario/consulta" method="get">
                 <input name="relations" value="unidadMedida" hidden />
                 <input name="key" value="id" hidden />
                 <InputField
@@ -121,13 +121,14 @@ export function AddItemToPedidoForm({ addItemFn }: AddItemToFormProps) {
                                         <Table.Cell>{item.unidadMedida.corto}</Table.Cell>
                                         <Table.Cell align="right">
                                             <Flex gap="2" justify="end">
-                                                <DropdownMenu.Root >
+                                                <DropdownMenu.Root>
                                                     <DropdownMenu.Trigger>
                                                         <IconButton variant="ghost" size="1">
                                                             <DotsHorizontalIcon />
                                                         </IconButton>
                                                     </DropdownMenu.Trigger>
                                                     <DropdownMenu.Content
+                                                        variant="soft"
                                                         side="right"
                                                         sideOffset={5}
                                                     >
@@ -167,14 +168,14 @@ export function AddItemToPedidoForm({ addItemFn }: AddItemToFormProps) {
                                         "Ingresa los datos del artículo para registrarlo en la base de datos.",
                                 }}
                                 trigger={
-                                    <>
+                                    <Button>
                                         <PlusCircledIcon /> Crear
-                                    </>
+                                    </Button>
                                 }
                             >
                                 <CreateItemForm
                                     id={Number(query)}
-                                    redirectRoute="/app/items/reception"
+                                    redirectRoute="/app/inventario/recepcion"
                                 />
                             </AlertDialog>
                         </Flex>

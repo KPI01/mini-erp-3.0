@@ -8,7 +8,7 @@ import { InputField } from "~/components/forms/input";
 import SelectInput from "~/components/forms/select";
 import AlertDialog from "~/components/ui/alert-dialog";
 import Popover from "~/components/ui/popover";
-import { addStockSchema, type AddStock, type ItemForPedido } from "~/lib/zod-schemas/inventarios/stock";
+import { createStockSchema, type CreateStock, type ItemForPedido } from "~/lib/zod-schemas/inventarios/stock";
 import type { SelectInputOptionsType } from "~/types/components";
 import { AddItemToPedidoForm } from "../item/AddToPedido";
 import DataTable from "~/components/table/data-table";
@@ -30,10 +30,10 @@ export function CreateStockForm({ aux }: AddStockFormProps) {
             fecha: new Date(),
             ubicacionId: 0,
             items: [],
-        } satisfies AddStock,
+        } satisfies CreateStock,
         validators: {
-            onChange: addStockSchema,
-            onBlur: addStockSchema,
+            onChange: createStockSchema,
+            onBlur: createStockSchema,
         },
     });
     const [ubicacionSelected, setUbicacionSelected] = useState(false);
@@ -81,13 +81,13 @@ export function CreateStockForm({ aux }: AddStockFormProps) {
         // Submit the form
         submit(formData, {
             method: "post",
-            action: "/app/items/reception",
+            action: "/app/inventario/recepcion",
         });
     };
 
     return (
         <Grid asChild gapY="5">
-            <Form method="post" action="/app/items/reception" onSubmit={handleSubmit}>
+            <Form method="post" action="/app/inventario/recepcion" onSubmit={handleSubmit}>
                 <form.Field
                     name="fecha"
                     children={(field) => (
@@ -126,13 +126,13 @@ export function CreateStockForm({ aux }: AddStockFormProps) {
                     />
                     {!ubicacionSelected ? (
                         <Popover trigger={<><PlusIcon /> Nueva ubicación</>}>
-                            <CreateUbicacionForm redirectRoute="/app/items/reception" />
+                            <CreateUbicacionForm redirectRoute="/app/inventario/recepcion" />
                         </Popover>
                     ) : (
                         <Popover trigger={<Pencil1Icon />}>
                             <UpdateUbicacionForm
                                 ubicacion={String(form.getFieldValue("ubicacionId"))}
-                                redirectRoute="/app/items/reception"
+                                redirectRoute="/app/inventario/recepcion"
                             />
                         </Popover>
                     )}

@@ -57,6 +57,7 @@ export function CreateUbicacionForm({
         defaultValues: {
             descripcion: "",
             corto: "",
+            ubicacionId: null,
             isAlmacen: true,
         } satisfies CreateUbicacion,
         validators: {
@@ -69,7 +70,9 @@ export function CreateUbicacionForm({
             formData.append("descripcion", value.descripcion);
             formData.append("corto", value.corto);
             formData.append("isAlmacen", JSON.stringify(value.isAlmacen));
-            formData.append("ubicacionId", String(value.ubicacionId));
+            if (value.ubicacionId !== null && value.ubicacionId !== undefined && !isNaN(Number(value.ubicacionId))) {
+                formData.append("ubicacionId", String(value.ubicacionId));
+            }
             formData.append("redirectRoute", redirectRoute);
 
             console.log("Submitting form data:", Object.fromEntries(formData));
@@ -125,7 +128,7 @@ export function CreateUbicacionForm({
                             onClick: () => {
                                 const newValue = !field.state.value;
                                 field.handleChange(newValue);
-                                setIsAlmacen(newValue); // Update local state directly
+                                setIsAlmacen(newValue);
                             },
                             onBlur: field.handleBlur,
                         }}
@@ -135,35 +138,29 @@ export function CreateUbicacionForm({
             {!isAlmacen && (
                 <form.Field
                     name="ubicacionId"
-                    children={(field) => {
-                        console.debug("form state:", form.state);
-                        console.log("Field rendering, current value:", field.state.value);
-
-                        return (
-                            <Box>
-                                <SelectInput
-                                    name="ubicacionId"
-                                    options={ubicacionesOptions}
-                                    state={{
-                                        value:
-                                            field.state.value === 0 ? "" : String(field.state.value),
-                                        changer: (value) => {
-                                            console.log("SelectInput changer called with:", value);
-                                            // Handle empty string case explicitly
-                                            const numValue = value === "" ? 0 : Number(value);
-                                            console.log("Converting to number:", numValue);
-                                            field.handleChange(numValue);
-                                        },
-                                    }}
-                                    config={{
-                                        label: "Almacén al que pertenece",
-                                    }}
-                                />
-                                {field.state.meta.errors[0]}
-                            </Box>
-                        );
-                    }}
-                />
+                    children={(field) => (
+                        <Box>
+                            <SelectInput
+                                name="ubicacionId"
+                                options={ubicacionesOptions}
+                                state={{
+                                    value:
+                                        field.state.value === 0 ? "" : String(field.state.value),
+                                    changer: (value) => {
+                                        console.log("SelectInput changer called with:", value);
+                                        // Handle empty string case explicitly
+                                        const numValue = value === "" ? 0 : Number(value);
+                                        console.log("Converting to number:", numValue);
+                                        field.handleChange(numValue);
+                                    },
+                                }}
+                                config={{
+                                    label: "Almacén al que pertenece",
+                                }}
+                            />
+                            {field.state.meta.errors[0]}
+                        </Box>
+                    )} />
             )}
             <form.Subscribe
                 children={() => (

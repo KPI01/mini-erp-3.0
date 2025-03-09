@@ -7,9 +7,12 @@ import {
   type CreateItem,
   type UpdateItem,
 } from "~/lib/zod-schemas/inventarios/item";
+import { route } from "@react-router/dev/routes";
 
 const routes = {
-  base: "/app/items",
+  consulta: "/app/inventario/consulta",
+  stock: "/app/inventario/stock",
+  recepcion: "/app/inventario/recepcion"
 };
 
 const prisma = new PrismaClient();
@@ -36,7 +39,7 @@ async function addItem(request: Request) {
   if (!success) {
     console.debug("se han encontrado errores en el formulario", error.format());
     session.flash("zodErrors", error.format());
-    throw redirect(routes.base, {
+    throw redirect(routes.consulta, {
       headers: { "Set-Cookie": await commitSession(session) },
     });
   }
@@ -73,7 +76,7 @@ async function updateItem(request: Request, id: number) {
       ? Number(form.get("stockMax")?.toString())
       : undefined,
   };
-  const route = form.get("redirectRoute")?.toString() ?? "/app";
+  const route = form.get("redirectRoute")?.toString() ?? routes.consulta;
 
   console.debug("validando con zod...", formData);
   const { success, data, error } = updateItemSchema
@@ -142,13 +145,13 @@ async function deleteItem(request: Request, id: number) {
       });
 
     session.flash("info", { description: "Item eliminado", payload: item });
-    throw redirect(routes.base, {
+    throw redirect(routes.consulta, {
       headers: { "Set-Cookie": await commitSession(session) },
     });
   }
 
   session.flash("error", "No se ha enviado ningún {id} de Item");
-  throw redirect(routes.base, {
+  throw redirect(routes.consulta, {
     headers: { "Set-Cookie": await commitSession(session) },
   });
 }

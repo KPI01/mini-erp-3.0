@@ -20,7 +20,7 @@ export const createUbicacionSchema = z
       invalid_type_error: INVALID_MSG,
       required_error: REQUIRED_MSG,
     }),
-    ubicacionId: z.number().optional(),
+    ubicacionId: z.number().nullish(),
   })
   .superRefine((value, ctx) => {
     // Only require ubicacionId when isAlmacen is false

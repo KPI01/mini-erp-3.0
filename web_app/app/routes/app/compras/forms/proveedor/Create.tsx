@@ -24,7 +24,7 @@ export default function CreateProveedorForm({ submitFn }: CreateProveedorFormPro
 
   return (
     <Grid asChild gapY="4" columns="2" gapX="2">
-      <Form action="/app/compras/proveedores" method="post" onSubmit={() => submitFn()}>
+      <Form action="/app/compras/proveedor" method="post" onSubmit={() => submitFn()}>
         <form.Field
           name="razonSocial"
           children={(field) => (

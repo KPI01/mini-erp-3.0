@@ -54,10 +54,10 @@ export function UpdateItemForm({ data, state }: UpdateItemFormProps) {
             formData.append("stockMin", String(value?.stockMin));
             formData.append("stockMax", String(value?.stockMax));
             formData.append("unidadMedidaid", String(value?.unidadMedidaId));
-            formData.append("redirectRoute", "/app/items/reception");
+            formData.append("redirectRoute", "/app/inventario/recepcion");
 
             fetcher.submit(formData, {
-                action: `/app/items/${data.id}`,
+                action: `/app/inventario/${data.id}`,
                 method: "put",
             });
 

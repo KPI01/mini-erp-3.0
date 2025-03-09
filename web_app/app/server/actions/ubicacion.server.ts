@@ -18,7 +18,13 @@ async function createUbicacion(request: Request) {
     descripcion: String(form.get("descripcion")),
     corto: String(form.get("corto")),
     isAlmacen: Boolean(form.get("isAlmacen")),
-    ubicacionId: Number(form.get("ubicacionId")),
+    ubicacionId: (() => {
+      const rawValue = form.get("ubicacionId");
+      if (!rawValue) return null;
+
+      const numValue = Number(rawValue);
+      return !isNaN(numValue) ? numValue : null;
+    })(),
   };
   const route = form.get("redirectRoute")?.toString() ?? "/app";
 
@@ -59,7 +65,7 @@ async function getUbicacion(request: Request, id: number) {
       "error",
       "No se ha ingresado ningún {id} para recuperar de la base de datos.",
     );
-    throw redirect("/app/items/reception", {
+    throw redirect("/app/inventario/recepcion", {
       headers: { "Set-Cookie": await commitSession(session) },
     });
   }
@@ -77,7 +83,7 @@ async function getUbicacion(request: Request, id: number) {
     if (!ubicacion) {
       console.error(`No se encontró ninguna ubicación con id: ${id}`);
       session.flash("error", `No se encontró ninguna ubicación con id: ${id}`);
-      throw redirect("/app/items/reception", {
+      throw redirect("/app/inventario/recepcion", {
         headers: { "Set-Cookie": await commitSession(session) },
       });
     }
@@ -87,7 +93,7 @@ async function getUbicacion(request: Request, id: number) {
   } catch (error) {
     console.error("Error al buscar la ubicación:", error);
     session.flash("error", "Ha ocurrido un error al buscar la ubicación.");
-    throw redirect("/app/items/reception", {
+    throw redirect("/app/inventario/recepcion", {
       headers: { "Set-Cookie": await commitSession(session) },
     });
   } finally {
@@ -103,7 +109,7 @@ async function updateUbicacion(request: Request, id: number) {
       "error",
       "No se ha ingresado ningún {id} para actualizar en la base de datos.",
     );
-    throw redirect("/app/items/reception", {
+    throw redirect("/app/inventario/recepcion", {
       headers: { "Set-Cookie": await commitSession(session) },
     });
   }
@@ -116,7 +122,7 @@ async function updateUbicacion(request: Request, id: number) {
 
     if (!existingUbicacion) {
       session.flash("error", `No se encontró ninguna ubicación con id: ${id}`);
-      throw redirect("/app/items/reception", {
+      throw redirect("/app/inventario/recepcion", {
         headers: { "Set-Cookie": await commitSession(session) },
       });
     }
@@ -133,7 +139,7 @@ async function updateUbicacion(request: Request, id: number) {
         : undefined,
     } satisfies UpdateUbicacion;
     const route =
-      form.get("redirectRoute")?.toString() ?? "/app/items/reception";
+      form.get("redirectRoute")?.toString() ?? "/app/inventario/recepcion";
 
     console.debug("Validando datos para actualización...", formData);
     const { success, data, error } =
@@ -214,7 +220,7 @@ async function updateUbicacion(request: Request, id: number) {
       throw error;
     }
 
-    throw redirect("/app/items/reception", {
+    throw redirect("/app/inventario/recepcion", {
       headers: { "Set-Cookie": await commitSession(session) },
     });
   } finally {

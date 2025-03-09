@@ -18,15 +18,15 @@ const links: SideBarLink[] = [
     nested: [
       {
         label: "Consulta de articulo",
-        action: "/app/items/consulta",
+        action: "/app/inventario/consulta",
       },
       {
         label: "Rotación de material",
-        action: "/app/items/stock",
+        action: "/app/inventario/stock",
       },
       {
         label: "Recepción de material",
-        action: "/app/items/recepcion",
+        action: "/app/inventario/recepcion",
       },
     ],
   },
