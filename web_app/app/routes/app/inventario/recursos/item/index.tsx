@@ -135,6 +135,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
                     changePageSize: false,
                 }}
                 bodyFallback={body}
+                config={{ debug: true }}
             />
         </Grid>
     );

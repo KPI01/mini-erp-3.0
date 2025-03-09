@@ -31,6 +31,7 @@ export default function DataTable<TData, TValue>({
     changePageSize: true,
     showPagination: true,
   },
+  config = { debug: false }
 }: DataTableProps<TData, TValue>) {
   console.debug("data:", data);
   console.debug("columns:", columns);
@@ -63,6 +64,7 @@ export default function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    debugAll: config.debug
   });
 
   console.debug("state:", table.getState());
@@ -73,6 +75,7 @@ export default function DataTable<TData, TValue>({
         {table.getHeaderGroups().map((hGroup) => (
           <Table.Row key={hGroup.id} className="bg-(--gray-2)">
             {hGroup.headers.map((h) => {
+              console.debug(h.id)
               return (
                 <Table.ColumnHeaderCell
                   key={h.id}

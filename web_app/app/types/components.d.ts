@@ -130,6 +130,9 @@ interface DataTableProps<TData, TValue> {
     filter: ColumnFiltersState;
     onFilterChange: OnChangeFn<ColumnFiltersState>;
   }>;
+  config?: Partial<{
+    debug: boolean
+  }>
 }
 
 interface DTColumnHeaderProps<TData, TValue>

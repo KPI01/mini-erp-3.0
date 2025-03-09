@@ -12,7 +12,6 @@ export const itemColumnHelper = createColumnHelper<Item>();
 export const itemColumn = [
   itemColumnHelper.accessor("id", {
     header: "Código",
-
     filterFn: (row, colId, filterValue) => {
       const value = row.getValue(colId);
       if (!filterValue) return false;

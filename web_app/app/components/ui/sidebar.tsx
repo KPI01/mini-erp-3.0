@@ -43,7 +43,7 @@ const links: SideBarLink[] = [
       },
       {
         label: "Historial de Costes",
-        action: "/app/compras/historial",
+        action: "/app/compras/pedido/historial",
       },
     ],
   },
