@@ -8,9 +8,9 @@ import { InputField } from "~/components/forms/input";
 import SelectInput from "~/components/forms/select";
 import AlertDialog from "~/components/ui/alert-dialog";
 import Popover from "~/components/ui/popover";
-import { createStockSchema, type CreateStock, type ItemForPedido } from "~/lib/zod-schemas/inventarios/stock";
+import { createStockSchema, type CreateStock, type ItemForRecepcion } from "~/lib/zod-schemas/inventarios/stock";
 import type { SelectInputOptionsType } from "~/types/components";
-import { AddItemToPedidoForm } from "../item/AddToPedido";
+import { AddItemToRecepcionForm } from "../item/AddToRecepcion";
 import DataTable from "~/components/table/data-table";
 import { itemInPedidoCol } from "~/lib/column-definitions/item";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -38,7 +38,7 @@ export function CreateStockForm({ aux }: AddStockFormProps) {
     });
     const [ubicacionSelected, setUbicacionSelected] = useState(false);
 
-    const itemToPedido = (item: ItemForPedido) => {
+    const itemToPedido = (item: ItemForRecepcion) => {
         let exists = false;
         const currentItems = form.getFieldValue("items");
 
@@ -146,7 +146,7 @@ export function CreateStockForm({ aux }: AddStockFormProps) {
                                 </Button>
                             }
                         >
-                            <AddItemToPedidoForm addItemFn={(value) => itemToPedido(value)} />
+                            <AddItemToRecepcionForm addItemFn={(value) => itemToPedido(value)} />
                         </AlertDialog>
                     </Box>
                     <Box gridColumn="1 / -1">

@@ -6,24 +6,24 @@ import { useState, type ChangeEvent } from "react";
 import { useFetcher } from "react-router";
 import { InputField } from "~/components/forms/input";
 import AlertDialog from "~/components/ui/alert-dialog";
-import type { ItemForPedido } from "~/lib/zod-schemas/inventarios/stock";
+import type { ItemForRecepcion } from "~/lib/zod-schemas/inventarios/stock";
 import { CreateItemForm } from "./Create";
 import { UpdateItemForm } from "./Update";
 import type { UpdateItem } from "~/lib/zod-schemas/inventarios/item";
 
-export type ItemPedido = Item & {
+export type ItemRecepcion = Item & {
     id: string;
     descripcion: string;
     cant: number;
     unidadMedida: UnidadMedida;
 };
-interface AddItemToFormProps {
-    addItemFn(item: ItemForPedido): void;
+interface AddItemToRecepcionFormProps {
+    addItemFn(item: ItemForRecepcion): void;
 }
 type FetcherDataType = {
     items: Array<Item & { unidadMedida: UnidadMedida }>;
 };
-export function AddItemToPedidoForm({ addItemFn }: AddItemToFormProps) {
+export function AddItemToRecepcionForm({ addItemFn }: AddItemToRecepcionFormProps) {
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
     const [query, setQuery] = useState("");
@@ -145,7 +145,7 @@ export function AddItemToPedidoForm({ addItemFn }: AddItemToFormProps) {
                                                             onClick={handleAddItem}
                                                             disabled={qty <= 0}
                                                         >
-                                                            <PlusCircledIcon /> Agregar al pedido
+                                                            <PlusCircledIcon /> Agregar al RItemForRecepcion
                                                         </DropdownMenu.Item>
                                                     </DropdownMenu.Content>
                                                 </DropdownMenu.Root>

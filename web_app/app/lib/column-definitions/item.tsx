@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import type { Item as ItemPrisma, Stock, Ubicacion, UnidadMedida } from "@prisma/client";
-import type { ItemPedido } from "~/routes/app/items/forms/item";
+import type { ItemRecepcion } from "~/routes/app/inventario/forms/item/AddToRecepcion";
 
 
 export type Item = ItemPrisma & {
@@ -41,7 +41,7 @@ export const itemColumn = [
   }),
 ];
 
-export const addItemToFormColHelper = createColumnHelper<ItemPedido>();
+export const addItemToFormColHelper = createColumnHelper<ItemRecepcion>();
 export const addItemToFormCol = [
   addItemToFormColHelper.accessor("id", { header: "Código" }),
   addItemToFormColHelper.accessor("descripcion", { header: "Descripción" }),

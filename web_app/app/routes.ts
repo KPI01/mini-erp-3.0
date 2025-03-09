@@ -33,6 +33,9 @@ export default [
       ...prefix("proveedor", [
         index("routes/app/compras/recursos/proveedor/index.tsx"),
         route(":proveedorId", "routes/app/compras/recursos/proveedor/detail.tsx")
+      ]),
+      ...prefix("pedido", [
+        index("routes/app/compras/recursos/pedido/index.tsx")
       ])
     ])
   ]),

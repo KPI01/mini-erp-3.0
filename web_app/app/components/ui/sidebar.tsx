@@ -39,7 +39,7 @@ const links: SideBarLink[] = [
       },
       {
         label: "Realizar Pedido",
-        action: "/app/compras/pedidos",
+        action: "/app/compras/pedido",
       },
       {
         label: "Historial de Costes",

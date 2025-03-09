@@ -4,7 +4,7 @@ import { redirect } from "react-router";
 import {
   createStockSchema,
   type CreateStock,
-  type ItemForPedido,
+  type ItemForRecepcion,
 } from "~/lib/zod-schemas/inventarios/stock";
 
 const routes = {
@@ -21,7 +21,7 @@ async function createStock(request: Request) {
   const form = await request.formData();
 
   // Parse the form data - handling both approaches (JSON or indexed fields)
-  let items: ItemForPedido[] = [];
+  let items: ItemForRecepcion[] = [];
 
   // First, try to get items from JSON string
   const itemsJSON = form.get("items");

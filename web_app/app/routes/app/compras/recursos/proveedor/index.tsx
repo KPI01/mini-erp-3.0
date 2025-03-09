@@ -90,9 +90,12 @@ export default function Proveedores({ loaderData, actionData }: Route.ComponentP
                     changeColumnCallback={() => {
                         setFilter([]);
                     }}
-                    changeQueryCallback={(col, val) => {
-                        setFilter([{ id: col, value: val }]);
-                    }}
+
+                    changeQueryCallback={
+                        //@ts-ignore
+                        (col, val) => {
+                            setFilter([{ id: col, value: val }]);
+                        }}
                 />
                 <Dialog
                     trigger={
