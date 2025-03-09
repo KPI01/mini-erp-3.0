@@ -27,7 +27,7 @@ export default function DataTable<TData, TValue>({
   bodyFallback,
   state = {
     filter: undefined,
-    onFilterChange: () => {},
+    onFilterChange: () => { },
     changePageSize: true,
     showPagination: true,
   },
@@ -94,8 +94,8 @@ export default function DataTable<TData, TValue>({
               {r.getVisibleCells().map((c) => (
                 <Table.Cell
                   key={c.id}
-                  justify={
-                    c.column.columnDef.id === "actions" ? "end" : "start"
+                  align={
+                    c.column.columnDef.id === "actions" ? "right" : "left"
                   }
                 >
                   {flexRender(c.column.columnDef.cell, c.getContext())}

@@ -15,75 +15,60 @@ import type { SideBarLink, SidebarProps } from "~/types/components";
 const links: SideBarLink[] = [
   {
     label: "Inventario",
-    route: "inventory",
     nested: [
       {
         label: "Consulta de articulo",
-        route: "inventory.items",
         action: "/app/items",
       },
       {
         label: "Rotación de material",
-        route: "inventory.stock",
         action: "/app/items/stock",
       },
       {
         label: "Recepción de material",
-        route: "inventory.reception",
         action: "/app/items/reception",
       },
     ],
   },
   {
     label: "Compras",
-    route: "purchases",
     nested: [
       {
         label: "Ingreso de Proveedores",
-        route: "purchases.suppliers",
-        action: "/app/compras/proveedores",
+        action: "/app/compras/proveedor",
       },
       {
         label: "Realizar Pedido",
-        route: "purchases.requests",
         action: "/app/compras/pedidos",
       },
       {
         label: "Historial de Costes",
-        route: "purchases.analysis",
         action: "/app/compras/historial",
       },
     ],
   },
   {
     label: "Ventas",
-    route: "sells",
     nested: [
       {
         label: "Facturación",
-        route: "sells.billing",
       },
       {
         label: "Historial de Ventas",
-        route: "sells.analysis",
       },
     ],
   },
   {
     label: "Finanzas",
-    route: "finance",
     nested: [
       {
         label: "Ingresos / Egresos",
-        route: "finance.transactions",
       },
       {
         label: "Cuentas por cobrar / pagar",
-        route: "finance.accounting",
       },
       {
         label: "Pago de Impuestos",
-        route: "finances.taxes",
       },
     ],
   },

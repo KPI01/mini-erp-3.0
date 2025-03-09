@@ -40,7 +40,6 @@ type DialogContentProps = React.ComponentProps<typeof Dialog.ContentProps>;
 
 type SideBarLink = {
   label: string;
-  route: Routes;
   action?: string;
   nested?: Array<SideBarLink>;
 };
@@ -199,6 +198,16 @@ interface AlertDialogProps extends React.PropsWithChildren {
     title: string;
     description: string;
   }>;
+}
+interface AlertDialogRootProps extends React.PropsWithChildren {
+  trigger?: TriggerButton
+  state?: Pick<React.ComponentProps<typeof AlertDialog.RootProps>, "open" | "onOpenChange">
+}
+interface AlertDialogContentProps extends React.PropsWithChildren {
+  header?: Partial<{
+    title: string;
+    description: string
+  }>
 }
 
 interface PopoverProps extends React.PropsWithChildren {

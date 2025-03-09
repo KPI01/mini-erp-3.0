@@ -7,7 +7,7 @@ export default function RowMenu({ items }: RowMenuProps) {
     <DM.Trigger>
       <DotsHorizontalIcon />
     </DM.Trigger>
-    <DM.Content side="right" sideOffset={5}>
+    <DM.Content side="left" sideOffset={5}>
       {items.map((children, ix) => (
         <DM.Item key={ix}>{children}</DM.Item>
       ))}

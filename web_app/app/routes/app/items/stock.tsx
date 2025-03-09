@@ -7,7 +7,7 @@ import { Grid, Heading } from "@radix-ui/themes";
 import { type ColumnDef, type ColumnFiltersState } from "@tanstack/react-table";
 import type { Route } from "./+types/stock";
 import { useState } from "react";
-import TableQuery from "./forms/tableQuery";
+import TableQuery from "../../../components/table/table-query";
 
 const prisma = new PrismaClient();
 
@@ -38,7 +38,6 @@ export default function Stock({ loaderData }: Route.ComponentProps) {
     item: "Artículo",
     ubicacion: "Ubicación",
   };
-
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
 
   return (

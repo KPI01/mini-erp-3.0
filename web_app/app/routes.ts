@@ -28,7 +28,8 @@ export default [
       route(":id", "routes/app/ubicacion/detail.tsx"),
     ]),
     ...prefix("compras", [
-      route("proveedores", "routes/app/compras/proveedores.tsx"),
-    ]),
+      route("proveedor", "routes/app/compras/resources/proveedor.tsx"),
+      route("proveedor/:proveedorId", "routes/app/compras/resources/proveedorDetail.tsx")
+    ])
   ]),
 ] satisfies RouteConfig;

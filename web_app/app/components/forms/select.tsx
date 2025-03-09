@@ -42,7 +42,7 @@ export default function SelectInput({
         size={config.rootSize}
         value={state.value}
         onValueChange={handleChange}
-        disabled={keys.length < 1}
+        disabled={keys.length < 2}
       >
         <Select.Trigger variant="surface">
           {value && options[value] ? options[value] : placeholderText}

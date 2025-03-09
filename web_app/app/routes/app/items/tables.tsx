@@ -55,7 +55,6 @@ export const stockColumn = [
     header: "Fecha de movimiento",
     cell: ({ getValue }) => getValue().toLocaleString(),
     filterFn: (row, _, filterValue) => {
-      const { original } = row;
       const search = new Date(filterValue).toLocaleDateString();
       const current = new Date(row.original.fecha).toLocaleDateString();
 

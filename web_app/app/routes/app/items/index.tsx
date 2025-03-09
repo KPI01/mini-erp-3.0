@@ -10,7 +10,7 @@ import DataTable from "~/components/table/data-table";
 import type { Route } from "./+types";
 import { itemColumn } from "./tables";
 import { Item } from "@radix-ui/themes/components/segmented-control";
-import TableQuery from "./forms/tableQuery";
+import TableQuery from "../../../components/table/table-query";
 import { validateAuthSession } from "~/server/session.server";
 import { addItem } from "~/server/actions/item.server";
 
