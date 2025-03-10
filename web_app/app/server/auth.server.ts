@@ -3,6 +3,7 @@ import { loginSchema, registerSchema } from "../routes/guest/auth-forms";
 import { redirect, } from "react-router";
 import { commitSession, destroySession, getSession } from "~/server/session.server";
 import { hashPassword, validatePassword } from "~/lib/auth/encrypt";
+import { z } from "zod";
 
 const routes = {
     login: "/guest/login",
@@ -26,7 +27,19 @@ async function register(request: Request) {
     }
 
     console.debug("validando con zod...")
-    const { data, error, success } = await registerSchema.safeParseAsync(formData)
+    const { data, error, success } = await registerSchema.superRefine(async ({ email }, { addIssue }) => {
+        let checkEmail = await prisma.user.findUnique({
+            where: { email },
+        }).then((data) => {
+            if (data) return false
+            return true
+        })
+        if (checkEmail) addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["email"],
+            message: "Este correo ya se encuentra reigstrado."
+        })
+    }).safeParseAsync(formData)
 
     if (!success) {
         console.error("se han encontrado errores en el formulario")

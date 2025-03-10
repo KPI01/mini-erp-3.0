@@ -1,16 +1,18 @@
-import { cleanErrors } from "~/helpers/utils";
 import type {
   CheckboxFieldProps,
   DebouncedInputProps,
+  fieldErrors,
+  fieldMeta,
   InputFieldProps,
-} from "~/types/components";
+} from "~/types/components/input";
 import {
   Flex,
   Grid,
-  IconButton,
   Text,
   TextField,
   Checkbox,
+  Badge,
+  Box,
 } from "@radix-ui/themes";
 import { Label } from "radix-ui";
 import React from "react";
@@ -37,13 +39,15 @@ export function DebouncedInput({
   }, [value]);
 
   if (slots) {
-    <TextField.Root
-      {...props}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-    >
-      {slots}
-    </TextField.Root>;
+    return (
+      <TextField.Root
+        {...props}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      >
+        {slots}
+      </TextField.Root>
+    );
   } else {
     return (
       <TextField.Root
@@ -59,36 +63,16 @@ export function InputField({
   label,
   input,
   errors,
-  icon,
   description,
+  fieldMeta,
 }: InputFieldProps) {
-  const errorBag = cleanErrors(input.name, errors);
+  const errorBag = Array.isArray(fieldMeta?.errors) ? fieldMeta.errors : undefined
+  console.error(input.name, errorBag)
 
   if (typeof label === "string") {
     console.debug(
       `InputField[${input.name}] no tiene prefijo y es ${input.type}`,
     );
-
-    if (icon) {
-      return (
-        <Grid gapY="1">
-          <Label.Root htmlFor={String(input.name)}>{label}</Label.Root>
-          <TextField.Root {...input} id={String(input.name)}>
-            <TextField.Slot side="right">
-              <IconButton type="button" onClick={() => icon.stateHandler()}>
-                {icon.children}
-              </IconButton>
-            </TextField.Slot>
-          </TextField.Root>
-          {description && (
-            <Text as="p" size="1" weight="light" trim="both">
-              {description}
-            </Text>
-          )}
-          {displayErrors(errorBag)}
-        </Grid>
-      );
-    }
 
     return (
       <Grid gapY="1">
@@ -110,15 +94,16 @@ export function InputField({
 
     return (
       <Grid gapY="1">
+        <Label.Root htmlFor={String(input.name)}>{label.main}</Label.Root>
         <TextField.Root {...input} id={String(input.name)}>
-          <TextField.Slot>
-            <Label.Root htmlFor={String(input.name)}>{label.main}</Label.Root>
-          </TextField.Slot>
+          {label.prefix && (
+            <TextField.Slot>
+              {label.prefix}
+            </TextField.Slot>
+          )}
           {label.suffix && (
             <TextField.Slot side="right">
-              <Text size="3" weight="medium">
-                {label.suffix}
-              </Text>
+              {label.suffix}
             </TextField.Slot>
           )}
         </TextField.Root>
@@ -145,13 +130,16 @@ export function InputField({
     </Grid>
   );
 }
+
 export function CheckboxField({
   input,
   label,
   errors,
   containerProps,
+  fieldErrors,
 }: CheckboxFieldProps) {
-  const errorBag = cleanErrors(input.name, errors);
+  const errorBag = fieldErrors?.toString().split(", ")
+
   return (
     <Grid {...containerProps}>
       <Flex align="center" gapX="2">
@@ -163,16 +151,32 @@ export function CheckboxField({
   );
 }
 
-export function displayErrors(errors?: string[]) {
-  console.debug("bag:", errors);
-  //@ts-ignore
-  if (errors && errors?.length > 0)
+export function displayErrors(errors?: fieldErrors[]) {
+  let err = Array(...new Set(errors))[0]?.toString().split(", ")
+  console.debug("displayErrors:", err)
+
+  if (!err || err.length === 0) return null;
+
+  if (err && err.length < 2) {
     return (
-      <Text color="red" weight="light" size="1" trim="both" className="m-0">
-        {
-          //@ts-ignore
-          errors[0]
-        }
-      </Text>
-    );
+      <Badge style={{ textWrap: "pretty" }} color="red" size="1">
+        {err[0]}
+      </Badge>
+    )
+  } else {
+    return <Box>
+      {err.map((e, ix) => (
+        <Badge
+          key={ix}
+          color="red"
+          style={{
+            flexBasis: "fit-content",
+            textWrap: "pretty"
+          }}
+        >
+          {e}
+        </Badge>
+      ))}
+    </Box>
+  }
 }

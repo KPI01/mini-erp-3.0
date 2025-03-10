@@ -24,13 +24,11 @@ export const meta: MetaFunction = () => {
 export async function loader({ request }: Route.LoaderArgs) {
     await validateAuthSession({ request });
 
-    // Parse query params to filter data if needed
     const url = new URL(request.url);
     const itemId = url.searchParams.get("itemId");
     const filterBy = url.searchParams.get("filterBy");
     const filterValue = url.searchParams.get("filterValue");
 
-    // Base query with all needed relations
     let query: any = {
         include: {
             items: {
@@ -132,8 +130,6 @@ export default function PriceHistory({ loaderData }: Route.ComponentProps) {
                 data={priceHistory ?? []}
                 columns={priceHistoryColumns as ColumnDef<any>[]}
                 state={{
-                    filter,
-                    onFilterChange: setFilter,
                     changePageSize: true,
                     showPagination: true,
                 }}

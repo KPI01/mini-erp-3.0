@@ -1,5 +1,4 @@
-import { data, Form, type MetaFunction, Link as Anchor } from "react-router";
-import { InputField } from "~/components/forms/input";
+import { data, type MetaFunction, Link as Anchor, useSubmit } from "react-router";
 import { getSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import {
@@ -10,7 +9,6 @@ import {
   Grid,
   IconButton,
   Link,
-  Spinner,
   Text,
 } from "@radix-ui/themes";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
@@ -19,6 +17,8 @@ import { validateSessionErrors } from "~/server/form-validation.server";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import type { Route } from "./+types/login";
+import { loginSchema, type loginSchemaType } from "./auth-forms";
+import { InputField } from "~/components/forms/input";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Login", description: "Iniciar sesión en la plataforma" }];
@@ -36,6 +36,7 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function Login({ loaderData }: Route.ComponentProps) {
+  const submit = useSubmit()
   console.log("LoginForm");
   //@ts-ignore
   const errors = loaderData?.zodErrors;
@@ -49,7 +50,20 @@ export default function Login({ loaderData }: Route.ComponentProps) {
     defaultValues: {
       username: "",
       password: "",
-    },
+    } satisfies loginSchemaType,
+    validators: { onSubmit: loginSchema },
+    onSubmit: ({ value }) => {
+      console.debug(value)
+      const formData = new FormData()
+      const keys = Object.keys(value)
+      const values = Object.values(value)
+      keys.map((k, ix) => formData.append(k, String(values[ix])))
+
+      submit(formData, {
+        action: "/guest/login",
+        method: "post"
+      })
+    }
   });
 
   return (
@@ -63,70 +77,57 @@ export default function Login({ loaderData }: Route.ComponentProps) {
           </Text>
         </Flex>
       </CardDescription>
-      <Grid asChild gapY="5" mt="6">
-        <Form
-          method="post"
-          action="/guest/login"
-          className="mt-4"
-          onSubmit={() => form.handleSubmit()}
-        >
-          <form.Field
-            name="username"
-            children={({ name, state, handleBlur, handleChange }) => (
-              <InputField
-                label="Usuario"
-                input={{
-                  type: "text",
-                  id: name,
-                  name: name,
-                  value: state.value,
-                  onBlur: handleBlur,
-                  onChange: (e) => handleChange(e.target.value),
-                }}
-                errors={{ field: name, bag: errors }}
-              />
-            )}
-          />
-          <form.Field
-            name="password"
-            children={({ name, state, handleBlur, handleChange }) => (
-              <InputField
-                label="Contraseña"
-                icon={{
-                  children: visible ? <EyeOpenIcon /> : <EyeClosedIcon />,
-                  stateHandler: () => toggleVisible(visible),
-                }}
-                input={{
-                  type: visible ? "text" : "password",
-                  id: name,
-                  name: name,
-                  value: state.value,
-                  onBlur: handleBlur,
-                  onChange: (e) => handleChange(e.target.value),
-                }}
-                errors={{ field: name, bag: errors }}
-              />
-            )}
-          />
-          <Flex>
-            <Link asChild>
-              <Anchor to="/guest/register">Crear cuenta</Anchor>
-            </Link>
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
-                <Button
-                  size="3"
-                  type="submit"
-                  className="!ms-auto"
-                  disabled={!canSubmit}
-                >
-                  {isSubmitting ? <Spinner /> : "Enviar"}
-                </Button>
-              )}
+      <Grid gapY="5" mt="6">
+        <form.Field
+          name="username"
+          children={(field) => (
+            <InputField
+              label="Usuario"
+              input={{
+                type: "text",
+                name: field.name,
+                value: field.state.value,
+                onBlur: field.handleBlur,
+                onChange: (e) => field.handleChange(e.target.value),
+              }}
+              fieldMeta={field.state.meta}
             />
-          </Flex>
-        </Form>
+          )}
+        />
+        <form.Field
+          name="password"
+          children={(field) => (
+            <InputField
+              label={{
+                main: "Contraseña",
+                suffix: <IconButton color="gray" variant="ghost" onClick={() => setVisible(!visible)}>
+                  {!visible ? <EyeClosedIcon /> : <EyeOpenIcon />}
+                </IconButton>
+              }}
+              input={{
+                type: visible ? "text" : "password",
+                name: field.name,
+                value: field.state.value,
+                onBlur: field.handleBlur,
+                onChange: (e) => field.handleChange(e.target.value),
+              }}
+              fieldMeta={field.state.meta}
+            />
+          )}
+        />
+        <Flex>
+          <Link asChild>
+            <Anchor to="/guest/register">Crear cuenta</Anchor>
+          </Link>
+          <Button
+            size="3"
+            type="button"
+            className="!ms-auto"
+            onClick={() => form.handleSubmit()}
+          >
+            Enviar
+          </Button>
+        </Flex>
       </Grid>
     </Box>
   );
