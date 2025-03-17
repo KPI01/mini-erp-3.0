@@ -1,13 +1,9 @@
-# Mini ERP
+# PROYECTO DE GRADO
 
-Este es el proyecto que estoy realizando para graduarme como ingeniero de sistemas
+Desarrollo de aplicación web como trabajo final de grado para el diplomado: Inteligencia Artificial Aplicada en la Ingeniería
 
-El repositorio original esta en este [link](https://github.com/KPI01/mini-erp)
+El objetivo principal es ofrecer una aplicación web que permita controlar los recursos materiales y financieros de una PYME,
+la IA permitirá obtener reportes inteligentes que mejoren las decisiones del negocio.
 
-Este nuevo proyecto esta hecho para realizarlo con la ultima de las tecnologias, inicie realizandolo en Remix pero estuve viendo en la documentacion que Remix se pasa a muchas cosas de React Router, entonces como intente la migracion en el proyecto original y no llevaba mucho adelantado, tome la decision de realizar el proyecto desde cero y migrar lo que he realizado
-
-El repositorio que le continua es: [link](https://github.com/KPI01/mini-erp-2.0)
-
-Y tuve que reorganizar los archivos para manejar diferentes aplicaciones dentro del mismo repositorio. Por facilidad termine creando un nuevo repositorio.
-
-El repositorio actual está en este [link](https://github.com/KPI01/mini-erp-3.0/)
+La aplicación se está desarrollando con React Router, el módulo de `ia` será el middleware que comunicará a la aplicación con el modelo de IA.
+La aplicación web estará desarrollada para utilizar LM Studio, utilizando el modelo de IA de forma local.
